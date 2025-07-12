@@ -1,6 +1,6 @@
 import { Navigate, BrowserRouter as Router, Routes } from "react-router";
 import { Route } from "react-router";
-import Allnotes from "./pages/Allnotes";
+import AllNotes from "./pages/AllNotes";
 import ArchivedNotes from "./pages/ArchivedNotes";
 import { NotesProvider } from "./Context/NoteContext";
 
@@ -34,7 +34,7 @@ function App() {
                           element={<Navigate replace to="all-notes" />}
                         />
                         <Route path="all-notes">
-                          <Route index element={<Allnotes />} />
+                          <Route index element={<AllNotes />} />
                           <Route
                             path=":noteTitle"
                             element={<DetailOfNotes />}

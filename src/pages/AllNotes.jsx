@@ -1,7 +1,7 @@
 import ListOfNotes from "../Components/ListOfNotes";
 import { useNotes } from "../Context/NoteContext";
 
-function Allnotes() {
+function AllNotes() {
   const { notes } = useNotes();
 
   const allNotesNotArchived = notes.filter((note) => note.isArchived === false);
@@ -9,4 +9,4 @@ function Allnotes() {
   return <ListOfNotes type={"All Notes"} notes={allNotesNotArchived} />;
 }
 
-export default Allnotes;
+export default AllNotes;
