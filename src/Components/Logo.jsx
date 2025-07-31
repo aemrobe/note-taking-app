@@ -1,11 +1,15 @@
+import { useSettings } from "../Context/SettingsContext";
+import LogoIcon from "./LogoIcon";
+
 function Logo() {
+  const { activeColorTheme } = useSettings();
+
   return (
-    <div className="bg-neutral100">
-      <img
-        className="py-[0.865rem] px-[1.021rem] "
-        src="/images/logo.svg"
-        alt=""
-      />
+    <div
+      className="
+      bg-logo-background text-logo-icon py-[0.865rem] px-[1.021rem]"
+    >
+      <LogoIcon />
     </div>
   );
 }

@@ -1,51 +1,23 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import noteDataJson from "../assets/data.json";
 
 const NotesContext = createContext();
 
 function NotesProvider({ children }) {
-  const [notes, setNotes] = useState(noteDataJson.notes);
+  const [notes, setNotes] = useState(function () {
+    const savedNotes = localStorage.getItem("notes");
+    return savedNotes ? JSON.parse(savedNotes) : noteDataJson.notes;
+  });
 
   const [isSmallerScreenSize, setIsSmallerScreenSize] = useState(
     window.innerWidth < 1440
   );
 
-  const [draftNotesContent, setDraftNotesContent] = useState({});
-
-  const getDraftNoteContent = useCallback(
-    (noteTitle) => draftNotesContent[noteTitle],
-    [draftNotesContent]
-  );
-
-  const setDraftContent = useCallback(function (noteTitle, content) {
-    setDraftNotesContent((prev) => {
-      const drafts = {
-        ...prev,
-        [noteTitle]:
-          content === null || content === undefined ? "" : String(content),
-      };
-
-      return drafts;
-    });
-  }, []);
-
-  const clearDraftContent = useCallback(
-    function (noteTitle) {
-      setDraftNotesContent((prev) => {
-        const drafts = { ...prev };
-
-        delete drafts[noteTitle];
-
-        return drafts;
-      });
+  useEffect(
+    function () {
+      localStorage.setItem("notes", JSON.stringify(notes));
     },
-    [setDraftNotesContent]
+    [notes]
   );
 
   useEffect(function () {
@@ -66,9 +38,9 @@ function NotesProvider({ children }) {
         notes,
         isSmallerScreenSize,
         setNotes,
-        getDraftNoteContent,
-        setDraftContent,
-        clearDraftContent,
+        // getDraftNoteContent,
+        // setDraftContent,
+        // clearDraftContent,
       }}
     >
       {children}

@@ -1,14 +1,14 @@
 import { useSettings } from "../Context/SettingsContext";
 
 import ArrowLeftIcon from "../Components/ArrowLeftIcon";
-import SystemIcon from "../Components/SystemIcon";
-import SunIcon from "../Components/SunIcon";
-import MoonIcon from "../Components/MoonIcon";
 import { NavLink, useParams } from "react-router";
 import { SETTING_TYPES_MAP } from "../config/constants";
+import { useToast } from "../Context/ToastContext";
 
 function SettingsDetailsPage() {
-  const { inputValue, setInputValue, ...settingsContext } = useSettings();
+  const { inputValue, activeColorTheme, setInputValue, ...settingsContext } =
+    useSettings();
+  const { handleShowToastMessage } = useToast();
 
   const { settingType } = useParams();
 
@@ -19,23 +19,24 @@ function SettingsDetailsPage() {
   const handleApplyChanges = function (e) {
     e.preventDefault();
     currentSetting.setPreference(settingsContext, inputValue);
+    handleShowToastMessage({ text: "Settings updated successfully!" });
   };
 
   return (
     <form className="pt-6" onSubmit={handleApplyChanges}>
       <NavLink
         to={"/settings"}
-        className="flex space-x-2 items-center text-sm font-medium -tracking-50 text-neutral600"
+        className="flex space-x-2 items-center text-sm text-font-medium -tracking-50 text-back-to-settings-button-text"
       >
         <ArrowLeftIcon width={"w-5"} />
         <p>Settings</p>
       </NavLink>
 
-      <h3 className="font-bold text-2xl -tracking-150 mt-3 mb-2 text-neutral950">
+      <h3 className="font-bold text-2xl -tracking-150 mt-3 mb-2 text-text-primary">
         {title}
       </h3>
 
-      <p className="text-neutral700 text-sm leading-50 -tracking-50 mb-5">
+      <p className="text-setting-option-description-text text-sm leading-50 -tracking-50 mb-5">
         {description}
       </p>
 
@@ -47,7 +48,7 @@ function SettingsDetailsPage() {
 
       <button
         type="submit"
-        className="bg-blue500 text-white py-3 px-4 rounded-lg mt-5 ml-auto block text-sm font-medium -tracking-50"
+        className="bg-settings-apply-button-background text-settings-apply-button-text py-3 px-4 rounded-lg mt-5 ml-auto block text-sm font-medium -tracking-50"
       >
         Apply Changes
       </button>
@@ -72,22 +73,22 @@ function RadioButton({ option }) {
       />
       <label
         htmlFor={`${type}`}
-        className={`flex space-x-4 items-center border border-neutral200 rounded-xl p-4 bg-transparent peer-checked:bg-neutral100 peer-checked:[&>span:nth-child(3)]:border-blue500 peer-checked:[&>span:nth-child(3)]:border-4`}
+        className={`flex space-x-4 items-center border border-radio-button-border rounded-xl p-4 bg-transparent peer-checked:bg-radio-button-checked-background peer-checked:[&>span:nth-child(3)]:border-radio-button-indicator-checked-border peer-checked:[&>span:nth-child(3)]:border-4`}
       >
-        <span className="border border-neutral200 rounded-xl bg-white p-2">
+        <span className="border border-radio-button-icon-wrapper-border text-radio-button-icon rounded-xl bg-radio-button-icon-wrapper-background p-2">
           <Icon width={"w-6"} />
         </span>
 
         <span className="flex flex-col mr-auto space-y-1.5">
-          <span className="font-medium text-sm -tracking-50 text-neutral950 capitalize">
+          <span className="font-medium text-sm -tracking-50 text-radio-button-title-text capitalize">
             {title}
           </span>
-          <span className="text-xs -tracking-50 text-neutral700">{text}</span>
+          <span className="text-xs -tracking-50 text-radio-button-description-text">
+            {text}
+          </span>
         </span>
 
-        <span className="border-2 border-neutral200 rounded-full w-4 h-4"></span>
-
-        {/* <span className="border-4 border-blue500 rounded-full w-4 h-4"></span> */}
+        <span className="border-2 border-radio-button-indicator-border rounded-full w-4 h-4"></span>
       </label>
     </div>
   );

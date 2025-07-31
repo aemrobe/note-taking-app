@@ -3,16 +3,18 @@ import {
   localStorageColorThemeKey,
   localStorageFontThemeKey,
 } from "../config/constants";
+import { useLocation } from "react-router";
 
 const SettingsContext = createContext();
 
 function SettingsProvider({ children }) {
+  const location = useLocation();
+  const notAllNotesPage = location.pathname.includes("/all-notes");
   const [uiPage, setUiPage] = useState("settingsPage");
   const [colorThemePreference, setColorThemePreference] = useState(function () {
     return localStorage.getItem(localStorageColorThemeKey) || "system";
   });
 
-  console.log("themePreferrence", colorThemePreference);
   const [activeColorTheme, setActiveColorTheme] = useState(function () {
     const savedTheme = localStorage.getItem(localStorageColorThemeKey);
 
@@ -64,6 +66,14 @@ function SettingsProvider({ children }) {
     [fontThemePreference]
   );
 
+  useEffect(
+    function () {
+      document.documentElement.className = `${activeColorTheme} ${activeFontTheme} ${"font-selectedFont"} ${
+        activeColorTheme === "dark" && !notAllNotesPage ? "notAllNotesPage" : ""
+      }`;
+    },
+    [activeColorTheme, notAllNotesPage, activeFontTheme]
+  );
   const [inputValue, setInputValue] = useState("");
 
   const handleGettingIntoSettings = function (settingType) {

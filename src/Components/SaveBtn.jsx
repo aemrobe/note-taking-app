@@ -1,6 +1,6 @@
 function SaveBtn({ onClick }) {
   return (
-    <button className="text-blue500 " onClick={onClick}>
+    <button className="text-button-primary-text " onClick={onClick}>
       Save Note
     </button>
   );

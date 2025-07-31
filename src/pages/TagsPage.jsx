@@ -4,16 +4,15 @@ import { useTag } from "../Context/TagContext";
 import ListOfNotes from "../Components/ListOfNotes";
 import GoBackBtn from "../Components/GoBackBtn";
 import { useSearchParams } from "react-router";
+import FilterStatusMessage from "../Components/FilterStatusMessage";
+import { useSettings } from "../Context/SettingsContext";
+import { localStorageTagKey } from "../config/constants";
 
 function TagsPage() {
-  const {
-    filteredNotes,
-    uiMode,
-    setUiMode,
-    displayedTags,
-    selectedTags,
-    isOnTagPage,
-  } = useTag();
+  const { filteredNotes, uiMode, setUiMode, selectedTags, isOnTagPage } =
+    useTag();
+
+  const { activeColorTheme } = useSettings();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -28,9 +27,9 @@ function TagsPage() {
     function () {
       if (!isOnTagPage || hasSynced.current) return;
 
-      const tags = displayedTags;
+      const tags = localStorage.getItem(localStorageTagKey);
 
-      const savedTags = tags ? tags : [];
+      const savedTags = tags ? JSON.parse(tags) : [];
 
       if (selectedTags.length === 0 && savedTags.length > 0) {
         const newParams = new URLSearchParams();
@@ -42,7 +41,7 @@ function TagsPage() {
 
       hasSynced.current = true;
     },
-    [selectedTags, displayedTags, isOnTagPage, setSearchParams, setUiMode]
+    [selectedTags, isOnTagPage, setSearchParams]
   );
 
   useEffect(
@@ -59,32 +58,40 @@ function TagsPage() {
   );
 
   return (
-    <div className="text-neutral600 pt-6 ">
+    <div className="text-toolbar-action-text pt-6 ">
       {/* Go Back Button */}
-      {uiMode === "filteredNotes" && <GoBackBtn onClick={handleGoBackBtn} />}
+      {uiMode === "filteredNotes" && (
+        <GoBackBtn onClick={handleGoBackBtn}>
+          {activeColorTheme === "dark" ? "All Tags" : "Go Back"}
+        </GoBackBtn>
+      )}
 
       <h2
         className={`font-bold ${
-          uiMode === "tagSelection" ? "text-neutral950" : ""
+          uiMode === "tagSelection" ? "text-text-primary" : ""
         } -tracking-150 text-2xl mb-4 ${uiMode === "filteredNotes" && "mt-4"}`}
       >
         {uiMode === "tagSelection" ? (
           "Tags"
         ) : (
           <>
-            <span>Notes Tagged: </span>
-            <span className="text-neutral950">{tagLists}</span>
+            <span className="text-filter-status-text">Notes Tagged: </span>
+            <span className="text-text-primary">{tagLists}</span>
           </>
         )}
       </h2>
 
       {uiMode === "filteredNotes" && (
-        <p className="text-sm leading-50 text-neutral700 -tracking-50 mb-4">
-          All notes with &quot;{tagLists}&quot; tag are shown here.
-        </p>
+        <FilterStatusMessage
+          filterTexts={`"${tagLists}"`}
+          lastText={"tag are shown here."}
+          marginBottom="mb-4"
+        >
+          All notes with{" "}
+        </FilterStatusMessage>
       )}
 
-      <ul className="divide-y divide-neutral200 text-neutral700">
+      <ul className="divide-y divide-border-separator text-filter-tag-text">
         {uiMode === "filteredNotes" ? (
           <ListOfNotes notes={filteredNotes} />
         ) : (

@@ -1,8 +1,8 @@
-function IconCheckMark({ width }) {
+function IconCheckMark({ width, color }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      className={`${width} text-green500`}
+      className={`${width} ${color}`}
       fill="none"
       viewBox="0 0 24 24"
     >

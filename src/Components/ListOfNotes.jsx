@@ -2,48 +2,54 @@ import { NavLink, useLocation } from "react-router";
 import { useTag } from "../Context/TagContext";
 import { formatDate } from "../config/constants";
 import EmptyNotes from "./EmptyNotes";
+import { useSettings } from "../Context/SettingsContext";
 
 function ListOfNotes({ type, notes }) {
   const { uiMode } = useTag();
+  const { activeColorTheme } = useSettings();
 
   return (
-    <div>
+    <div
+      className={`${
+        activeColorTheme === "dark" &&
+        type === "Archived Notes" &&
+        "isArchivedOnly"
+      }`}
+    >
       {uiMode !== "filteredNotes" && type !== "search" && (
-        <h1 className="text-2xl pt-5 pb-4  font-bold">{type}</h1>
+        <h1 className="text-2xl pt-5 pb-4  font-bold text-text-primary">
+          {type}
+        </h1>
       )}
 
-      {notes.length === 0 &&
-      (type === "Archived Notes" || type === "All Notes") ? (
-        <EmptyNotes
-          element={
-            type === "Archived Notes" && (
-              <p className="text-neutral700 mb-4">
-                All your archive notes are stored here. You can restore or
-                delete then anytime.
-              </p>
-            )
-          }
-        >
-          {type === "All Notes" ? (
-            <>
-              You don’t have any notes yet. Start a new note to capture your
-              thoughts and ideas.
-            </>
-          ) : (
-            <>
-              No notes have been archived yet. Move notes here for safekeeping,
-              or{" "}
-              <span className="underline underline-offset-2 decoration-1 decoration-neutral950">
-                create a new note.
-              </span>
-            </>
-          )}
-        </EmptyNotes>
-      ) : (
-        ""
-      )}
+      <div className="text-sm -tracking-50 leading-50">
+        {type === "Archived Notes" && (
+          <p className="text-page-description-text mb-4">
+            All your archive notes are stored here. You can restore or delete
+            them anytime.
+          </p>
+        )}
+        {notes.length === 0 &&
+        (type === "Archived Notes" || type === "All Notes") ? (
+          <EmptyNotes link={type === "Archived Notes" && "create a new note."}>
+            {type === "All Notes" ? (
+              <>
+                You don’t have any notes yet. Start a new note to capture your
+                thoughts and ideas.
+              </>
+            ) : (
+              <>
+                No notes have been archived yet. Move notes here for
+                safekeeping, or{" "}
+              </>
+            )}
+          </EmptyNotes>
+        ) : (
+          ""
+        )}
+      </div>
 
-      <ul className="">
+      <ul className="divide-y divide-border-separator">
         {notes.map((note) => (
           <Note note={note} key={note.title} />
         ))}
@@ -56,15 +62,17 @@ function Note({ note }) {
   const location = useLocation();
 
   return (
-    <li className="border-b border-neutral200">
+    <li>
       <NavLink
         to={`${note.title}`}
         state={{ from: location.pathname }}
-        className="w-full  px-2 pt-2 pb-3 flex flex-col space-y-3 items-start "
+        className="w-full  px-2 pt-2 pb-3 flex flex-col space-y-3 items-start"
       >
-        <h2 className="font-semibold text-neutral950">{note.title}</h2>
+        <h2 className="font-semibold text-text-primary">{note.title}</h2>
         <ListOfTags tags={note.tags} />
-        <p className="text-xs text-neutral700">{formatDate(note.lastEdited)}</p>
+        <p className="text-xs text-text-secondary">
+          {formatDate(note.lastEdited)}
+        </p>
       </NavLink>
     </li>
   );
@@ -82,7 +90,7 @@ function ListOfTags({ tags }) {
 
 function Tag({ children }) {
   return (
-    <span className="bg-neutral200 rounded py-0.5 px-1.5 font-normal text-neutral950">
+    <span className="bg-background-tag rounded py-0.5 px-1.5 font-normal text-text-primary text-xs">
       {children}
     </span>
   );

@@ -2,20 +2,30 @@ import { Outlet, useLocation, useSearchParams } from "react-router";
 import { useNotes } from "../Context/NoteContext";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
-import { useSettings } from "../Context/SettingsContext";
+import CreateNewNote from "./CreateNewNote";
 
 function NotesPageLayout() {
   const { isSmallerScreenSize } = useNotes();
   const location = useLocation();
+
   const [searchParams] = useSearchParams();
-  const { activeColorTheme, activeFontTheme } = useSettings();
+  const tagSearchParams = searchParams
+    .getAll("tag") // Get all values for the 'tag' parameter
+    .map((tag) => `tag=${encodeURIComponent(tag)}`)
+    .join("&"); // Format them as 'tag=value' and join them with &
+
+  const dontDisplayCreateNewNoteBtn =
+    location.pathname.startsWith("/all-notes/") ||
+    location.pathname.startsWith("/search/") ||
+    location.pathname.startsWith("/archived-notes/") ||
+    location.pathname.startsWith("/tags/") ||
+    location.pathname.startsWith("/create-new-note") ||
+    location.pathname.startsWith("/settings");
+
+  const isCreateNewNotePage = location.pathname.startsWith("/create-new-note");
 
   return (
-    <div
-      // data-theme={activeColorTheme}
-      // data-font={activeFontTheme}
-      className={`${activeColorTheme} bg-background-primary`}
-    >
+    <div className={`bg-logo-background`}>
       {/* Side Bar Content */}
       {!isSmallerScreenSize && (
         <aside>
@@ -80,7 +90,11 @@ function NotesPageLayout() {
           <Logo />
         </header>
 
-        <main className="flex-auto flex flex-col">
+        <main
+          className={`flex-auto flex flex-col overflow-hidden  ${
+            !isCreateNewNotePage && "rounded-xl"
+          }`}
+        >
           {!isSmallerScreenSize && (
             <div>
               <h1 className="text-2xl pt-5 pb-4 px-4 font-bold">
@@ -101,14 +115,15 @@ function NotesPageLayout() {
             </div>
           )}
 
-          <div className="flex-auto flex flex-col px-4 mb-[3.75rem]">
+          <div className="relative flex-auto flex flex-col px-4 mb-[3.75rem] bg-background-primary">
             <Outlet />
+            {!dontDisplayCreateNewNoteBtn && <CreateNewNote />}
           </div>
         </main>
 
         {/* Mobile view Menu Bar */}
         {isSmallerScreenSize && (
-          <MobileMenu currentSearchParams={searchParams.toString()} />
+          <MobileMenu currentSearchParams={tagSearchParams} />
         )}
       </div>
     </div>

@@ -1,11 +1,14 @@
-function EmptyNotes({ children, element = "" }) {
+function EmptyNotes({ children, link = "" }) {
   return (
-    <div className="text-sm -tracking-50 leading-50">
-      {element}
-      <p className=" bg-neutral100 border border-neutral200 p-2 text-neutral950 rounded-lg">
-        {children}
-      </p>
-    </div>
+    <p className="bg-empty-state-background border border-empty-state-border p-2 text-empty-state-text rounded-lg">
+      {children}
+
+      {link && (
+        <span className="underline underline-offset-2 decoration-1 decoration-neutral950">
+          {link}
+        </span>
+      )}
+    </p>
   );
 }
 

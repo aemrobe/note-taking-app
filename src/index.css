@@ -56,58 +56,13 @@
   font-display: swap;
 }
 
-:root {
-  /* Colors */
-  --color-black: #0e121b;
-  --color-neutral-50: #f5f7fa;
-  --color-neutral-100: #f3f5f8;
-  --color-neutral-200: #e0e4ea;
-  --color-neutral-300: #cacfd8;
-  --color-neutral-400: #99aoae;
-  --color-neutral-500: #717784;
-  --color-neutral-600: #525866;
-  --color-neutral-700: #2b303b;
-  --color-neutral-800: #232530;
-  --color-neutral-900: #191b25;
-  --color-neutral-950: #0e121b;
-  --color-blue-50: #ebf1ff;
-  --color-blue-500: #335cff;
-  --color-blue-700: #2547d0;
-  --color-green-50: #e0faec;
-  --color-green-100: #d1fbe9;
-  --color-green-500: #21c16b;
-  --color-red-50: #ffebec;
-  --color-red-100: #ffd5d8;
-  --color-red-500: #fb3748;
-  --color-bg-primary: var(--color-red-500);
-  /* Letter Spacing */
-  --letter-spacing-50: 0.0125em; /*0.2px */
-  --letter-spacing-150: 0.03125em; /*0.5px */
-
-  --app-background-primary: var(--color-neutral-50);
-  /* line-height */
-  --line-height-50: 1.3;
-
-  /* Width */
-  --icon-width-small: 1.125rem;
-
-  /* Font Family */
-  --font-noto-serif: "Noto Serif", serif;
-  --font-inter: "Inter", sans-serif;
-  --font-source-code-pro: "Source Code Pro", monospace;
-}
-
-/* @custom-variant dark (&:where([data-theme='dark'],[data-theme='dark'] *)); */
-.dark {
-  --color-bg-primary: var(--color-green-500);
-  --app-background-primary: var(--color-green-500);
-}
-
 @theme {
   /* Font Familes */
   --font-inter: var(--font-inter);
   --font-notoSerif: var(--font-noto-serif);
   --font-sourceCodePro: var(--font-source-code-pro);
+
+  --font-selectedFont: var(--font-selectedFont);
 
   /* Colors */
   --color-black: var(--color-black);
@@ -132,19 +87,355 @@
   --color-red100: var(--color-red-100);
   --color-red500: var(--color-red-500);
 
-  --color-background-primary: var(--app-background-primary);
+  --color-background-primary: var(--color-background-primary);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-label: var(--color-text-label);
+  --color-text-value: var(--color-text-value);
+  --color-text-value-last: var(--color-text-value-last);
+  --color-background-tag: var(--color-bg-tag);
+  --color-border-separator: var(--color-border-separator);
+  --color-icon-navigation-default: var(--color-icon-navigation-default);
+  --color-icon-navigation-active: var(--color-icon-navigation-active);
+  --color-background-navigation-active: var(
+    --color-background-navigation-active
+  );
+  --color-border-menubar: var(--color-border-menubar);
+  --color-shadow-level-1: var(--color-shadow-level-1);
+  --color-button-secondary-text: var(--color-button-secondary-text);
+  --color-button-primary-text: var(--color-button-primary-text);
+  --color-note-content-text: var(--color-note-content-text);
+  --color-search-input-border: var(--color-search-input-border);
+  --color-search-input-background: var(--color-search-input-background);
+  --color-search-input-text: var(--color-search-input-text);
+  --color-search-icon: var(--color-search-icon);
+  --color-search-input-placeholder: var(--color-search-input-placeholder);
+  --color-filter-status-highlight-text: var(
+    --color-filter-status-highlight-text
+  );
+  --color-filter-status-message-text: var(--color-filter-status-message-text);
+  --color-empty-state-background: var(--color-empty-state-background);
+  --color-empty-state-text: var(--color-empty-state-text);
+  --color-empty-state-border: var(--color-empty-state-border);
+  --color-page-description-text: var(--color-page-description-text);
+  --color-filter-status-text: var(--color-filter-status-text);
+  --color-toolbar-action-text: var(--color-toolbar-action-text);
+  --color-filter-tag-text: var(--color-filter-tag-text);
+  --color-setting-option-text: var(--color-setting-option-text);
+  --color-back-to-settings-button-text: var(
+    --color-back-to-settings-button-text
+  );
+  --color-setting-option-description-text: var(
+    --color-setting-option-description-text
+  );
+  --color-radio-button-border: var(--color-radio-button-border);
+  --color-radio-button-checked-background: var(
+    --color-radio-button-checked-background
+  );
+  --color-radio-button-icon-wrapper-background: var(
+    --color-radio-button-icon-wrapper-background
+  );
+  --color-radio-button-icon-wrapper-border: var(
+    --color-radio-button-icon-wrapper-border
+  );
+  --color-radio-button-icon: var(--color-radio-button-icon);
+  --color-radio-button-title-text: var(--color-radio-button-title-text);
+  --color-radio-button-description-text: var(
+    --color-radio-button-description-text
+  );
+  --color-radio-button-indicator-border: var(
+    --color-radio-button-indicator-border
+  );
+  --color-radio-button-indicator-checked-border: var(
+    --color-radio-button-indicator-checked-border
+  );
+  --color-settings-apply-button-background: var(
+    --color-settings-apply-button-background
+  );
+
+  --color-settings-apply-button-text: var(--color-settings-apply-button-text);
+  --color-action-modal-overlay-background: var(
+    --color-action-modal-overlay-background
+  );
+  --color-action-modal-dialog-background: var(
+    --color-action-modal-dialog-background
+  );
+  --color-action-modal-dialog-border: var(--color-action-modal-dialog-border);
+  --color-action-modal-title-text: var(--color-action-modal-title-text);
+  --color-action-modal-content-text: var(--color-action-modal-content-text);
+  --color-action-modal-icon-wrapper-background: var(
+    --color-action-modal-icon-wrapper-background
+  );
+  --color-action-modal-icon: var(--color-action-modal-icon);
+  --color-action-modal-divider: var(--color-action-modal-divider);
+  --color-action-button-cancel-background: var(
+    --color-action-button-cancel-background
+  );
+  --color-action-button-cancel-text: var(--color-action-button-cancel-text);
+  --color-action-button-delete-background: var(
+    --color-action-button-delete-background
+  );
+  --color-action-button-delete-text: var(--color-action-button-delete-text);
+  --color-action-button-archive-background: var(
+    --color-action-button-archive-background
+  );
+  --color-action-button-archive-text: var(--color-action-button-archive-text);
+  --color-toast-background: var(--color-toast-background);
+  --color-toast-border: var(--color-toast-border);
+  --color-toast-text: var(--color-toast-text);
+  --color-toast-link-text: var(--color-toast-link-text);
+  --color-toast-link-underline: var(--color-toast-link-underline);
+  --color-toast-close-button-icon: var(--color-toast-close-button-icon);
+  --color-toast-chekmark-icon: var(--color-toast-chekmark-icon);
+  --color-logo-background: var(--color-logo-background);
+  --color-logo-icon: var(--color-logo-icon);
+  --color-button-create-note-background: var(
+    --color-button-create-note-background
+  );
+  --color-button-create-note-icon: var(--color-button-create-note-icon);
+  --color-button-create-note-background: var(
+    --color-button-create-note-background
+  );
+  --color-button-create-note-icon: var(--color-button-create-note-icon);
+  --color-input-new-note-title-placeholder-color: var(
+    --color-input-new-note-title-placeholder-color
+  );
+  --color-new-note-input-placeholder-color: var(
+    --color-new-note-input-placeholder-color
+  );
+  --color-new-input-text-color: var(--color-new-input-text-color);
+  --color-new-note-input-border-color: var(--color-new-note-input-border-color);
+  --color-new-note-last-edited-text-color: var(
+    --color-new-note-last-edited-text-color
+  );
+  --color-new-note-content-placholder-color: var(
+    --color-new-note-content-placholder-color
+  );
+  --color-error: var(--color-error);
+  --text-new-note-text-fontSize: var(--text-new-note-text-fontSize);
+  --text-new-note-title-placeholder-text: var(
+    --text-new-note-title-placeholder-text
+  );
 
   /* Letter Spacing */
   --tracking-150: var(--letter-spacing-150);
+  --tracking-100: var(--letter-spacing-100);
   --tracking-50: var(--letter-spacing-50);
 
   /* Line height */
   --leading-50: var(--line-height-50);
-
+  --leading-new-note-text-lineHeight: var(--leading-new-note-text-lineHeight);
   /* Width */
   --width-icon-small: var(--icon-width-small);
 }
 
-body {
-  font-family: var(--font-inter);
+:root {
+  /* Colors */
+  --color-white: #fff;
+  --color-black: #0e121b;
+  --color-neutral-50: #f5f7fa;
+  --color-neutral-100: #f3f5f8;
+  --color-neutral-200: #e0e4ea;
+  --color-neutral-300: #cacfd8;
+  --color-neutral-400: #99a0ae;
+  --color-neutral-500: #717784;
+  --color-neutral-600: #525866;
+  --color-neutral-700: #2b303b;
+  --color-neutral-800: #232530;
+  --color-neutral-900: #191b25;
+  --color-neutral-950: #0e121b;
+  --color-blue-50: #ebf1ff;
+  --color-blue-500: #335cff;
+  --color-blue-700: #2547d0;
+  --color-green-50: #e0faec;
+  --color-green-100: #d1fbe9;
+  --color-green-500: #21c16b;
+  --color-red-50: #ffebec;
+  --color-red-100: #ffd5d8;
+  --color-red-500: #fb3748;
+  --color-soft-dark: rgba(0, 0, 0, 0.05);
+
+  --color-icon-navigation-active: var(--color-blue-500);
+  --color-button-primary-text: var(--color-blue-500);
+  --color-search-icon: var(--color-neutral-500);
+  --color-radio-button-indicator-checked-border: var(--color-blue-500);
+  --color-settings-apply-button-background: var(--color-blue-500);
+  --color-settings-apply-button-text: var(--color-white);
+  --color-action-modal-overlay-background: var(--color-neutral-950);
+  --color-action-button-delete-background: var(--color-red-500);
+  --color-action-button-delete-text: var(--color-white);
+  --color-action-button-archive-background: var(--color-blue-500);
+  --color-action-button-archive-text: var(--color-white);
+  --color-toast-close-button-icon: var(--color-neutral-400);
+  --color-toast-chekmark-icon: var(--color-green-500);
+  --color-button-create-note-background: var(--color-blue-500);
+  --color-button-create-note-icon: var(--color-white);
+  --color-new-note-input-placeholder-color: var(--color-neutral-400);
+  --color-new-note-input-border-color: var(--color-neutral-200);
+  --color-error: var(--color-red-500);
+
+  /* Letter Spacing */
+  --letter-spacing-50: 0.0125em; /*0.2px */
+  --letter-spacing-100: 0.01875em; /*0.3px*/
+  --letter-spacing-150: 0.03125em; /*0.5px */
+
+  /* line-height */
+  --line-height-50: 1.3;
+
+  /* Width */
+  --icon-width-small: 1.125rem;
+
+  /* Font Family */
+  --font-noto-serif: "Noto Serif", serif;
+  --font-inter: "Inter", sans-serif;
+  --font-source-code-pro: "Source Code Pro", monospace;
+}
+
+.light {
+  --color-background-primary: var(--color-white);
+  --color-text-primary: var(--color-neutral-950);
+  --color-text-secondary: var(--color-neutral-700);
+  --color-text-label: var(--color-neutral-700);
+  --color-text-value: var(--color-neutral-950);
+  --color-text-value-last: var(--color-neutral-700);
+  --color-bg-tag: var(--color-neutral-200);
+  --color-border-separator: var(--color-neutral-200);
+  --color-icon-navigation-default: var(--color-neutral-600);
+  --color-background-navigation-active: var(--color-blue-50);
+  --color-border-menubar: var(--color-neutral-200);
+  --color-shadow-level-1: var(--color-soft-dark);
+  --color-button-secondary-text: var(--color-neutral-600);
+  --color-note-content-text: var(--color-neutral-800);
+  --color-search-input-border: var(--color-neutral-300);
+  --color-search-input-background: var(--color-neutral-50);
+  --color-search-input-text: var(--color-neutral-950);
+  --color-search-input-placeholder: var(--color-neutral-500);
+  --color-filter-status-highlight-text: var(--color-neutral-950);
+  --color-filter-status-message-text: var(--color-neutral-700);
+  --color-empty-state-background: var(--color-neutral-100);
+  --color-empty-state-text: var(--color-neutral-950);
+  --color-empty-state-border: var(--color-neutral-200);
+  --color-page-description-text: var(--color-neutral-700);
+  --color-filter-status-text: var(--color-neutral-600);
+  --color-toolbar-action-text: var(--color-neutral-600);
+  --color-filter-tag-text: var(--color-neutral-700);
+  --color-setting-option-text: var(--color-neutral-950);
+  --color-back-to-settings-button-text: var(--color-neutral-600);
+  --color-setting-option-description-text: var(--color-neutral-700);
+  --color-radio-button-border: var(--color-neutral-200);
+  --color-radio-button-checked-background: var(--color-neutral-100);
+  --color-radio-button-icon-wrapper-background: var(--color-white);
+  --color-radio-button-icon-wrapper-border: var(--color-neutral-200);
+  --color-radio-button-icon: var(--color-neutral-950);
+  --color-radio-button-title-text: var(--neutral-950);
+  --color-radio-button-description-text: var(--color-neutral-700);
+  --color-radio-button-indicator-border: var(--color-neutral-200);
+  --color-action-modal-dialog-background: var(--color-white);
+  --color-action-modal-dialog-border: var(--color-neutral-200);
+  --color-action-modal-title-text: var(--color-neutral-950);
+  --color-action-modal-content-text: var(--color-neutral-700);
+  --color-action-modal-icon-wrapper-background: var(--color-neutral-100);
+  --color-action-modal-icon: var(--color-neutral-950);
+  --color-action-modal-divider: var(--color-neutral-200);
+  --color-action-button-cancel-background: var(--color-neutral-100);
+  --color-action-button-cancel-text: var(--color-neutral-600);
+  --color-toast-background: var(--color-white);
+  --color-toast-border: var(--color-neutral-200);
+  --color-toast-text: var(--color-neutral-950);
+  --color-toast-link-text: var(--color-neutral-950);
+  --color-toast-link-underline: var(--color-neutral-950);
+  --color-logo-background: var(--color-neutral-100);
+  --color-logo-icon: var(--color-neutral-950);
+  --color-input-new-note-title-placeholder-color: var(--color-neutral-950);
+  --color-new-note-last-edited-text-color: var(--color-neutral-400);
+  --color-new-input-text-color: var(--color-neutral-950);
+  --color-new-note-content-placholder-color: var(--color-neutral-700);
+  --text-new-note-text-fontSize: 0.75rem;
+  --text-new-note-title-placeholder-text: 1.25rem;
+  --leading-new-note-text-lineHeight: 1.2;
+}
+
+.dark {
+  --color-background-primary: var(--color-neutral-950);
+  --color-text-primary: var(--color-white);
+  --color-text-secondary: var(--color-neutral-300);
+  --color-text-label: var(--color-neutral-300);
+  --color-text-value: var(--color-white);
+  --color-text-value-last: var(--color-neutral-300);
+  --color-bg-tag: var(--color-neutral-600);
+  --color-border-separator: var(--color-neutral-800);
+  --color-icon-navigation-default: var(--color-neutral-400);
+  --color-background-navigation-active: var(--color-neutral-700);
+  --color-border-menubar: var(--color-neutral-800);
+  --color-shadow-level-1: var(--color-neutral-950);
+  --color-button-secondary-text: var(--color-neutral-300);
+  --color-note-content-text: var(--color-neutral-100);
+  --color-search-input-border: var(--color-neutral-500);
+  --color-search-input-background: var(--color-neutral-950);
+  --color-search-input-text: var(--color-white);
+  --color-search-input-placeholder: var(--color-neutral-400);
+  --color-filter-status-highlight-text: var(--color-white);
+  --color-filter-status-message-text: var(--color-neutral-300);
+  --color-empty-state-background: var(--color-neutral-800);
+  --color-empty-state-text: var(--color-white);
+  --color-empty-state-border: var(--color-neutral-700);
+  --color-page-description-text: var(--color-neutral-200);
+  --color-filter-status-text: var(--color-neutral-400);
+  --color-toolbar-action-text: var(--color-white);
+  --color-filter-tag-text: var(--color-neutral-300);
+  --color-setting-option-text: var(--color-white);
+  --color-back-to-settings-button-text: var(--color-neutral-300);
+  --color-setting-option-description-text: var(--color-neutral-300);
+  --color-radio-button-border: var(--color-neutral-700);
+  --color-radio-button-checked-background: var(--color-neutral-800);
+  --color-radio-button-icon-wrapper-background: var(--color-neutral-950);
+  --color-radio-button-icon-wrapper-border: var(--color-neutral-700);
+  --color-radio-button-icon: var(--color-white);
+  --color-radio-button-title-text: var(--color-white);
+  --color-radio-button-description-text: var(--color-neutral-300);
+  --color-radio-button-indicator-border: var(--color-neutral-600);
+  --color-action-modal-dialog-background: var(--color-neutral-700);
+  --color-action-modal-dialog-border: var(--color-neutral-600);
+  --color-action-modal-title-text: var(--color-white);
+  --color-action-modal-content-text: var(--color-neutral-200);
+  --color-action-modal-icon-wrapper-background: var(--color-neutral-600);
+  --color-action-modal-icon: var(--color-white);
+  --color-action-modal-divider: var(--color-neutral-600);
+  --color-action-button-cancel-background: var(--color-neutral-500);
+  --color-action-button-cancel-text: var(--color-neutral-200);
+  --color-toast-background: var(--color-neutral-800);
+  --color-toast-border: var(--color-neutral-700);
+  --color-toast-text: var(--color-white);
+  --color-toast-link-text: var(--color-white);
+  --color-toast-link-underline: var(--color-white);
+  --color-logo-background: var(--color-neutral-800);
+  --color-logo-icon: var(--color-white);
+  --color-input-new-note-title-placeholder-color: var(--color-white);
+  --color-new-note-last-edited-text-color: var(--color-neutral-300);
+  --color-new-input-text-color: var(--color-white);
+  --color-new-note-content-placholder-color: var(--color-neutral-100);
+  --text-new-note-title-placeholder-text: 1.5rem;
+  --text-new-note-text-fontSize: 0.875rem;
+  --leading-new-note-text-lineHeight: 1.3;
+}
+
+/* Fonts */
+.sans-serif {
+  --font-selectedFont: var(--font-inter);
+}
+
+.serif {
+  --font-selectedFont: var(--font-noto-serif);
+}
+
+.monsospace {
+  --font-selectedFont: var(--font-source-code-pro);
+}
+
+/* for the dark mode archived date text */
+
+.notAllNotesPage {
+  --color-text-secondary: var(--color-neutral-200);
+  --color-bg-tag: var(--color-neutral-700);
+  --color-button-secondary-background: var(--color-neutral-300);
 }

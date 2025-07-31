@@ -8,7 +8,7 @@ import TagIcon from "./TagIcon";
 function MobileMenu({ currentSearchParams = "" }) {
   return (
     <nav>
-      <ul className="border-2 w-full bg-white z-20 border-t border-neutral200 shadow-[0_-2px_2px_rgba(0,0,0,0.05)] text-neutral600 py-3 px-4 fixed bottom-0 flex justify-center">
+      <ul className="w-full bg-background-primary z-20 border-t border-border-menubar shadow-[0_-2px_2px_var(--color-shadow-level-1)] text-icon-navigation-default py-3 px-4 fixed bottom-0 flex justify-center">
         <MobileMenuLinks path={"/all-notes"}>
           <HomeIcon />
         </MobileMenuLinks>
@@ -41,21 +41,13 @@ function MobileMenuLinks({ children, path = "", params = "" }) {
       <NavLink
         to={fullPath}
         className={({ isActive }) =>
-          `block py-1 px-[1.39375rem] ${isActive ? "bg-blue50" : ""} ${
-            isActive ? "text-blue500" : ""
-          }`
+          `block py-1 px-[1.39375rem] rounded ${
+            isActive ? "bg-background-navigation-active" : ""
+          } ${isActive ? "text-icon-navigation-active" : ""}`
         }
       >
         {children}
       </NavLink>
-    </li>
-  );
-}
-
-function MobileMenuButtons({ children }) {
-  return (
-    <li>
-      <button className="block py-1 px-[1.39375rem]">{children}</button>
     </li>
   );
 }

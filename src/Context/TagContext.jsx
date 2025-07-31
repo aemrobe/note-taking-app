@@ -20,12 +20,6 @@ function TagProvider({ children }) {
     return searchParams.getAll("tag");
   }, [searchParams]);
 
-  const [displayedTags, setDisplayedTags] = useState(function () {
-    const savedTags = localStorage.getItem(localStorageTagKey);
-
-    return savedTags ? JSON.parse(savedTags) : [];
-  });
-
   useEffect(
     function () {
       if (!isOnTagPage) return;
@@ -47,10 +41,8 @@ function TagProvider({ children }) {
 
     if (selectedTags.includes(tag)) {
       nextSelectedTags = selectedTags.filter((t) => t !== tag);
-      setDisplayedTags(nextSelectedTags);
     } else {
       nextSelectedTags = [...selectedTags, tag];
-      setDisplayedTags(nextSelectedTags);
     }
 
     setSearchParams(
@@ -71,7 +63,6 @@ function TagProvider({ children }) {
     <TagContext.Provider
       value={{
         selectedTags,
-        displayedTags,
         handleTagClick,
         filteredNotes,
         uiMode,
