@@ -2,15 +2,26 @@ import { useSettings } from "../Context/SettingsContext";
 
 import ArrowLeftIcon from "../Components/ArrowLeftIcon";
 import { NavLink, useParams } from "react-router";
-import { SETTING_TYPES_MAP } from "../config/constants";
+import { APP_NAME, SETTING_TYPES_MAP } from "../config/constants";
 import { useToast } from "../Context/ToastContext";
+import { useEffect } from "react";
 
 function SettingsDetailsPage() {
-  const { inputValue, activeColorTheme, setInputValue, ...settingsContext } =
-    useSettings();
+  const { inputValue, ...settingsContext } = useSettings();
   const { handleShowToastMessage } = useToast();
 
   const { settingType } = useParams();
+
+  useEffect(() => {
+    document.title = `${settingType
+      .split("-")
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join(" ")} - Settings - ${APP_NAME}`;
+
+    return () => {
+      document.title = `Settings - ${APP_NAME}`;
+    };
+  }, [settingType]);
 
   const currentSetting = SETTING_TYPES_MAP[settingType];
 

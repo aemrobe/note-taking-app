@@ -6,16 +6,30 @@ const ToastContext = createContext();
 function ToastProvider({ children }) {
   const [showToastMessage, setShowToastMessage] = useState(false);
   const [toastMessageContent, setToastMessageContent] = useState({});
+  const [onCloseCallback, setOnCloseCallback] = useState(null);
 
-  const handleShowToastMessage = useCallback(function (content) {
+  const handleShowToastMessage = useCallback(function (
+    content,
+    callback = null
+  ) {
     setShowToastMessage(true);
     setToastMessageContent(content);
-  }, []);
+    setOnCloseCallback(() => callback);
+  },
+  []);
 
-  const handleCloseToastMessage = useCallback(function () {
-    setShowToastMessage(false);
-    setToastMessageContent({});
-  }, []);
+  const handleCloseToastMessage = useCallback(
+    function () {
+      setShowToastMessage(false);
+      setToastMessageContent({});
+
+      if (onCloseCallback) {
+        onCloseCallback();
+        setOnCloseCallback(null);
+      }
+    },
+    [onCloseCallback]
+  );
 
   const value = {
     handleShowToastMessage,
@@ -23,8 +37,9 @@ function ToastProvider({ children }) {
 
   return (
     <ToastContext.Provider value={value}>
-      <div>
-        {children}
+      <div aria-hidden={showToastMessage ? true : false}>{children}</div>
+
+      <div role="status" aria-live="polite" aria-atomic="true">
         {showToastMessage && (
           <ToastMessage
             toastMessageContent={toastMessageContent}

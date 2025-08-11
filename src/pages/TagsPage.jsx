@@ -6,7 +6,7 @@ import GoBackBtn from "../Components/GoBackBtn";
 import { useSearchParams } from "react-router";
 import FilterStatusMessage from "../Components/FilterStatusMessage";
 import { useSettings } from "../Context/SettingsContext";
-import { localStorageTagKey } from "../config/constants";
+import { APP_NAME, localStorageTagKey } from "../config/constants";
 
 function TagsPage() {
   const { filteredNotes, uiMode, setUiMode, selectedTags, isOnTagPage } =
@@ -21,6 +21,10 @@ function TagsPage() {
   const handleGoBackBtn = function () {
     setUiMode("tagSelection");
   };
+
+  useEffect(() => {
+    document.title = `Tags - ${APP_NAME}`;
+  }, []);
 
   // // This effect helps to get the savedtags from localstorage and sync them with Browser url on the first load
   useEffect(

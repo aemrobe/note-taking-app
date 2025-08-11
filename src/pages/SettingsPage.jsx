@@ -1,9 +1,15 @@
+import { useEffect } from "react";
 import FontIcon from "../Components/FontIcon";
 import SunIcon from "../Components/SunIcon";
 import { useSettings } from "../Context/SettingsContext";
 import { NavLink } from "react-router";
+import { APP_NAME } from "../config/constants";
 
 function SettingsPage() {
+  useEffect(() => {
+    document.title = `Settings - ${APP_NAME}`;
+  }, []);
+
   return (
     <div>
       <h2 className="font-bold text-2xl text-text-primary  -tracking-150 mt-6 mb-4">

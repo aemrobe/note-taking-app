@@ -66,7 +66,7 @@ function Note({ note }) {
       <NavLink
         to={`${note.title}`}
         state={{ from: location.pathname }}
-        className="w-full  px-2 pt-2 pb-3 flex flex-col space-y-3 items-start"
+        className="focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2 w-full  px-2 pt-2 pb-3 flex flex-col space-y-3 items-start"
       >
         <h2 className="font-semibold text-text-primary">{note.title}</h2>
         <ListOfTags tags={note.tags} />
@@ -81,6 +81,8 @@ function Note({ note }) {
 function ListOfTags({ tags }) {
   return (
     <span className="space-x-1">
+      <span className="sr-only">Tags:</span>
+
       {tags.map((tag) => (
         <Tag key={tag}>{tag}</Tag>
       ))}

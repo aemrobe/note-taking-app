@@ -6,6 +6,7 @@ import SearchIcon from "../Components/SearchIcon";
 
 import { useNotes } from "../Context/NoteContext";
 import { useSearchParams } from "react-router";
+import { APP_NAME } from "../config/constants";
 
 const SEARCH_DEBOUNCE_DELAY_MS = 500;
 
@@ -25,6 +26,10 @@ function SearchPage() {
     setSearchInput(e.target.value);
     isUserInput.current = true;
   };
+
+  useEffect(() => {
+    document.title = `Search Notes -  ${APP_NAME}`;
+  }, []);
 
   //Effect to sync the input to the searchParams (e.g:- from a browser forward and backbutton, bookmark navigation,direct url manipulation)
   useEffect(() => {

@@ -9,6 +9,7 @@ export const localStorageTagKey = "selectedTags";
 export const localStorageColorThemeKey = "colorTheme";
 export const localStorageFontThemeKey = "fontTheme";
 export const localStorageDetailsOfNotesDraft = "detailOfNotesDraftContent";
+export const APP_NAME = "Notes App";
 export const formatDate = function (date) {
   return new Date(date).toLocaleString("en-GB", {
     year: "numeric",

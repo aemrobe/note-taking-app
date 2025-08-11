@@ -7,7 +7,7 @@ import LastEditedIcon from "../Components/LastEditedIcon";
 import TextareaAutosize from "react-textarea-autosize";
 import { useSettings } from "../Context/SettingsContext";
 import useDraftNotes from "../Hooks/useDraftNotes";
-import { formatDate } from "../config/constants";
+import { APP_NAME, formatDate } from "../config/constants";
 import { useNotes } from "../Context/NoteContext";
 import {
   validateRequired,
@@ -32,6 +32,10 @@ function CreateNewNotePage() {
     setDraftContent,
     clearDraftContent,
   } = useDraftNotes("CreateNewNoteDraft");
+
+  useEffect(() => {
+    document.title = `Create New Note - ${APP_NAME}`;
+  }, []);
 
   useEffect(
     function () {
@@ -146,6 +150,10 @@ function CreateNewNotePage() {
       <div className={`${errorNoteTitle && "pb-2"}`}>
         <TextareaAutosize
           name="new note title"
+          aria-invalid={!!errorNoteTitle || undefined}
+          aria-describedby={
+            errorNoteTitle ? "create-note-title-error" : undefined
+          }
           value={title}
           minRows={
             (errorNoteTitle && !title) ||
@@ -174,6 +182,7 @@ function CreateNewNotePage() {
           <Error
             marginTop={`${errorNoteTitle && !title ? "" : "mt-1"}`}
             error={errorNoteTitle}
+            id={"create-note-title-error"}
           />
         )}
       </div>

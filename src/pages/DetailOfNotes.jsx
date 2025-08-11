@@ -3,6 +3,7 @@ import TagIcon from "../Components/TagIcon";
 import { useNotes } from "../Context/NoteContext";
 import { useEffect, useRef, useState } from "react";
 import {
+  APP_NAME,
   formatDate,
   localStorageDetailsOfNotesDraft,
 } from "../config/constants";
@@ -19,11 +20,16 @@ import {
   validateUniqueTitle,
   validateField,
 } from "../utils/validators";
+import Spinner from "../Components/Spinner";
+import SpinnerFullPage from "../Components/SpinnerFullPage";
 
 function DetailOfNotes() {
   const { noteTitle } = useParams();
   const { handleShowToastMessage } = useToast();
   const { notes, setNotes } = useNotes();
+  const [showPlaceholder, setShowPlaceholder] = useState(false);
+
+  const mainInfoTitleRef = useRef();
 
   const {
     getDraftNoteContent,
@@ -50,26 +56,60 @@ function DetailOfNotes() {
   const initialNoteTitleFromParamsRef = useRef(noteTitle);
   const pendingNavigationPathRef = useRef(null);
 
+  console.log("selectedNote", selectedNote);
+
   const draft = getDraftNoteContent(noteTitle);
   // ### States ###
   // Input Values
   const [selectedNoteTitle, setSelectedNoteTitle] = useState(function () {
-    return draft !== undefined ? draft.newTitle : selectedNote.title || "";
+    return draft !== undefined ? draft.newTitle : selectedNote?.title || "";
   });
   const [tags, setTags] = useState(function () {
     return draft !== undefined
       ? draft.tags
-      : selectedNote.tags.join(", ") || "";
+      : selectedNote?.tags.join(", ") || "";
   });
   const [textContent, setTextContent] = useState(function () {
-    return draft !== undefined ? draft.content : selectedNote.content || "";
+    return draft !== undefined ? draft.content : selectedNote?.content || "";
   });
+  const [hasChanges, setHasChanges] = useState(false);
+
+  useEffect(
+    function () {
+      if (!selectedNote) return;
+
+      const { title, tags: tagsSelected, content } = selectedNote;
+      const hasTitleChanged = selectedNoteTitle !== title;
+      const hasTagsChanged = tags !== tagsSelected.join(", ");
+      const hasTextChanged = textContent !== content;
+
+      setHasChanges(hasTitleChanged || hasTagsChanged || hasTextChanged);
+    },
+    [selectedNote, selectedNoteTitle, tags, textContent]
+  );
 
   // Errors
   const [errorNoteTitle, setErrorNoteTitle] = useState(null);
 
+  //a condition that check if the save button should be disabled or not
+  const isSaveDisabled = !!errorNoteTitle || !hasChanges;
+
+  console.log("isSaveDisabled", isSaveDisabled);
+
   useEffect(() => {
     initialNoteTitleFromParamsRef.current = noteTitle;
+  }, [noteTitle]);
+
+  useEffect(() => {
+    const originalTitle = document.title;
+
+    mainInfoTitleRef.current?.focus();
+
+    document.title = `${noteTitle} -  ${APP_NAME}`;
+
+    return () => {
+      document.title = originalTitle;
+    };
   }, [noteTitle]);
 
   useEffect(() => {
@@ -79,6 +119,8 @@ function DetailOfNotes() {
         decodeURIComponent(pendingNavigationPathRef.current)
     ) {
       pendingNavigationPathRef.current = null;
+      //showing the spinner
+      setShowPlaceholder(false);
     }
   }, [noteTitle]);
 
@@ -149,6 +191,9 @@ function DetailOfNotes() {
       (note) => note.title === originalNoteTitleInContext
     );
 
+    //showing the spinner
+    setShowPlaceholder(true);
+
     const newNoteTitle = selectedNoteTitle.trim();
     const newTagsArray = tags
       .split(",")
@@ -195,13 +240,22 @@ function DetailOfNotes() {
         return updatedNotes;
       });
 
-      navigate(newFullPathToNavigate, { replace: true });
       clearDraftContent(originalNoteTitleInContext);
-      handleShowToastMessage({ text: "Note saved successfully!" });
+      handleShowToastMessage({ text: "Note saved successfully!" }, () => {
+        navigate(newFullPathToNavigate, { replace: true });
+        setShowPlaceholder(false);
+      });
     }
   };
 
+  console.log("showplaceholder", showPlaceholder);
+
   const handleArchiveNotes = function () {
+    pendingNavigationPathRef.current = prevPath;
+
+    //showing the spinner
+    setShowPlaceholder(true);
+
     setNotes((prevNotes) => {
       const noteIndex = prevNotes.findIndex(
         (note) => note.title === selectedNote.title
@@ -217,15 +271,22 @@ function DetailOfNotes() {
       return updatedNotes;
     });
 
-    handleShowToastMessage({
-      text: "Note archived.",
-      link: "Archived Notes",
-    });
-
-    navigate(prevPath, { replace: true });
+    handleShowToastMessage(
+      {
+        text: "Note archived.",
+        link: "Archived Notes",
+        ariaLabelText: "Go to Archived Notes",
+      },
+      () => navigate(prevPath, { replace: true })
+    );
   };
 
   const handlelRestoreArchivedNotes = function () {
+    pendingNavigationPathRef.current = prevPath;
+
+    //showing the spinner
+    setShowPlaceholder(true);
+
     setNotes((prevNotes) => {
       const noteIndex = prevNotes.findIndex(
         (note) => note.title === selectedNote.title
@@ -241,26 +302,34 @@ function DetailOfNotes() {
       return updatedNotes;
     });
 
-    handleShowToastMessage({
-      text: "Note restored to active notes.",
-      link: "All Notes",
-    });
-
-    navigate(prevPath, { replace: true });
+    handleShowToastMessage(
+      {
+        text: "Note restored to active notes.",
+        link: "All Notes",
+        ariaLabelText: "Go to All Notes",
+      },
+      () => navigate(prevPath, { replace: true })
+    );
   };
 
   const handleDeleteNote = function () {
+    pendingNavigationPathRef.current = prevPath;
+
+    //showing the spinner
+    setShowPlaceholder(true);
+
     setNotes((prevNotes) =>
       prevNotes.filter((note) => note.title !== selectedNote.title)
     );
 
-    handleShowToastMessage({
-      text: "Note permanently deleted.",
-    });
+    handleShowToastMessage(
+      {
+        text: "Note permanently deleted.",
+      },
+      () => navigate(prevPath, { replace: true })
+    );
 
     clearDraftContent(initialNoteTitleFromParamsRef.current);
-
-    navigate(prevPath, { replace: true });
   };
 
   const handleCancelButton = function (e) {
@@ -298,7 +367,13 @@ function DetailOfNotes() {
     [navigate, prevPath, selectedNote, notes]
   );
 
-  if (!selectedNote) return null;
+  if (showPlaceholder) {
+    return <SpinnerFullPage />;
+  }
+
+  console.log("pending", pendingNavigationPathRef.current);
+
+  if (!selectedNote && !pendingNavigationPathRef.current) <p>note not found</p>;
 
   return (
     <form action={"#"} className="flex-auto flex flex-col">
@@ -306,12 +381,14 @@ function DetailOfNotes() {
       <NoteActions
         onGoBack={handleGoBackBtn}
         onDeleteNote={handleDeleteNote}
-        isArchived={selectedNote.isArchived}
+        isArchived={selectedNote?.isArchived}
         onRestoreNote={handlelRestoreArchivedNotes}
         onArchiveNote={handleArchiveNotes}
         onCancel={handleCancelButton}
         onSave={handleSaveNotes}
         fontSize={"text-sm"}
+        isSaveDisabled={isSaveDisabled}
+        isError={errorNoteTitle}
       />
 
       <div className="flex flex-col flex-auto">
@@ -319,6 +396,12 @@ function DetailOfNotes() {
         <div className={"text-xs border-b border-border-separator"}>
           <div className={`pt-3 ${errorNoteTitle && "pb-3"}`}>
             <TextareaAutosize
+              aria-label="Note title"
+              aria-invalid={!!errorNoteTitle || undefined}
+              aria-describedby={
+                errorNoteTitle ? "details-note-title-error" : undefined
+              }
+              ref={mainInfoTitleRef}
               name="noteTitle"
               className={`${!errorNoteTitle && "pb-3"} text-2xl w-full
            placeholder:text-input-new-note-title-placeholder-color resize-none
@@ -330,7 +413,9 @@ function DetailOfNotes() {
               onChange={handleTitleChange}
               id=""
             />
-            {errorNoteTitle && <Error error={errorNoteTitle} />}
+            {errorNoteTitle && (
+              <Error error={errorNoteTitle} id="details-note-title-error" />
+            )}
           </div>
 
           <div className="flex ">
@@ -356,7 +441,7 @@ function DetailOfNotes() {
                 onChange={(e) => setTags(e.target.value)}
               />
 
-              {selectedNote.isArchived && (
+              {selectedNote?.isArchived && (
                 <DetailInfoElements
                   labelIconValue={
                     <>
@@ -378,7 +463,7 @@ function DetailOfNotes() {
                 content={
                   draft !== undefined
                     ? formatDate(draft.lastEdited)
-                    : formatDate(selectedNote.lastEdited)
+                    : formatDate(selectedNote?.lastEdited)
                 }
               />
             </div>
@@ -387,8 +472,8 @@ function DetailOfNotes() {
 
         {/* Note Text Content */}
         <textarea
-          // ref={noteContentInputRef}
           value={textContent}
+          aria-label="Note Content"
           onChange={(e) => setTextContent(e.target.value)}
           name="Note text"
           placeholder="Start typing your note here…"
@@ -401,7 +486,6 @@ function DetailOfNotes() {
           <button>Cancel</button>
         </div>
       </div>
-
       {/* Desktop Archive and Delete buttons*/}
       <div className="hidden">
         <button>

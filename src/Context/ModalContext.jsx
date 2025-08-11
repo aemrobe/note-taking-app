@@ -1,9 +1,15 @@
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import ActionModal from "../Components/ActionModal";
 
 const ModalContext = createContext();
 
-function ModalProvider({ children }) {
+function ModalProvider({ children, appRef }) {
   const [modalProps, setModalProps] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,6 +29,16 @@ function ModalProvider({ children }) {
   };
 
   console.log("modalprops", modalProps);
+
+  useEffect(() => {
+    if (appRef && appRef.current) {
+      if (isOpen) {
+        appRef.current.setAttribute("aria-hidden", "true");
+      } else {
+        appRef.current.removeAttribute("aria-hidden");
+      }
+    }
+  }, [isOpen, appRef]);
 
   return (
     <ModalContext.Provider value={value}>
