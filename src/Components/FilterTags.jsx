@@ -18,7 +18,7 @@ function FilterTags({ children, paddingTop = "" }) {
           });
           handleTagClick(tag);
         }}
-        className={`w-full flex items-center py-3.5 ${paddingTop} gap-2 `}
+        className={`w-full flex items-center py-3.5 ${paddingTop} gap-2 focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2`}
       >
         <TagIcon width={"w-5"} />
         {children}

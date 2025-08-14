@@ -17,6 +17,7 @@ import { SettingsProvider } from "./Context/SettingsContext";
 import SettingsDetailsPage from "./pages/SettingsDetailsPage";
 import CreateNewNotePage from "./pages/CreateNewNotePage";
 import { useRef } from "react";
+import { FocusProvider } from "./Context/FocusContext";
 
 function App() {
   const appRef = useRef(null);
@@ -25,49 +26,63 @@ function App() {
     <Router>
       <div ref={appRef}>
         <ModalProvider appRef={appRef}>
-          <ToastProvider>
-            <NotesProvider>
-              <SettingsProvider>
-                <TagProvider>
-                  <Routes>
-                    <Route path="/" element={<NotesPageLayout />}>
-                      <Route
-                        index
-                        element={<Navigate replace to="all-notes" />}
-                      />
-                      <Route path="all-notes">
-                        <Route index element={<AllNotes />} />
-                        <Route path=":noteTitle" element={<DetailOfNotes />} />
-                      </Route>
-                      <Route path="search">
-                        <Route index element={<SearchPage />} />
-                        <Route path=":noteTitle" element={<DetailOfNotes />} />
-                      </Route>
-                      <Route path="archived-notes">
-                        <Route index element={<ArchivedNotes />} />
-                        <Route path=":noteTitle" element={<DetailOfNotes />} />
-                      </Route>
-                      <Route path="tags">
-                        <Route index element={<TagsPage />} />
-                        <Route path=":noteTitle" element={<DetailOfNotes />} />
-                      </Route>
-                      <Route path="settings">
-                        <Route index element={<SettingsPage />} />
+          <FocusProvider>
+            <ToastProvider>
+              <NotesProvider>
+                <SettingsProvider>
+                  <TagProvider>
+                    <Routes>
+                      <Route path="/" element={<NotesPageLayout />}>
                         <Route
-                          path=":settingType"
-                          element={<SettingsDetailsPage />}
+                          index
+                          element={<Navigate replace to="all-notes" />}
+                        />
+                        <Route path="all-notes">
+                          <Route index element={<AllNotes />} />
+                          <Route
+                            path=":noteTitle"
+                            element={<DetailOfNotes />}
+                          />
+                        </Route>
+                        <Route path="search">
+                          <Route index element={<SearchPage />} />
+                          <Route
+                            path=":noteTitle"
+                            element={<DetailOfNotes />}
+                          />
+                        </Route>
+                        <Route path="archived-notes">
+                          <Route index element={<ArchivedNotes />} />
+                          <Route
+                            path=":noteTitle"
+                            element={<DetailOfNotes />}
+                          />
+                        </Route>
+                        <Route path="tags">
+                          <Route index element={<TagsPage />} />
+                          <Route
+                            path=":noteTitle"
+                            element={<DetailOfNotes />}
+                          />
+                        </Route>
+                        <Route path="settings">
+                          <Route index element={<SettingsPage />} />
+                          <Route
+                            path=":settingType"
+                            element={<SettingsDetailsPage />}
+                          />
+                        </Route>
+                        <Route
+                          path="create-new-note"
+                          element={<CreateNewNotePage />}
                         />
                       </Route>
-                      <Route
-                        path="create-new-note"
-                        element={<CreateNewNotePage />}
-                      />
-                    </Route>
-                  </Routes>
-                </TagProvider>
-              </SettingsProvider>
-            </NotesProvider>
-          </ToastProvider>
+                    </Routes>
+                  </TagProvider>
+                </SettingsProvider>
+              </NotesProvider>
+            </ToastProvider>
+          </FocusProvider>
         </ModalProvider>
       </div>
     </Router>

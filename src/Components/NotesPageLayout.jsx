@@ -3,6 +3,8 @@ import { useNotes } from "../Context/NoteContext";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
 import CreateNewNote from "./CreateNewNote";
+import CreateNewNoteWithContext from "./CreateNewNoteWithContext";
+import { FocusProvider } from "../Context/FocusContext";
 
 function NotesPageLayout() {
   const { isSmallerScreenSize } = useNotes();
@@ -117,7 +119,7 @@ function NotesPageLayout() {
 
           <div className="relative flex-auto flex flex-col px-4 mb-[3.75rem] bg-background-primary">
             <Outlet />
-            {!dontDisplayCreateNewNoteBtn && <CreateNewNote />}
+            {!dontDisplayCreateNewNoteBtn && <CreateNewNoteWithContext />}
           </div>
         </main>
 

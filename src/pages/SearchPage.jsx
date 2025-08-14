@@ -21,6 +21,14 @@ function SearchPage() {
   // Ref to indicate if the last URL change was initiated by our debouncer
   //This helps prevent the first useEffect from aggressively resetting the input.
   const isUserInput = useRef(false);
+  const pageTitle = useRef(null);
+
+  useEffect(
+    function () {
+      pageTitle.current?.focus();
+    },
+    [pageTitle]
+  );
 
   const handlerInputchange = (e) => {
     setSearchInput(e.target.value);
@@ -95,9 +103,13 @@ function SearchPage() {
   return (
     <div className="text-sm -tracking-50 leading-50">
       <div className="pt-5 pb-4 bg-background-primary ">
-        <h2 className="font-bold  text-2xl text-text-primary -tracking-150">
+        <h1
+          ref={pageTitle}
+          tabIndex={"-1"}
+          className="font-bold  text-2xl text-text-primary -tracking-150 focus:outline-none"
+        >
           Search
-        </h2>
+        </h1>
 
         <span
           className={`

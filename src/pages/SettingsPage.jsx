@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import FontIcon from "../Components/FontIcon";
 import SunIcon from "../Components/SunIcon";
 import { useSettings } from "../Context/SettingsContext";
@@ -6,15 +6,28 @@ import { NavLink } from "react-router";
 import { APP_NAME } from "../config/constants";
 
 function SettingsPage() {
+  const pageTitle = useRef(null);
+
+  useEffect(
+    function () {
+      pageTitle.current?.focus();
+    },
+    [pageTitle]
+  );
+
   useEffect(() => {
     document.title = `Settings - ${APP_NAME}`;
   }, []);
 
   return (
     <div>
-      <h2 className="font-bold text-2xl text-text-primary  -tracking-150 mt-6 mb-4">
+      <h1
+        ref={pageTitle}
+        tabIndex={-1}
+        className="font-bold focus:outline-none text-2xl text-text-primary  -tracking-150 mt-6 mb-4"
+      >
         Settings
-      </h2>
+      </h1>
 
       <ul className="text-sm font-medium -tracking-50 text-setting-option-text flex flex-col space-y-2">
         <SettingItem type={"color-theme"}>
@@ -38,7 +51,7 @@ function SettingItem({ children, type }) {
     <li>
       <NavLink
         to={`${type}`}
-        className="py-2 w-full flex space-x-2 items-center"
+        className="py-2 w-full flex space-x-2 items-center focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2"
         onClick={() => onGettingIntoSettings(type)}
       >
         {children}

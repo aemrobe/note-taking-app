@@ -92,12 +92,13 @@ function CreateNewNotePage() {
       setDraftContent("newNote", title, tag, noteContent);
     }
 
-    navigate(-1);
+    navigate(-1, { state: { fromCreateNote: true } });
   };
 
   const handleCancelButton = function (e) {
     e.preventDefault();
-    navigate(-1);
+    navigate(-1, { state: { fromCreateNote: true } });
+    clearDraftContent("newNote");
   };
 
   const handleSaveNotes = function (e) {
@@ -134,7 +135,7 @@ function CreateNewNotePage() {
 
       clearDraftContent("newNote");
 
-      navigate(-1);
+      navigate(-1, { state: { fromCreateNote: true } });
     }
   };
 

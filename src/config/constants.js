@@ -30,12 +30,14 @@ export const COLOR_THEME_OPTIONS = [
     title: "Dark Mode",
     type: "dark",
     icon: MoonIcon,
+    name: "color-theme",
     text: "Select a sleek and modern dark theme",
   },
   {
     title: "System",
     type: "system",
     icon: SystemIcon,
+    name: "color-theme",
     text: "Select a sleek and modern dark theme",
   },
 ];

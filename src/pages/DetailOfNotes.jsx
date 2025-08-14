@@ -101,16 +101,8 @@ function DetailOfNotes() {
   }, [noteTitle]);
 
   useEffect(() => {
-    const originalTitle = document.title;
-
     mainInfoTitleRef.current?.focus();
-
-    document.title = `${noteTitle} -  ${APP_NAME}`;
-
-    return () => {
-      document.title = originalTitle;
-    };
-  }, [noteTitle]);
+  }, []);
 
   useEffect(() => {
     if (
@@ -395,8 +387,12 @@ function DetailOfNotes() {
         {/* Note title information */}
         <div className={"text-xs border-b border-border-separator"}>
           <div className={`pt-3 ${errorNoteTitle && "pb-3"}`}>
+            <h1 id="note-title-heading" className="sr-only">
+              Edit Note
+            </h1>
+
             <TextareaAutosize
-              aria-label="Note title"
+              aria-labelledby="note-title-heading"
               aria-invalid={!!errorNoteTitle || undefined}
               aria-describedby={
                 errorNoteTitle ? "details-note-title-error" : undefined

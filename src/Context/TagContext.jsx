@@ -13,7 +13,7 @@ function TagProvider({ children }) {
   const isOnTagPage = location.pathname === "/tags";
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [uiMode, setUiMode] = useState("tagSelection");
+  // const [uiMode, setUiMode] = useState("tagSelection");
 
   // Array which contain all the selected tags
   const selectedTags = useMemo(() => {
@@ -65,8 +65,8 @@ function TagProvider({ children }) {
         selectedTags,
         handleTagClick,
         filteredNotes,
-        uiMode,
-        setUiMode,
+        // uiMode,
+        // setUiMode,
         isOnTagPage,
       }}
     >

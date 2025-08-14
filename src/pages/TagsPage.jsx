@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import FilterTags from "../Components/FilterTags";
 import { useTag } from "../Context/TagContext";
 import ListOfNotes from "../Components/ListOfNotes";
@@ -9,8 +9,11 @@ import { useSettings } from "../Context/SettingsContext";
 import { APP_NAME, localStorageTagKey } from "../config/constants";
 
 function TagsPage() {
-  const { filteredNotes, uiMode, setUiMode, selectedTags, isOnTagPage } =
-    useTag();
+  const { filteredNotes, selectedTags, isOnTagPage } = useTag();
+
+  const [uiMode, setUiMode] = useState(function () {
+    return selectedTags.length === 0 ? "tagSelection" : "filteredNotes";
+  });
 
   const { activeColorTheme } = useSettings();
 
@@ -21,6 +24,26 @@ function TagsPage() {
   const handleGoBackBtn = function () {
     setUiMode("tagSelection");
   };
+
+  const pageContainerRef = useRef(null);
+  const mainContentRef = useRef(null);
+
+  useEffect(
+    function () {
+      if (pageContainerRef.current) {
+        const annoucement =
+          uiMode === "tagSelection"
+            ? "Tags page"
+            : `Notes Tagged with ${tagLists} tag`;
+        pageContainerRef.current.textContent = annoucement;
+      }
+
+      if (mainContentRef.current) {
+        mainContentRef.current.focus();
+      }
+    },
+    [uiMode, tagLists]
+  );
 
   useEffect(() => {
     document.title = `Tags - ${APP_NAME}`;
@@ -62,28 +85,40 @@ function TagsPage() {
   );
 
   return (
-    <div className="text-toolbar-action-text pt-6 ">
+    <div
+      tabIndex={-1}
+      ref={mainContentRef}
+      className="focus:outline-none text-toolbar-action-text pt-6 "
+    >
       {/* Go Back Button */}
       {uiMode === "filteredNotes" && (
-        <GoBackBtn onClick={handleGoBackBtn}>
+        <GoBackBtn onClick={handleGoBackBtn} ariaLabel={"Go back to all tags"}>
           {activeColorTheme === "dark" ? "All Tags" : "Go Back"}
         </GoBackBtn>
       )}
 
-      <h2
-        className={`font-bold ${
-          uiMode === "tagSelection" ? "text-text-primary" : ""
-        } -tracking-150 text-2xl mb-4 ${uiMode === "filteredNotes" && "mt-4"}`}
-      >
-        {uiMode === "tagSelection" ? (
-          "Tags"
-        ) : (
-          <>
-            <span className="text-filter-status-text">Notes Tagged: </span>
-            <span className="text-text-primary">{tagLists}</span>
-          </>
-        )}
-      </h2>
+      <div
+        ref={pageContainerRef}
+        tabIndex={-1}
+        className="sr-only"
+        aria-live="polite"
+      ></div>
+
+      {uiMode === "tagSelection" && (
+        <h1
+          aria-hidden={uiMode === "filteredNotes" ? true : false}
+          className="font-bold text-text-primary -tracking-150 text-2xl mb-4 focus:outline-none"
+        >
+          Tags
+        </h1>
+      )}
+
+      {uiMode === "filteredNotes" && (
+        <h2 className="font-bold  -tracking-150 text-2xl mb-4 mt-4 focus:outline-none">
+          <span className="text-filter-status-text">Notes Tagged: </span>
+          <span className="text-text-primary">{tagLists}</span>
+        </h2>
+      )}
 
       {uiMode === "filteredNotes" && (
         <FilterStatusMessage
@@ -97,9 +132,9 @@ function TagsPage() {
 
       <ul className="divide-y divide-border-separator text-filter-tag-text">
         {uiMode === "filteredNotes" ? (
-          <ListOfNotes notes={filteredNotes} />
+          <ListOfNotes notes={filteredNotes} uiMode={uiMode} />
         ) : (
-          <>
+          <div aria-hidden={uiMode === "filteredNotes" ? true : false}>
             <FilterTags paddingTop="pt-2.5"> Cooking</FilterTags>
             <FilterTags>Dev</FilterTags>
             <FilterTags>Fitness</FilterTags>
@@ -110,7 +145,7 @@ function TagsPage() {
             <FilterTags>Shopping</FilterTags>
             <FilterTags>Travel</FilterTags>
             <FilterTags>TypeScript</FilterTags>
-          </>
+          </div>
         )}
       </ul>
     </div>

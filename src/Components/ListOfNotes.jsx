@@ -1,12 +1,20 @@
 import { NavLink, useLocation } from "react-router";
-import { useTag } from "../Context/TagContext";
 import { formatDate } from "../config/constants";
 import EmptyNotes from "./EmptyNotes";
 import { useSettings } from "../Context/SettingsContext";
+import { useEffect, useRef } from "react";
 
-function ListOfNotes({ type, notes }) {
-  const { uiMode } = useTag();
+function ListOfNotes({ type, notes, uiMode = "tagSelection" }) {
   const { activeColorTheme } = useSettings();
+
+  // const pageTitle = useRef(null);
+
+  // useEffect(
+  //   function () {
+  //     pageTitle.current?.focus();
+  //   },
+  //   [pageTitle]
+  // );
 
   return (
     <div
@@ -17,7 +25,11 @@ function ListOfNotes({ type, notes }) {
       }`}
     >
       {uiMode !== "filteredNotes" && type !== "search" && (
-        <h1 className="text-2xl pt-5 pb-4  font-bold text-text-primary">
+        <h1
+          // tabIndex={-1}
+          // ref={pageTitle}
+          className="text-2xl pt-5 pb-4  font-bold text-text-primary focus:outline-none"
+        >
           {type}
         </h1>
       )}

@@ -9,10 +9,10 @@ function FilterStatusMessage({
       className={`text-sm leading-50  -tracking-50 text-filter-status-message-text ${marginBottom}`}
     >
       {children}
-      <mark className="bg-transparent text-filter-status-highlight-text">
+      <span className="bg-transparent text-filter-status-highlight-text">
         {filterTexts}
-      </mark>{" "}
-      are {lastText}
+      </span>{" "}
+      {lastText}
     </p>
   );
 }

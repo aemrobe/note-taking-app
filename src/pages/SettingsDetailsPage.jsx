@@ -4,13 +4,19 @@ import ArrowLeftIcon from "../Components/ArrowLeftIcon";
 import { NavLink, useParams } from "react-router";
 import { APP_NAME, SETTING_TYPES_MAP } from "../config/constants";
 import { useToast } from "../Context/ToastContext";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 function SettingsDetailsPage() {
   const { inputValue, ...settingsContext } = useSettings();
   const { handleShowToastMessage } = useToast();
 
   const { settingType } = useParams();
+
+  const pageTitle = useRef(null);
+
+  useEffect(function () {
+    pageTitle.current.focus();
+  }, []);
 
   useEffect(() => {
     document.title = `${settingType
@@ -37,15 +43,20 @@ function SettingsDetailsPage() {
     <form className="pt-6" onSubmit={handleApplyChanges}>
       <NavLink
         to={"/settings"}
-        className="flex space-x-2 items-center text-sm text-font-medium -tracking-50 text-back-to-settings-button-text"
+        className="flex space-x-2 items-center text-sm text-font-medium -tracking-50 text-back-to-settings-button-text focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2 "
+        aria-label="Go to main settings"
       >
         <ArrowLeftIcon width={"w-5"} />
         <p>Settings</p>
       </NavLink>
 
-      <h3 className="font-bold text-2xl -tracking-150 mt-3 mb-2 text-text-primary">
+      <h1
+        ref={pageTitle}
+        tabIndex={-1}
+        className="font-bold text-2xl -tracking-150 mt-3 mb-2 text-text-primary focus:outline-none"
+      >
         {title}
-      </h3>
+      </h1>
 
       <p className="text-setting-option-description-text text-sm leading-50 -tracking-50 mb-5">
         {description}
@@ -59,7 +70,7 @@ function SettingsDetailsPage() {
 
       <button
         type="submit"
-        className="bg-settings-apply-button-background text-settings-apply-button-text py-3 px-4 rounded-lg mt-5 ml-auto block text-sm font-medium -tracking-50"
+        className="bg-settings-apply-button-background text-settings-apply-button-text py-3 px-4 rounded-lg mt-5 ml-auto block text-sm font-medium -tracking-50 focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2"
       >
         Apply Changes
       </button>
