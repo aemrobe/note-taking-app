@@ -1,21 +1,31 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import ListOfNotes from "../Components/ListOfNotes";
-import { useNotes } from "../Context/NoteContext";
 import { APP_NAME } from "../config/constants";
 import { useLocation } from "react-router";
 import { useFocus } from "../Context/FocusContext";
+import { useFilteredNotes } from "../Context/FilteredNotesContext";
+import { useNotes } from "../Context/NoteContext";
 
 function AllNotes() {
-  const { notes } = useNotes();
   const location = useLocation();
-  const allNotesNotArchived = notes.filter((note) => note.isArchived === false);
-  const { setFocus, createNewNoteButtonRef } = useFocus();
+  const { lastFocusableElement } = useNotes();
+  const { notes } = useFilteredNotes();
+  const { setFocus } = useFocus();
+  const pathMatch = useCallback(
+    function (path) {
+      const checkPath = location.pathname.startsWith(path);
 
-  console.log("createnewnote", createNewNoteButtonRef);
+      return checkPath;
+    },
+    [location.pathname]
+  );
+
+  console.log("lastfocusableelement", lastFocusableElement);
+
   useEffect(() => {
-    document.title = `All Notes - ${APP_NAME}`;
-
-    // console.log("fromCreatenote", location.state.fromCreateNote);
+    document.title = `${
+      pathMatch("/all-notes/new") ? "Create New Note" : "All Notes"
+    } - ${APP_NAME}`;
 
     if (location.state && location.state.fromCreateNote) {
       setTimeout(() => {
@@ -24,9 +34,11 @@ function AllNotes() {
 
       window.history.replaceState({}, document.title);
     }
-  }, [location.state, setFocus]);
+  }, [location.state, setFocus, pathMatch]);
 
-  return <ListOfNotes type={"All Notes"} notes={allNotesNotArchived} />;
+  return (
+    <ListOfNotes type={"All Notes"} notes={notes} parentPath={"/all-notes"} />
+  );
 }
 
 export default AllNotes;

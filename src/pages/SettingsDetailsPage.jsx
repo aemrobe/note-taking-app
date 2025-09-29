@@ -5,9 +5,12 @@ import { NavLink, useParams } from "react-router";
 import { APP_NAME, SETTING_TYPES_MAP } from "../config/constants";
 import { useToast } from "../Context/ToastContext";
 import { useEffect, useRef } from "react";
+import { useNotes } from "../Context/NoteContext";
 
 function SettingsDetailsPage() {
   const { inputValue, ...settingsContext } = useSettings();
+  const { isSmallerScreenSize } = useNotes();
+
   const { handleShowToastMessage } = useToast();
 
   const { settingType } = useParams();
@@ -33,6 +36,35 @@ function SettingsDetailsPage() {
 
   const { title, description, options } = currentSetting;
 
+  const valuesForResetRef = useRef({
+    isSmallerScreenSize,
+    settingType,
+    settingsContext,
+  });
+
+  useEffect(function () {
+    valuesForResetRef.current.isSmallerScreenSize = isSmallerScreenSize;
+    valuesForResetRef.current.settingType = settingType;
+    valuesForResetRef.current.settingsContext = settingsContext;
+  });
+
+  useEffect(() => {
+    return () => {
+      const lastestValues = valuesForResetRef.current;
+
+      const { isSmallerScreenSize, settingType, settingsContext } =
+        lastestValues;
+
+      if (!isSmallerScreenSize) {
+        if (settingType === "color-theme") {
+          settingsContext.setInputValue(settingsContext.colorThemePreference);
+        } else {
+          settingsContext.setInputValue(settingsContext.fontThemePreference);
+        }
+      }
+    };
+  }, []);
+
   const handleApplyChanges = function (e) {
     e.preventDefault();
     currentSetting.setPreference(settingsContext, inputValue);
@@ -40,25 +72,31 @@ function SettingsDetailsPage() {
   };
 
   return (
-    <form className="pt-6" onSubmit={handleApplyChanges}>
-      <NavLink
-        to={"/settings"}
-        className="flex space-x-2 items-center text-sm text-font-medium -tracking-50 text-back-to-settings-button-text focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2 "
-        aria-label="Go to main settings"
-      >
-        <ArrowLeftIcon width={"w-5"} />
-        <p>Settings</p>
-      </NavLink>
+    <form
+      className="md:w-full
+     md:max-w-[43.75rem] md:mx-auto 2xl:mx-0 2xl:max-w-none pt-6 2xl:pt-8 2xl:ml-8 2xl:w-[33rem] "
+      onSubmit={handleApplyChanges}
+    >
+      {isSmallerScreenSize && (
+        <NavLink
+          to={"/settings"}
+          className="flex space-x-2 items-center text-sm text-font-medium -tracking-50 text-back-to-settings-button-text focusable-ring"
+          aria-label="Go to main settings"
+        >
+          <ArrowLeftIcon width={"w-5"} />
+          <p>Settings</p>
+        </NavLink>
+      )}
 
       <h1
         ref={pageTitle}
         tabIndex={-1}
-        className="font-bold text-2xl -tracking-150 mt-3 mb-2 text-text-primary focus:outline-none"
+        className="font-bold 2xl:font-semibold text-2xl 2xl:text-base -tracking-150 2xl:-tracking-100 mt-3 mb-2  2xl:mt-0 2xl:mb-1 text-text-primary focus:outline-none"
       >
         {title}
       </h1>
 
-      <p className="text-setting-option-description-text text-sm leading-50 -tracking-50 mb-5">
+      <p className="text-setting-option-description-text text-sm leading-50 -tracking-50 mb-5 2xl:mb-7">
         {description}
       </p>
 
@@ -70,7 +108,7 @@ function SettingsDetailsPage() {
 
       <button
         type="submit"
-        className="bg-settings-apply-button-background text-settings-apply-button-text py-3 px-4 rounded-lg mt-5 ml-auto block text-sm font-medium -tracking-50 focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2"
+        className="focusable-ring bg-settings-apply-button-background text-settings-apply-button-text py-3 px-4 rounded-lg mt-5 ml-auto block text-sm font-medium -tracking-50 focus"
       >
         Apply Changes
       </button>

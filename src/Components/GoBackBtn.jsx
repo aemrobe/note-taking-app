@@ -3,7 +3,7 @@ import ArrowLeftIcon from "./ArrowLeftIcon";
 function GoBackBtn({ onClick, children, ariaLabel = "" }) {
   return (
     <button
-      className="focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2 flex items-center text-sm space-x-1 "
+      className="focusable-ring flex items-center text-sm space-x-1 "
       onClick={onClick}
       aria-label={ariaLabel}
     >

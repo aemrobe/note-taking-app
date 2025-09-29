@@ -1,130 +1,123 @@
 import { useEffect, useRef, useState } from "react";
-import FilterTags from "../Components/FilterTags";
 import { useTag } from "../Context/TagContext";
 import ListOfNotes from "../Components/ListOfNotes";
 import GoBackBtn from "../Components/GoBackBtn";
-import { useSearchParams } from "react-router";
 import FilterStatusMessage from "../Components/FilterStatusMessage";
 import { useSettings } from "../Context/SettingsContext";
-import { APP_NAME, localStorageTagKey } from "../config/constants";
+import { APP_NAME, TOAST_DURATION_MS } from "../config/constants";
+import { useToast } from "../Context/ToastContext";
+import ListOfTags from "../Components/ListOfTags";
+import { useNotes } from "../Context/NoteContext";
+import Heading from "../Components/Heading";
+import HeadingPart from "../Components/HeadingPart";
 
 function TagsPage() {
-  const { filteredNotes, selectedTags, isOnTagPage } = useTag();
+  const { isSmallerScreenSize } = useNotes();
+  const { filteredNotes, selectedTags, isOnTagPage, tagLists } = useTag();
 
-  const [uiMode, setUiMode] = useState(function () {
-    return selectedTags.length === 0 ? "tagSelection" : "filteredNotes";
+  const [uiMode, setUiMode] = useState(() => {
+    if (!isOnTagPage) return null;
+
+    if (isSmallerScreenSize) {
+      return selectedTags.length === 0 ? "tagSelection" : "filteredNotes";
+    } else {
+      return "filteredNotes";
+    }
   });
 
   const { activeColorTheme } = useSettings();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const hasSynced = useRef(false);
-  const tagLists = selectedTags.join(", ");
   const handleGoBackBtn = function () {
     setUiMode("tagSelection");
   };
 
-  const pageContainerRef = useRef(null);
-  const mainContentRef = useRef(null);
+  const { showToastMessage } = useToast();
 
+  const h1Ref = useRef();
+  const h2Ref = useRef();
+
+  //This effect helps to announce the h1 and h2 headings by considering the timing of the toast message
   useEffect(
     function () {
-      if (pageContainerRef.current) {
-        const annoucement =
-          uiMode === "tagSelection"
-            ? "Tags page"
-            : `Notes Tagged with ${tagLists} tag`;
-        pageContainerRef.current.textContent = annoucement;
-      }
+      const delay = showToastMessage ? TOAST_DURATION_MS + 100 : 0;
 
-      if (mainContentRef.current) {
-        mainContentRef.current.focus();
-      }
+      const timer = setTimeout(() => {
+        if (uiMode === "tagSelection" && h1Ref.current) {
+          h1Ref.current.focus();
+        } else if (uiMode === "filteredNotes" && h2Ref.current) {
+          h2Ref.current.focus();
+        }
+      }, delay);
+
+      return () => clearTimeout(timer);
     },
-    [uiMode, tagLists]
+    [showToastMessage, uiMode]
   );
 
   useEffect(() => {
     document.title = `Tags - ${APP_NAME}`;
   }, []);
 
-  // // This effect helps to get the savedtags from localstorage and sync them with Browser url on the first load
-  useEffect(
-    function () {
-      if (!isOnTagPage || hasSynced.current) return;
-
-      const tags = localStorage.getItem(localStorageTagKey);
-
-      const savedTags = tags ? JSON.parse(tags) : [];
-
-      if (selectedTags.length === 0 && savedTags.length > 0) {
-        const newParams = new URLSearchParams();
-
-        savedTags.forEach((tag) => newParams.append("tag", tag));
-
-        setSearchParams(newParams);
-      }
-
-      hasSynced.current = true;
-    },
-    [selectedTags, isOnTagPage, setSearchParams]
-  );
-
   useEffect(
     function () {
       if (!isOnTagPage) return;
 
-      setUiMode(selectedTags.length === 0 ? "tagSelection" : "filteredNotes");
+      let newUiMode;
 
-      return () => {
-        setUiMode("tagSelection");
-      };
+      if (isSmallerScreenSize) {
+        newUiMode =
+          selectedTags.length === 0 ? "tagSelection" : "filteredNotes";
+      } else {
+        newUiMode = "filteredNotes";
+      }
+
+      setUiMode(newUiMode);
     },
-    [selectedTags, setUiMode, isOnTagPage]
+    [selectedTags, setUiMode, isOnTagPage, isSmallerScreenSize]
   );
 
   return (
     <div
-      tabIndex={-1}
-      ref={mainContentRef}
-      className="focus:outline-none text-toolbar-action-text pt-6 "
+      className="md:w-full
+     md:max-w-[43.75rem] md:mx-auto 2xl:mx-0 2xl:max-w-none focus:outline-none text-toolbar-action-text pt-6 2xl:pt-0 2xl:border-r 2xl:border-border-separator"
     >
       {/* Go Back Button */}
-      {uiMode === "filteredNotes" && (
+      {uiMode === "filteredNotes" && isSmallerScreenSize && (
         <GoBackBtn onClick={handleGoBackBtn} ariaLabel={"Go back to all tags"}>
           {activeColorTheme === "dark" ? "All Tags" : "Go Back"}
         </GoBackBtn>
       )}
 
-      <div
-        ref={pageContainerRef}
-        tabIndex={-1}
-        className="sr-only"
-        aria-live="polite"
-      ></div>
+      <div tabIndex={-1} className="sr-only" aria-live="polite"></div>
 
       {uiMode === "tagSelection" && (
-        <h1
-          aria-hidden={uiMode === "filteredNotes" ? true : false}
-          className="font-bold text-text-primary -tracking-150 text-2xl mb-4 focus:outline-none"
+        <Heading
+          level={"h1"}
+          tabIndex={-1}
+          ref={h1Ref}
+          classname={"mb-4 text-text-primary"}
         >
           Tags
-        </h1>
+        </Heading>
       )}
 
       {uiMode === "filteredNotes" && (
-        <h2 className="font-bold  -tracking-150 text-2xl mb-4 mt-4 focus:outline-none">
-          <span className="text-filter-status-text">Notes Tagged: </span>
-          <span className="text-text-primary">{tagLists}</span>
-        </h2>
+        <Heading
+          level={"h2"}
+          tabIndex={-1}
+          ref={h2Ref}
+          aria-label={`Notes tagged with ${tagLists} tag`}
+          classname={`mb-4 mt-4 ${!isSmallerScreenSize ? "sr-only" : ""} `}
+        >
+          <HeadingPart title={"Notes Tagged:"} text={tagLists} />
+        </Heading>
       )}
 
-      {uiMode === "filteredNotes" && (
+      {uiMode === "filteredNotes" && isSmallerScreenSize && (
         <FilterStatusMessage
           filterTexts={`"${tagLists}"`}
           lastText={"tag are shown here."}
-          marginBottom="mb-4"
+          marginBottom="mb-4 2xl:m-0"
         >
           All notes with{" "}
         </FilterStatusMessage>
@@ -132,19 +125,15 @@ function TagsPage() {
 
       <ul className="divide-y divide-border-separator text-filter-tag-text">
         {uiMode === "filteredNotes" ? (
-          <ListOfNotes notes={filteredNotes} uiMode={uiMode} />
+          <ListOfNotes
+            notes={filteredNotes}
+            parentPath={"/tags"}
+            uiMode={uiMode}
+            type={"tags"}
+          />
         ) : (
           <div aria-hidden={uiMode === "filteredNotes" ? true : false}>
-            <FilterTags paddingTop="pt-2.5"> Cooking</FilterTags>
-            <FilterTags>Dev</FilterTags>
-            <FilterTags>Fitness</FilterTags>
-            <FilterTags>Health</FilterTags>
-            <FilterTags>Personal</FilterTags>
-            <FilterTags>React</FilterTags>
-            <FilterTags>Recipes</FilterTags>
-            <FilterTags>Shopping</FilterTags>
-            <FilterTags>Travel</FilterTags>
-            <FilterTags>TypeScript</FilterTags>
+            <ListOfTags />
           </div>
         )}
       </ul>

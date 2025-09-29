@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-function ActionModal({ modalProps, onClose }) {
+function ActionModal({ modalProps, onClose, onCancel }) {
   const { icon, title, content, btn, onConfirm } = modalProps;
 
   const modalRef = useRef(null);
@@ -20,7 +20,16 @@ function ActionModal({ modalProps, onClose }) {
   };
 
   const handleCloseBtn = function () {
-    onClose();
+    if (onCancel) {
+      onCancel();
+    }
+
+    setTimeout(
+      function () {
+        onClose();
+      },
+      [10]
+    );
   };
 
   useEffect(
@@ -82,14 +91,14 @@ function ActionModal({ modalProps, onClose }) {
           <div>
             <h2
               id={titleId}
-              className="tracking-[0.0187em] mb-1.5 font-semibold text-action-modal-title-text"
+              className="-tracking-100 mb-1.5 font-semibold text-action-modal-title-text"
             >
               {title}
             </h2>
 
             <p
               id={contentId}
-              className="text-sm text-action-modal-content-text leading-50 tracking-50 font-normal"
+              className="text-sm text-action-modal-content-text leading-50 -tracking-50 font-normal"
             >
               {content}
             </p>
@@ -134,7 +143,7 @@ const ActionBtn = React.forwardRef(function ActionBtn(
 ) {
   return (
     <button
-      className={`${backgroundColor} ${color} py-3 px-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2`}
+      className={`${backgroundColor} ${color} py-3 px-4 rounded-lg focusable-ring`}
       onClick={onClick}
       ref={ref}
     >

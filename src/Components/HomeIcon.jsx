@@ -1,10 +1,9 @@
-function HomeIcon() {
+function HomeIcon({ width }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
       aria-hidden={true}
-      height="24"
+      className={`${width}`}
       fill="none"
       viewBox="0 0 24 24"
     >

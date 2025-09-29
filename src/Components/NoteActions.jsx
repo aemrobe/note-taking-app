@@ -1,4 +1,5 @@
 import { useModal } from "../Context/ModalContext";
+import { useNotes } from "../Context/NoteContext";
 import ArchiveIcon from "./ArchiveIcon";
 import CancelBtn from "./CancelBtn";
 import DeleteIcon from "./DeleteIcon";
@@ -7,7 +8,7 @@ import RestoreIcon from "./RestoreIcon";
 import SaveBtn from "./SaveBtn";
 
 function NoteActions({
-  onGoBack,
+  onGoBack = "",
   onDeleteNote = "",
   isArchived = "",
   onArchiveNote = "",
@@ -18,31 +19,35 @@ function NoteActions({
   isError,
 }) {
   const { openModal } = useModal();
+  const { isSmallerScreenSize } = useNotes();
 
   return (
     <>
       <nav
         aria-label="Note Actions"
-        className={`flex items-center space-x-4 pt-5 pb-3 text-button-secondary-text border-b border-border-separator leading-[1.3] text-sm`}
+        className={`flex items-center space-x-4 2xl:space-x-0 pt-5 pb-3 text-button-secondary-text border-b border-border-separator leading-[1.3] text-sm  2xl:border-t 2xl:border-b-0  2xl:pt-4 2xl:pb-0 2xl:gap-4`}
       >
         {/* Go Back Button */}
-        <GoBackBtn onClick={onGoBack}>Go Back</GoBackBtn>
+        {onGoBack && <GoBackBtn onClick={onGoBack}>Go Back</GoBackBtn>}
+
         {/* Delete Button */}
         {onDeleteNote && (
           <button
             aria-label="Delete Note"
-            className="ml-auto focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2"
+            className="ml-auto focusable-ring"
             onClick={(e) => {
-              e.target.blur();
               e.preventDefault();
-              openModal({
-                icon: <DeleteIcon width={"w-6"} />,
-                title: "Delete Note",
-                content:
-                  "Are you sure you want to permanently delete this note? This actions cannot be undone.",
-                btn: "Delete Note",
-                onConfirm: onDeleteNote,
-              });
+              openModal(
+                {
+                  icon: <DeleteIcon width={"w-6"} />,
+                  title: "Delete Note",
+                  content:
+                    "Are you sure you want to permanently delete this note? This actions cannot be undone.",
+                  btn: "Delete Note",
+                  onConfirm: onDeleteNote,
+                },
+                e
+              );
             }}
           >
             <DeleteIcon width={"w-icon-small"} />
@@ -54,20 +59,18 @@ function NoteActions({
             <button
               aria-label="Restore Note"
               onClick={(e) => {
-                e.target.blur();
                 e.preventDefault();
                 onRestoreNote();
               }}
-              className="focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2"
+              className="focusable-ring"
             >
               <RestoreIcon width={"w-icon-small"} />
             </button>
           ) : (
             <button
               aria-label="Archive Note"
-              className="focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2"
+              className="focusable-ring"
               onClick={(e) => {
-                e.target.blur();
                 e.preventDefault();
                 openModal({
                   icon: <ArchiveIcon width={"w-6"} />,
@@ -82,16 +85,32 @@ function NoteActions({
               <ArchiveIcon width={"w-icon-small"} />
             </button>
           ))}
-        <CancelBtn
-          onClick={onCancel}
-          marginLeft={!onRestoreNote && "ml-auto"}
-        />
+        {isSmallerScreenSize ? (
+          <>
+            <CancelBtn
+              onClick={onCancel}
+              marginLeft={!onRestoreNote && onGoBack ? "ml-auto" : ""}
+            />
+            <SaveBtn
+              onClick={onSave}
+              isSaveDisabled={isSaveDisabled}
+              isError={isError}
+            />{" "}
+          </>
+        ) : (
+          <>
+            <SaveBtn
+              onClick={onSave}
+              isSaveDisabled={isSaveDisabled}
+              isError={isError}
+            />
 
-        <SaveBtn
-          onClick={onSave}
-          isSaveDisabled={isSaveDisabled}
-          isError={isError}
-        />
+            <CancelBtn
+              onClick={onCancel}
+              marginLeft={!onRestoreNote && onGoBack ? "ml-auto" : ""}
+            />
+          </>
+        )}
       </nav>
     </>
   );

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import ArchiveIcon from "./ArchiveIcon";
 import HomeIcon from "./HomeIcon";
 import SearchIcon from "./SearchIcon";
@@ -7,17 +7,25 @@ import TagIcon from "./TagIcon";
 
 function MobileMenu({ currentSearchParams = "" }) {
   return (
-    <nav>
-      <ul className="w-full bg-background-primary z-20 border-t border-border-menubar shadow-[0_-2px_2px_var(--color-shadow-level-1)] text-icon-navigation-default py-3 px-4 fixed bottom-0 flex justify-center">
-        <MobileMenuLinks path={"/all-notes"} label={"All Notes"}>
-          <HomeIcon />
+    <nav className=" w-full bg-background-primary z-20 border-t border-border-menubar shadow-[0_-2px_2px_var(--color-shadow-level-1)] text-icon-navigation-default fixed bottom-0 right-0 left-0">
+      <ul className="  py-3 px-4 md:px-8 container mx-auto md:w-full md:max-w-[48rem] flex justify-center md:justify-between">
+        <MobileMenuLinks path={"/all-notes"} label={"All Notes"} text={"Home"}>
+          <HomeIcon width={"w-6"} />
         </MobileMenuLinks>
 
-        <MobileMenuLinks path={"/search"} label={"Search Notes"}>
+        <MobileMenuLinks
+          path={"/search"}
+          label={"Search Notes"}
+          text={"Search"}
+        >
           <SearchIcon width={"w-6"} />
         </MobileMenuLinks>
 
-        <MobileMenuLinks path="/archived-notes" label={"Archived Notes"}>
+        <MobileMenuLinks
+          path="/archived-notes"
+          label={"Archived Notes"}
+          text={"Archived"}
+        >
           <ArchiveIcon width={"w-6"} />
         </MobileMenuLinks>
 
@@ -25,11 +33,12 @@ function MobileMenu({ currentSearchParams = "" }) {
           path="/tags"
           params={currentSearchParams}
           label={"Tags"}
+          text={"Tags"}
         >
           <TagIcon width={"w-6"} />
         </MobileMenuLinks>
 
-        <MobileMenuLinks path="/settings" label={"Settings"}>
+        <MobileMenuLinks path="/settings" label={"Settings"} text={"Settings"}>
           <SettingIcon />
         </MobileMenuLinks>
       </ul>
@@ -37,8 +46,15 @@ function MobileMenu({ currentSearchParams = "" }) {
   );
 }
 
-function MobileMenuLinks({ children, label, path = "", params = "" }) {
+function MobileMenuLinks({ children, label, path = "", params = "", text }) {
   const fullPath = params ? `${path}?${params}` : path;
+  const location = useLocation();
+
+  const isItDetailsPage =
+    location.pathname.startsWith("/all-notes/") ||
+    location.pathname.startsWith("/archived-notes/") ||
+    location.pathname.startsWith("/search/") ||
+    location.pathname.startsWith("/tags/");
 
   return (
     <li>
@@ -46,12 +62,17 @@ function MobileMenuLinks({ children, label, path = "", params = "" }) {
         aria-label={label}
         to={fullPath}
         className={({ isActive }) =>
-          `block py-1 px-[1.39375rem] focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2  rounded ${
-            isActive ? "bg-background-navigation-active" : ""
-          } ${isActive ? "text-icon-navigation-active" : ""}`
+          `block md:flex md:flex-col md:space-y-1 md:items-center py-1 px-[1.39375rem] focusable-ring  rounded ${
+            isActive && !isItDetailsPage
+              ? "bg-background-navigation-active"
+              : ""
+          } ${
+            isActive && !isItDetailsPage ? "text-icon-navigation-active" : ""
+          }`
         }
       >
         {children}
+        <span className="hidden md:inline text-xs -tracking-50">{text}</span>
       </NavLink>
     </li>
   );

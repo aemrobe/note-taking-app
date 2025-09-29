@@ -1,11 +1,16 @@
 import { useTag } from "../Context/TagContext";
 import TagIcon from "./TagIcon";
 import { useToast } from "../Context/ToastContext";
+import { useNotes } from "../Context/NoteContext";
+import ArrowRightIcon from "./ArrowRightIcon";
 
-function FilterTags({ children, paddingTop = "" }) {
+function FilterTags({ children, paddingTop = "", paddingBottom = "" }) {
   const { handleTagClick, selectedTags } = useTag();
   const { handleShowToastMessage } = useToast();
+  const { isSmallerScreenSize } = useNotes();
   const tag = children.trim();
+
+  const isTheTagAdded = selectedTags.includes(tag);
 
   return (
     <li>
@@ -18,10 +23,27 @@ function FilterTags({ children, paddingTop = "" }) {
           });
           handleTagClick(tag);
         }}
-        className={`w-full flex items-center py-3.5 ${paddingTop} gap-2 focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2`}
+        className={`w-full flex items-center py-3.5 2xl:py-2.5 2xl:px-3 ${paddingTop} ${paddingBottom} gap-2 focusable-ring ${
+          !isSmallerScreenSize && isTheTagAdded
+            ? "text-text-primary bg-desktop-navigation-link-background-active rounded-lg"
+            : ""
+        }`}
       >
-        <TagIcon width={"w-5"} />
+        <span
+          className={`${
+            !isSmallerScreenSize && isTheTagAdded ? "text-blue500" : ""
+          }`}
+        >
+          <TagIcon width={"w-5"} />
+        </span>
+
         {children}
+
+        {!isSmallerScreenSize && isTheTagAdded && (
+          <span className="ml-auto text-text-primary">
+            <ArrowRightIcon width={"w-6"} />
+          </span>
+        )}
       </button>
     </li>
   );

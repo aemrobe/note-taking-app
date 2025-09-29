@@ -1,13 +1,13 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import NoteActions from "../Components/NoteActions";
 import LabeledIconText from "../Components/LabeledIconText";
 import TagIcon from "../Components/TagIcon";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import LastEditedIcon from "../Components/LastEditedIcon";
 import TextareaAutosize from "react-textarea-autosize";
-import { useSettings } from "../Context/SettingsContext";
+
 import useDraftNotes from "../Hooks/useDraftNotes";
-import { APP_NAME, formatDate } from "../config/constants";
+import { formatDate } from "../config/constants";
 import { useNotes } from "../Context/NoteContext";
 import {
   validateRequired,
@@ -18,24 +18,44 @@ import Error from "../Components/Error";
 import { useToast } from "../Context/ToastContext";
 
 function CreateNewNotePage() {
+  const location = useLocation();
+  const locationPathSegments = location.pathname.split("/");
+  const defaultFallbackPath = `/${locationPathSegments[1]}`;
+  const prevPath = location.state?.from || defaultFallbackPath;
+
+  const noteType = prevPath.includes("/archived-notes") ? true : false;
+
   const { handleShowToastMessage } = useToast();
   const navigate = useNavigate();
-  const { notes, setNotes } = useNotes();
+  const {
+    notes,
+    setNotes,
+    isSmallerScreenSize,
+    lastFocusableElement,
+    setLastFocusableElement,
+  } = useNotes();
+  const pageTitle = useRef(null);
+
+  console.log("lastFocusableElement", lastFocusableElement);
+  useEffect(function () {
+    pageTitle.current.focus();
+  }, []);
+
   // Errors
   const [errorNoteTitle, setErrorNoteTitle] = useState(null);
-  const { activeColorTheme } = useSettings();
-  //Fields
 
+  //a condition that check if the save button should be disabled or not
+  const isSaveDisabled = !!errorNoteTitle;
+
+  console.log("issavedisabled", isSaveDisabled);
+  console.log("isError", errorNoteTitle);
+  //Fields
   const {
     getDraftNoteContent,
     draftNotesContent,
     setDraftContent,
     clearDraftContent,
   } = useDraftNotes("CreateNewNoteDraft");
-
-  useEffect(() => {
-    document.title = `Create New Note - ${APP_NAME}`;
-  }, []);
 
   useEffect(
     function () {
@@ -92,13 +112,24 @@ function CreateNewNotePage() {
       setDraftContent("newNote", title, tag, noteContent);
     }
 
-    navigate(-1, { state: { fromCreateNote: true } });
+    setTimeout(() => {
+      const elementToFocus = lastFocusableElement;
+      elementToFocus.focus();
+      setLastFocusableElement(null);
+    }, 100);
+
+    navigate(prevPath, { state: { fromCreateNote: true } });
   };
 
   const handleCancelButton = function (e) {
     e.preventDefault();
-    navigate(-1, { state: { fromCreateNote: true } });
+    navigate(prevPath, { state: { fromCreateNote: true } });
     clearDraftContent("newNote");
+    setTimeout(() => {
+      const elementToFocus = lastFocusableElement;
+      elementToFocus.focus();
+      setLastFocusableElement(null);
+    }, 100);
   };
 
   const handleSaveNotes = function (e) {
@@ -126,28 +157,47 @@ function CreateNewNotePage() {
           .filter((tag) => tag !== " "),
         content: noteContent,
         lastEdited: new Date().toISOString(),
-        isArchived: false,
+        isArchived: noteType,
       };
 
-      setNotes((prevNotes) => [...prevNotes, newNote]);
+      setNotes((prevNotes) => [newNote, ...prevNotes]);
 
       handleShowToastMessage({ text: "Note created successfully!" });
 
       clearDraftContent("newNote");
 
-      navigate(-1, { state: { fromCreateNote: true } });
+      const newPath =
+        prevPath.includes("/all-notes") || prevPath.includes("/archived-notes")
+          ? prevPath
+          : "/all-notes";
+
+      navigate(`${newPath}/${encodeURIComponent(title)}`, {
+        state: { fromCreateNote: true },
+      });
     }
   };
 
   return (
-    <form className="flex flex-col">
-      <div className="mb-1">
-        <NoteActions
-          onGoBack={handleGoBackBtn}
-          onCancel={handleCancelButton}
-          onSave={handleSaveNotes}
-        />
-      </div>
+    <form
+      className="flex flex-col 2xl:pt-5 2xl:px-6 2xl:pb-5 md:w-full
+     md:max-w-[45rem] md:mx-auto 2xl:mx-0 2xl:max-w-none"
+    >
+      <h1 ref={pageTitle} className="sr-only" tabIndex={-1}>
+        Create New Note
+      </h1>
+
+      {isSmallerScreenSize && (
+        <div className="mb-1">
+          <NoteActions
+            onGoBack={handleGoBackBtn}
+            isSaveDisabled={isSaveDisabled}
+            isError={errorNoteTitle}
+            onCancel={handleCancelButton}
+            onSave={handleSaveNotes}
+          />
+        </div>
+      )}
+
       <div className={`${errorNoteTitle && "pb-2"}`}>
         <TextareaAutosize
           name="new note title"
@@ -156,25 +206,15 @@ function CreateNewNotePage() {
             errorNoteTitle ? "create-note-title-error" : undefined
           }
           value={title}
-          minRows={
-            (errorNoteTitle && !title) ||
-            (!errorNoteTitle && !title) ||
-            (!errorNoteTitle && title)
-              ? 2
-              : 1
-          }
+          minRows={1}
           maxRows={4}
           className={`${
-            activeColorTheme === "light"
-              ? "mt-2"
-              : activeColorTheme === "dark" && !errorNoteTitle
-              ? "my-2"
-              : "mt-2"
+            !errorNoteTitle ? "mt-2 mb-3 2xl:mt-0" : "mt-2 2xl:mt-0"
           } text-new-input-text-color 
         w-full
         resize-none overflow-y-auto placeholder:font-bold placeholder:text-new-note-title-placeholder-text
         placeholder:-tracking-100 
-        focus:outline-none placeholder:text-input-new-note-title-placeholder-color`}
+        focus:outline-none placeholder:text-input-new-note-title-placeholder-color font-bold text-new-note-title-placeholder-text`}
           onChange={handleTitleChange}
           placeholder="Enter a title..."
         />
@@ -187,9 +227,9 @@ function CreateNewNotePage() {
           />
         )}
       </div>
-      <div className="flex flex-col flex-auto text-new-note-text-fontSize leading-new-note-text-lineHeight">
+      <div className="flex flex-col flex-auto text-new-note-text-fontSize md:text-sm leading-new-note-text-lineHeight">
         <div className="flex">
-          <div className="w-full grid grid-cols-[auto_1fr] items-center pb-3 gap-y-1 gap-x-2  border-b border-border-separator">
+          <div className="w-full grid grid-cols-[auto_1fr] items-center pb-3 gap-y-1 md:gap-y-2 gap-x-2  border-b border-border-separator">
             <LabelElementWithText forValue={"input-tag"}>
               <TagIcon width={"w-4"} />
               <span>Tags</span>
@@ -203,7 +243,7 @@ function CreateNewNotePage() {
               onChange={(e) => setTag(e.target.value)}
               id="input-tag"
               className="overflow-y-auto max-h-20 focus:outline-none  resize-none  text-new-input-text-color
-          placeholder:text-new-note-input-placeholder-color -tracking-50 "
+          placeholder:text-new-note-input-placeholder-color -tracking-50 text-sm leading-50 2xl:focus:border-2 2xl:py-1 2xl:focus:border-neutral500  rounded-lg"
               placeholder="Add tags separated by commas (e.g. Work, Planning)"
             />
 
@@ -224,10 +264,19 @@ function CreateNewNotePage() {
           name="note-content"
           value={noteContent}
           onChange={(e) => setNoteContent(e.target.value)}
-          className="flex-auto overflow-y-auto  my-3 resize-none focus:outline-none w-full  placeholder:text-new-note-content-placholder-color  -tracking-50  text-new-input-text-color"
+          className="flex-auto overflow-y-auto  my-3 resize-none focus:outline-none w-full  placeholder:text-new-note-content-placholder-color  -tracking-50  text-new-input-text-color text-sm leading-50"
           placeholder="Start typing your note here..."
         ></textarea>
       </div>
+
+      {!isSmallerScreenSize && (
+        <NoteActions
+          onCancel={handleCancelButton}
+          onSave={handleSaveNotes}
+          isSaveDisabled={isSaveDisabled}
+          isError={errorNoteTitle}
+        />
+      )}
     </form>
   );
 }

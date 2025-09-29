@@ -216,6 +216,25 @@
   --color-tooltip-background: var(--color-tooltip-background);
   --color-tooltip-text: var(--color-tooltip-text);
   --color-spinner-color: var(--color-spinner-color);
+  --color-desktop-navigation-link-text-default: var(
+    --color-desktop-navigation-link-text-default
+  );
+  --color-desktop-navigation-link-text-active: var(
+    --color-desktop-navigation-link-text-active
+  );
+  --color-desktop-navigation-link-background-active: var(
+    --color-desktop-navigation-link-background-active
+  );
+  --color-desktop-setting-icon: var(--color-desktop-setting-icon);
+  --color-desktop-note-action-button: var(--color-desktop-note-action-button);
+  --color-desktop-note-action-button-border: var(
+    --color-desktop-note-action-button-border
+  );
+  --color-desktop-tag-title: var(--color-desktop-tag-title);
+  --color-desktop-note-active: var(--color-desktop-note-active);
+  --color-desktop-cancel-button-bg: var(--color-desktop-cancel-button);
+  --color-desktop-cancel-button-text: var(--color-desktop-cancel-button-text);
+
   --text-new-note-text-fontSize: var(--text-new-note-text-fontSize);
   --text-new-note-title-placeholder-text: var(
     --text-new-note-title-placeholder-text
@@ -231,6 +250,14 @@
   --leading-new-note-text-lineHeight: var(--leading-new-note-text-lineHeight);
   /* Width */
   --width-icon-small: var(--icon-width-small);
+
+  /* Breakpoint */
+  --breakpoint-*: initial;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
 }
 
 :root {
@@ -276,6 +303,7 @@
   --color-button-create-note-icon: var(--color-white);
   --color-new-note-input-placeholder-color: var(--color-neutral-400);
   --color-new-note-input-border-color: var(--color-neutral-200);
+  --color-desktop-tag-title: var(--color-neutral-500);
   --color-error: var(--color-red-500);
 
   /* Letter Spacing */
@@ -358,6 +386,16 @@
   --color-tooltip-text: var(--color-white);
   --color-focus-ring: var(--color-neutral-500);
   --color-spinner-color: var(--color-neutral-950);
+  --color-desktop-navigation-link-text-default: var(--color-neutral-700);
+  --color-desktop-navigation-link-text-active: var(--color-black);
+  --color-desktop-navigation-link-background-active: var(--color-neutral-100);
+  --color-desktop-setting-icon: var(--color-neutral-500);
+  --color-desktop-note-action-button: var(--color-neutral-950);
+  --color-desktop-note-action-button-border: var(--color-neutral-300);
+  --color-desktop-note-active: var(--color-neutral-100);
+  --color-desktop-cancel-button-bg: var(--color-neutral-100);
+  --color-desktop-cancel-button-text: var(--color-neutral-600);
+
   --text-new-note-text-fontSize: 0.75rem;
   --text-new-note-title-placeholder-text: 1.25rem;
   --leading-new-note-text-lineHeight: 1.2;
@@ -426,6 +464,16 @@
   --color-tooltip-background: var(--color-white);
   --color-tooltip-text: var(--color-black);
   --color-focus-ring: var(--color-neutral-800);
+  --color-desktop-navigation-link-text-default: var(--color-neutral-200);
+  --color-desktop-navigation-link-text-active: var(--color-white);
+  --color-desktop-navigation-link-background-active: var(--color-neutral-800);
+  --color-desktop-setting-icon: var(--color-neutral-400);
+  --color-desktop-note-action-button: var(--color-white);
+  --color-desktop-note-action-button-border: var(--color-neutral-600);
+  --color-desktop-note-active: var(--color-neutral-800);
+  --color-desktop-cancel-button-bg: var(--color-neutral-800);
+  --color-desktop-cancel-button-text: var(--color-neutral-400);
+
   --text-new-note-title-placeholder-text: 1.5rem;
   --text-new-note-text-fontSize: 0.875rem;
   --leading-new-note-text-lineHeight: 1.3;
@@ -451,6 +499,10 @@
   --color-button-secondary-background: var(--color-neutral-300);
 }
 
+.focusable-ring {
+  @apply focus:outline-none focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2;
+}
+
 .save-btn-wrapper::before,
 .save-btn-wrapper::after {
   --scale: 0;
@@ -459,6 +511,7 @@
   display: block;
   position: absolute;
   bottom: -0.5rem;
+
   left: 50%;
   transform: translateX(-50%) translateY(var(--translate-y)) scale(var(--scale));
   transition: 150ms transform;
@@ -505,5 +558,34 @@
 @keyframes rotate {
   to {
     transform: rotate(1turn);
+  }
+}
+
+@media (min-width: 768px) {
+  .light {
+    --text-new-note-title-placeholder-text: 1.5rem;
+  }
+
+  .dark {
+    --text-new-note-title-placeholder-text: 1.5rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .save-btn-wrapper::before,
+  .save-btn-wrapper::after {
+    top: -0.5rem;
+  }
+
+  .save-btn-wrapper:hover::before,
+  .save-btn-wrapper:focus::before {
+    --translate-y: calc(-100% - var(--arrow-size));
+  }
+
+  .save-btn-wrapper:hover::after,
+  .save-btn-wrapper:focus::after {
+    --translate-y: calc(-1 * var(--arrow-size));
+    border-bottom-color: transparent;
+    border-top-color: var(--color-tooltip-background);
   }
 }

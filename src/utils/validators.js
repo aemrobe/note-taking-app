@@ -1,3 +1,6 @@
+import { useCallback } from "react";
+import { useSearchParams } from "react-router";
+
 //Validators
 export function validateRequired(value) {
   return value === "" ? "A note title shouldn't be empty" : null;

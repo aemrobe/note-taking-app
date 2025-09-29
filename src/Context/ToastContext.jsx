@@ -6,33 +6,28 @@ const ToastContext = createContext();
 function ToastProvider({ children }) {
   const [showToastMessage, setShowToastMessage] = useState(false);
   const [toastMessageContent, setToastMessageContent] = useState({});
-  const [onCloseCallback, setOnCloseCallback] = useState(null);
 
-  const handleShowToastMessage = useCallback(function (
-    content,
-    callback = null
-  ) {
+  const handleShowToastMessage = useCallback(function (content) {
     setShowToastMessage(true);
     setToastMessageContent(content);
-    setOnCloseCallback(() => callback);
-  },
-  []);
+  }, []);
 
-  const handleCloseToastMessage = useCallback(
-    function () {
-      setShowToastMessage(false);
-      setToastMessageContent({});
+  const handleCloseToastMessage = useCallback(function () {
+    setShowToastMessage(false);
+    setToastMessageContent({});
 
-      if (onCloseCallback) {
-        onCloseCallback();
-        setOnCloseCallback(null);
+    setTimeout(() => {
+      const mainHeading = document.querySelector('h1[tabIndex="-1"]');
+
+      if (mainHeading) {
+        mainHeading.focus();
       }
-    },
-    [onCloseCallback]
-  );
+    }, 50);
+  }, []);
 
   const value = {
     handleShowToastMessage,
+    showToastMessage,
   };
 
   return (

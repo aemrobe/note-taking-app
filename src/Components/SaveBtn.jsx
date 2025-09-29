@@ -11,12 +11,12 @@ function SaveBtn({ onClick, isError, isSaveDisabled = false }) {
       aria-disabled={isSaveDisabled}
       className={`${
         showToolTipAndAccessibility && "save-btn-wrapper"
-      } relative focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2`}
+      } relative focusable-ring`}
       data-tooltip="No changes to save"
     >
       <button
         disabled={isSaveDisabled}
-        className="focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2 text-button-primary-text disabled:text-button-primary-text/50"
+        className="focusable-ring text-button-primary-text disabled:text-button-primary-text/50 2xl:bg-blue-500 2xl:text-white 2xl:disabled:text-white/50 2xl:rounded-lg 2xl:py-3 2xl:px-4 2xl:-tracking-50"
         onClick={onClick}
       >
         Save Note

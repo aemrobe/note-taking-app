@@ -9,6 +9,8 @@ export const localStorageTagKey = "selectedTags";
 export const localStorageColorThemeKey = "colorTheme";
 export const localStorageFontThemeKey = "fontTheme";
 export const localStorageDetailsOfNotesDraft = "detailOfNotesDraftContent";
+
+export const TOAST_DURATION_MS = 8000; //8 sec
 export const APP_NAME = "Notes App";
 export const formatDate = function (date) {
   return new Date(date).toLocaleString("en-GB", {
@@ -38,7 +40,7 @@ export const COLOR_THEME_OPTIONS = [
     type: "system",
     icon: SystemIcon,
     name: "color-theme",
-    text: "Select a sleek and modern dark theme",
+    text: "Adapts to your device's theme",
   },
 ];
 

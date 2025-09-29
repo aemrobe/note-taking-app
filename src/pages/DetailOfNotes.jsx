@@ -1,9 +1,13 @@
-import { useLocation, useNavigate, useParams } from "react-router";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router";
 import TagIcon from "../Components/TagIcon";
 import { useNotes } from "../Context/NoteContext";
 import { useEffect, useRef, useState } from "react";
 import {
-  APP_NAME,
   formatDate,
   localStorageDetailsOfNotesDraft,
 } from "../config/constants";
@@ -20,14 +24,17 @@ import {
   validateUniqueTitle,
   validateField,
 } from "../utils/validators";
-import Spinner from "../Components/Spinner";
+import ArchiveIcon from "../Components/ArchiveIcon";
+import DeleteIcon from "../Components/DeleteIcon";
+import RestoreIcon from "../Components/RestoreIcon";
+import { useModal } from "../Context/ModalContext";
 import SpinnerFullPage from "../Components/SpinnerFullPage";
 
 function DetailOfNotes() {
   const { noteTitle } = useParams();
   const { handleShowToastMessage } = useToast();
-  const { notes, setNotes } = useNotes();
-  const [showPlaceholder, setShowPlaceholder] = useState(false);
+  const { notes, setNotes, isSmallerScreenSize } = useNotes();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const mainInfoTitleRef = useRef();
 
@@ -50,15 +57,22 @@ function DetailOfNotes() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const prevPath = location.state?.from || "/all-notes";
+
+  const locationPathSegments = location.pathname.split("/");
+  const defaultFallbackPath = `/${locationPathSegments[1]}`;
+  const prevPath = location.state?.from === "/tags" || defaultFallbackPath;
+  const basePath = `${locationPathSegments[1]}`;
+  const searchAndTagspage =
+    location.pathname.startsWith("/search") ||
+    location.pathname.startsWith("/tags");
+  const currentSearchString = searchParams.toString();
 
   const selectedNote = notes?.find((note) => note.title === noteTitle);
   const initialNoteTitleFromParamsRef = useRef(noteTitle);
-  const pendingNavigationPathRef = useRef(null);
-
-  console.log("selectedNote", selectedNote);
+  const [pendingNavigationPath, setPendingNavigationPath] = useState(null);
 
   const draft = getDraftNoteContent(noteTitle);
+
   // ### States ###
   // Input Values
   const [selectedNoteTitle, setSelectedNoteTitle] = useState(function () {
@@ -73,6 +87,44 @@ function DetailOfNotes() {
     return draft !== undefined ? draft.content : selectedNote?.content || "";
   });
   const [hasChanges, setHasChanges] = useState(false);
+  const previousNoteRef = useRef(selectedNote);
+  const skipNextDraftSaveRef = useRef(false);
+
+  const newNoteTitle = selectedNoteTitle.trim();
+  const newFullPathToNavigate = `/${basePath}/${encodeURIComponent(
+    newNoteTitle
+  )}`;
+
+  useEffect(() => {
+    if (!selectedNote) return;
+
+    const prevNote = previousNoteRef.current;
+
+    const hasUnsavedChanges =
+      selectedNoteTitle !== prevNote?.title ||
+      tags !== prevNote?.tags.join(", ") ||
+      textContent !== prevNote?.content;
+
+    if (
+      !isSmallerScreenSize &&
+      prevNote.title !== noteTitle &&
+      hasUnsavedChanges &&
+      !skipNextDraftSaveRef.current
+    ) {
+      setDraftContent(prevNote.title, selectedNoteTitle, tags, textContent);
+    }
+
+    previousNoteRef.current = selectedNote;
+    skipNextDraftSaveRef.current = false;
+  }, [
+    isSmallerScreenSize,
+    noteTitle,
+    selectedNote,
+    selectedNoteTitle,
+    setDraftContent,
+    tags,
+    textContent,
+  ]);
 
   useEffect(
     function () {
@@ -88,33 +140,22 @@ function DetailOfNotes() {
     [selectedNote, selectedNoteTitle, tags, textContent]
   );
 
+  const { showToastMessage } = useToast();
+
   // Errors
   const [errorNoteTitle, setErrorNoteTitle] = useState(null);
 
   //a condition that check if the save button should be disabled or not
   const isSaveDisabled = !!errorNoteTitle || !hasChanges;
 
-  console.log("isSaveDisabled", isSaveDisabled);
-
   useEffect(() => {
     initialNoteTitleFromParamsRef.current = noteTitle;
   }, [noteTitle]);
 
   useEffect(() => {
-    mainInfoTitleRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    if (
-      pendingNavigationPathRef.current &&
-      decodeURIComponent(noteTitle) ===
-        decodeURIComponent(pendingNavigationPathRef.current)
-    ) {
-      pendingNavigationPathRef.current = null;
-      //showing the spinner
-      setShowPlaceholder(false);
-    }
-  }, [noteTitle]);
+    if (showToastMessage) return;
+    if (isSmallerScreenSize) mainInfoTitleRef.current?.focus();
+  }, [showToastMessage, isSmallerScreenSize]);
 
   useEffect(() => {
     if (selectedNote) {
@@ -165,6 +206,7 @@ function DetailOfNotes() {
 
   const handleSaveNotes = function (e) {
     e.preventDefault();
+    skipNextDraftSaveRef.current = true;
     const formError = [];
 
     for (const field of fields) {
@@ -183,10 +225,6 @@ function DetailOfNotes() {
       (note) => note.title === originalNoteTitleInContext
     );
 
-    //showing the spinner
-    setShowPlaceholder(true);
-
-    const newNoteTitle = selectedNoteTitle.trim();
     const newTagsArray = tags
       .split(",")
       .map((tag) => tag.trim())
@@ -202,13 +240,7 @@ function DetailOfNotes() {
         return;
       }
 
-      const currentPathSegments = location.pathname.split("/");
-      const basePath = `${currentPathSegments[1]}`;
-      const newFullPathToNavigate = `/${basePath}/${encodeURIComponent(
-        newNoteTitle
-      )}`;
-
-      pendingNavigationPathRef.current = newFullPathToNavigate;
+      setPendingNavigationPath(newFullPathToNavigate);
 
       setNotes((prevNotes) => {
         const noteIndex = prevNotes.findIndex(
@@ -232,22 +264,24 @@ function DetailOfNotes() {
         return updatedNotes;
       });
 
-      clearDraftContent(originalNoteTitleInContext);
-      handleShowToastMessage({ text: "Note saved successfully!" }, () => {
-        navigate(newFullPathToNavigate, { replace: true });
-        setShowPlaceholder(false);
-      });
+      clearDraftContent(noteTitle);
+      handleShowToastMessage({ text: "Note saved successfully!" });
+
+      const navigateOptions = {
+        pathname: newFullPathToNavigate,
+      };
+
+      if (searchAndTagspage) {
+        if (currentSearchString) {
+          navigateOptions.search = currentSearchString;
+        }
+      }
+
+      navigate(navigateOptions, { replace: true });
     }
   };
 
-  console.log("showplaceholder", showPlaceholder);
-
   const handleArchiveNotes = function () {
-    pendingNavigationPathRef.current = prevPath;
-
-    //showing the spinner
-    setShowPlaceholder(true);
-
     setNotes((prevNotes) => {
       const noteIndex = prevNotes.findIndex(
         (note) => note.title === selectedNote.title
@@ -263,22 +297,35 @@ function DetailOfNotes() {
       return updatedNotes;
     });
 
-    handleShowToastMessage(
-      {
-        text: "Note archived.",
-        link: "Archived Notes",
-        ariaLabelText: "Go to Archived Notes",
-      },
-      () => navigate(prevPath, { replace: true })
+    handleShowToastMessage({
+      text: "Note archived.",
+      link: "Archived Notes",
+      ariaLabelText: "Go to Archived Notes",
+    });
+
+    const newFullPathToNavigate = `/${basePath}`;
+
+    setPendingNavigationPath(
+      !isSmallerScreenSize ? newFullPathToNavigate : "/all-notes"
     );
+    const navigateOptions = {
+      pathname: newFullPathToNavigate,
+    };
+
+    if (searchAndTagspage) {
+      if (currentSearchString) {
+        navigateOptions.search = currentSearchString;
+      }
+    }
+
+    if (!isSmallerScreenSize) {
+      navigate(navigateOptions, { replace: true });
+    } else {
+      navigate("/all-notes", { replace: true });
+    }
   };
 
   const handlelRestoreArchivedNotes = function () {
-    pendingNavigationPathRef.current = prevPath;
-
-    //showing the spinner
-    setShowPlaceholder(true);
-
     setNotes((prevNotes) => {
       const noteIndex = prevNotes.findIndex(
         (note) => note.title === selectedNote.title
@@ -294,43 +341,99 @@ function DetailOfNotes() {
       return updatedNotes;
     });
 
-    handleShowToastMessage(
-      {
-        text: "Note restored to active notes.",
-        link: "All Notes",
-        ariaLabelText: "Go to All Notes",
-      },
-      () => navigate(prevPath, { replace: true })
+    handleShowToastMessage({
+      text: "Note restored to active notes.",
+      link: "All Notes",
+      ariaLabelText: "Go to All Notes",
+    });
+
+    const newFullPathToNavigate = `/${basePath}`;
+
+    setPendingNavigationPath(
+      !isSmallerScreenSize ? newFullPathToNavigate : "/archived-notes"
     );
+
+    const navigateOptions = {
+      pathname: newFullPathToNavigate,
+    };
+
+    if (searchAndTagspage) {
+      if (currentSearchString) {
+        navigateOptions.search = currentSearchString;
+      }
+    }
+
+    if (!isSmallerScreenSize) {
+      navigate(navigateOptions, { replace: true });
+    } else {
+      navigate("/archived-notes", { replace: true });
+    }
   };
 
   const handleDeleteNote = function () {
-    pendingNavigationPathRef.current = prevPath;
-
-    //showing the spinner
-    setShowPlaceholder(true);
-
     setNotes((prevNotes) =>
       prevNotes.filter((note) => note.title !== selectedNote.title)
     );
 
-    handleShowToastMessage(
-      {
-        text: "Note permanently deleted.",
-      },
-      () => navigate(prevPath, { replace: true })
-    );
+    handleShowToastMessage({
+      text: "Note permanently deleted.",
+    });
+
+    const newFullPathToNavigate = `/${basePath}`;
+
+    setPendingNavigationPath(newFullPathToNavigate);
+
+    const navigateOptions = {
+      pathname: newFullPathToNavigate,
+    };
+
+    if (searchAndTagspage) {
+      if (currentSearchString) {
+        navigateOptions.search = currentSearchString;
+      }
+    }
+
+    navigate(navigateOptions, { replace: true });
 
     clearDraftContent(initialNoteTitleFromParamsRef.current);
   };
 
   const handleCancelButton = function (e) {
     e.preventDefault();
-    navigate(-1);
+
+    const navigateOptions = {
+      pathname: prevPath,
+    };
+
+    if (searchAndTagspage) {
+      if (currentSearchString) {
+        navigateOptions.search = currentSearchString;
+      }
+    }
+    clearDraftContent(noteTitle);
+    navigate(navigateOptions);
+  };
+
+  const handleDesktopCancelButton = function (e) {
+    e.preventDefault();
+    clearDraftContent(initialNoteTitleFromParamsRef.current);
+    setSelectedNoteTitle(selectedNote.title);
+    setTags(selectedNote.tags.join(", "));
+    setTextContent(selectedNote.content);
   };
 
   const handleGoBackBtn = function (e) {
     e.preventDefault();
+
+    const navigateOptions = {
+      pathname: prevPath,
+    };
+
+    if (searchAndTagspage) {
+      if (currentSearchString) {
+        navigateOptions.search = currentSearchString;
+      }
+    }
 
     if (
       textContent !== selectedNote.content ||
@@ -342,52 +445,60 @@ function DetailOfNotes() {
       clearDraftContent(noteTitle);
     }
 
-    navigate(-1);
+    navigate(navigateOptions);
   };
 
   useEffect(
     function () {
-      if (
-        !pendingNavigationPathRef.current &&
-        notes !== null &&
-        notes !== undefined
-      )
+      if (!pendingNavigationPath && notes !== null && notes !== undefined)
         if (!selectedNote) {
           navigate(prevPath, { replace: true });
         }
     },
-    [navigate, prevPath, selectedNote, notes]
+    [navigate, prevPath, selectedNote, notes, pendingNavigationPath]
   );
 
-  if (showPlaceholder) {
-    return <SpinnerFullPage />;
-  }
+  useEffect(
+    function () {
+      if (pendingNavigationPath) {
+        if (location.pathname === pendingNavigationPath) {
+          setPendingNavigationPath(null);
+        }
+      }
+    },
+    [location.pathname, pendingNavigationPath]
+  );
 
-  console.log("pending", pendingNavigationPathRef.current);
-
-  if (!selectedNote && !pendingNavigationPathRef.current) <p>note not found</p>;
+  if (pendingNavigationPath) return <SpinnerFullPage />;
 
   return (
-    <form action={"#"} className="flex-auto flex flex-col">
+    <form
+      action={"#"}
+      className="flex-auto flex flex-col md:w-full
+     md:max-w-[45rem] md:mx-auto 2xl:mx-0 2xl:max-w-none 2xl:flex-row 2xl:pr-8"
+    >
       {/* Mobile Header Controller */}
-      <NoteActions
-        onGoBack={handleGoBackBtn}
-        onDeleteNote={handleDeleteNote}
-        isArchived={selectedNote?.isArchived}
-        onRestoreNote={handlelRestoreArchivedNotes}
-        onArchiveNote={handleArchiveNotes}
-        onCancel={handleCancelButton}
-        onSave={handleSaveNotes}
-        fontSize={"text-sm"}
-        isSaveDisabled={isSaveDisabled}
-        isError={errorNoteTitle}
-      />
+      {isSmallerScreenSize && (
+        <NoteActions
+          onGoBack={handleGoBackBtn}
+          onDeleteNote={handleDeleteNote}
+          isArchived={selectedNote?.isArchived}
+          onRestoreNote={handlelRestoreArchivedNotes}
+          onArchiveNote={handleArchiveNotes}
+          onCancel={handleCancelButton}
+          onSave={handleSaveNotes}
+          fontSize={"text-sm"}
+          isSaveDisabled={isSaveDisabled}
+          isError={errorNoteTitle}
+        />
+      )}
 
-      <div className="flex flex-col flex-auto">
+      {/* 2xl:border-r border-border-separator */}
+      <div className="2xl:pb-5 flex flex-col flex-auto 2xl:px-6">
         {/* Note title information */}
         <div className={"text-xs border-b border-border-separator"}>
-          <div className={`pt-3 ${errorNoteTitle && "pb-3"}`}>
-            <h1 id="note-title-heading" className="sr-only">
+          <div className={`pt-3 2xl:pt-5 ${errorNoteTitle ? "pb-3" : ""}`}>
+            <h1 tabIndex="-1" id="note-title-heading" className="sr-only">
               Edit Note
             </h1>
 
@@ -399,9 +510,11 @@ function DetailOfNotes() {
               }
               ref={mainInfoTitleRef}
               name="noteTitle"
-              className={`${!errorNoteTitle && "pb-3"} text-2xl w-full
+              className={`focus:outline-none ${
+                !errorNoteTitle && "pb-3"
+              } text-2xl w-full
            placeholder:text-input-new-note-title-placeholder-color resize-none
-            text-text-primary font-bold  -tracking-150 focus:outline-none`}
+            text-text-primary font-bold  -tracking-150 `}
               minRows={1}
               maxRows={4}
               placeholder="Enter a title..."
@@ -414,11 +527,11 @@ function DetailOfNotes() {
             )}
           </div>
 
-          <div className="flex ">
-            <div className="text-neutral700 w-full grid grid-cols-[auto_1fr] items-center gap-x-7 gap-y-2 pb-3 ">
+          <div className="flex">
+            <div className="text-neutral700 w-full grid grid-cols-[auto_1fr] items-center gap-x-7 gap-y-2 pb-3 md:pb-4">
               <label
                 htmlFor="tagValue"
-                className="self-start flex items-center space-x-1.5 text-text-label"
+                className="self-start flex items-center space-x-1.5 text-text-label md:text-sm"
               >
                 <TagIcon width={"w-4"} />
                 <span>Tags</span>
@@ -427,9 +540,8 @@ function DetailOfNotes() {
               <TextareaAutosize
                 name="tagValue"
                 id="tagValue"
-                className="w-full 
-                placeholder:text-new-note-input-placeholder-color
-                focus:outline-none resize-none overflow-y-auto max-h-20 text-text-value"
+                className="w-full focus:outline-none  
+                placeholder:text-new-note-input-placeholder-color resize-none overflow-y-auto max-h-20 text-text-value md:text-sm"
                 placeholder="Add tags separated by commas (e.g. Work, Planning)"
                 value={tags}
                 minRows={1}
@@ -442,7 +554,7 @@ function DetailOfNotes() {
                   labelIconValue={
                     <>
                       <StatusIcon width={"w-4"} />
-                      <span>Status</span>
+                      <span className=" md:text-sm">Status</span>
                     </>
                   }
                   content={"Archived"}
@@ -453,7 +565,7 @@ function DetailOfNotes() {
                 labelIconValue={
                   <>
                     <LastEditedIcon width={"w-4"} />
-                    <span> Last edited</span>
+                    <span className="md:text-sm"> Last edited</span>
                   </>
                 }
                 content={
@@ -473,28 +585,82 @@ function DetailOfNotes() {
           onChange={(e) => setTextContent(e.target.value)}
           name="Note text"
           placeholder="Start typing your note here…"
-          className="flex-auto overflow-y-auto resize-none w-full mt-3 text-sm leading-50 -tracking-50 focus:outline-none text-note-content-text"
+          className="focus:outline-none flex-auto overflow-y-auto resize-none w-full pt-3   text-sm leading-50 -tracking-50 text-note-content-text pb-3 "
         ></textarea>
 
         {/* Desktop Save Note and Cancel Button */}
-        <div className="hidden">
-          <button>Save Note</button>
-          <button>Cancel</button>
-        </div>
+        {!isSmallerScreenSize && (
+          <NoteActions
+            onCancel={handleDesktopCancelButton}
+            onSave={handleSaveNotes}
+            isSaveDisabled={isSaveDisabled}
+            isError={errorNoteTitle}
+          />
+        )}
       </div>
-      {/* Desktop Archive and Delete buttons*/}
-      <div className="hidden">
-        <button>
-          <img src="/images/icon-archive.svg" alt="" />
-          <span>Archive Note</span>
-        </button>
 
-        <button>
-          <img src="/images/icon-delete.svg" alt="" />
-          <span>Delete Note</span>
-        </button>
+      {/* Desktop Archive and Delete buttons*/}
+      <div className="hidden 2xl:pl-4 2xl:pt-5 2xl:flex flex-col gap-y-3">
+        {selectedNote?.isArchived ? (
+          <DesktopNoteActionButton
+            icon={<RestoreIcon width={"w-5"} />}
+            btn="Restore Note"
+            onConfirm={handlelRestoreArchivedNotes}
+          />
+        ) : (
+          <DesktopNoteActionButton
+            icon={<ArchiveIcon width={"w-5"} />}
+            title="Archive Note"
+            content="Are you sure you want to archive this note? You can find it in the Archived Notes section and restore it anytime."
+            btn="Archive Note"
+            onConfirm={handleArchiveNotes}
+          />
+        )}
+
+        <DesktopNoteActionButton
+          icon={<DeleteIcon width={"w-5"} />}
+          title="Delete Note"
+          content="Are you sure you want to permanently delete this note? This actions cannot be undone."
+          btn="Delete Note"
+          onConfirm={handleDeleteNote}
+        />
       </div>
     </form>
+  );
+}
+
+function DesktopNoteActionButton({
+  icon,
+  title = "",
+  content = "",
+  btn,
+  onConfirm,
+}) {
+  const { openModal } = useModal();
+
+  return (
+    <button
+      className="border-2 focusable-ring border-desktop-note-action-button-border rounded-lg text-desktop-note-action-button text-sm -tracking-50 flex items-center gap-2 py-3 px-4 w-[15.125rem]"
+      onClick={(e) => {
+        console.log("event from details", e);
+        e.preventDefault();
+        btn !== "Restore Note"
+          ? openModal(
+              {
+                icon: icon,
+                title: title,
+                content: content,
+                btn: btn,
+                onConfirm: onConfirm,
+              },
+              e
+            )
+          : onConfirm();
+      }}
+    >
+      {icon}
+      <span>{btn}</span>
+    </button>
   );
 }
 
@@ -503,7 +669,7 @@ function DetailInfoElements({ labelIconValue, labelType = "", content }) {
     <>
       <LabeledIconText>{labelIconValue}</LabeledIconText>
       <span
-        className={`${
+        className={`md:text-sm ${
           labelType === "last" ? "text-text-value-last" : "text-text-value"
         }`}
       >

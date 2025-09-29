@@ -1,21 +1,36 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import ListOfNotes from "../Components/ListOfNotes";
 
-import { useNotes } from "../Context/NoteContext";
 import { APP_NAME } from "../config/constants";
+import { useFilteredNotes } from "../Context/FilteredNotesContext";
+import { useLocation } from "react-router";
 
 function ArchivedNotes() {
-  const { notes } = useNotes();
+  const { notes: notesToDisplay } = useFilteredNotes();
+  const location = useLocation();
 
-  const ArchivedNotes = notes.filter((note) => note.isArchived === true);
+  const pathMatch = useCallback(
+    function (path) {
+      const checkPath = location.pathname.startsWith(path);
+
+      return checkPath;
+    },
+    [location.pathname]
+  );
 
   useEffect(() => {
-    document.title = `Archived Notes - ${APP_NAME}`;
-  }, []);
+    document.title = `${
+      pathMatch("/archived-notes/new") ? "Create New Note" : "Archived Notes"
+    } - ${APP_NAME}`;
+  }, [pathMatch]);
 
   return (
     <>
-      <ListOfNotes type={"Archived Notes"} notes={ArchivedNotes} />
+      <ListOfNotes
+        type={"Archived Notes"}
+        notes={notesToDisplay}
+        parentPath={"/archived-notes"}
+      />
     </>
   );
 }

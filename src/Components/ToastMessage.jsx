@@ -2,8 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import CloseIcon from "./CloseIcon";
 import IconCheckMark from "./IconCheckMark";
 import { NavLink } from "react-router";
-
-const TOAST_DURATION_MS = 3000; //3 sec
+import { TOAST_DURATION_MS } from "../config/constants";
 
 function ToastMessage({ toastMessageContent, onClose }) {
   const { text, link = "", ariaLabelText = "" } = toastMessageContent;
@@ -87,32 +86,36 @@ function ToastMessage({ toastMessageContent, onClose }) {
   );
 
   return (
-    <div className="fixed right-4 bottom-[4.75rem] bg-toast-background border border-toast-border text-xs -tracking-50 flex  space-x-2 items-center p-2 rounded-lg z-50 ">
-      <IconCheckMark width={"w-4"} color="text-toast-chekmark-icon" />
+    <div className="border border-toast-border fixed right-4 md:right-8 2xl:right-[6.625rem] bottom-[4.75rem] md:bottom-[6.625rem] 2xl:bottom-[4.0625rem] md:w-[24.375rem] bg-toast-background text-xs -tracking-50 flex space-x-2  items-center md:justify-between p-2 rounded-lg z-50 ">
+      <span className="flex space-x-2 items-center">
+        <IconCheckMark width={"w-4"} color="text-toast-chekmark-icon" />
 
-      <span className="mr-11 text-toast-text"> {text}</span>
+        <span className="mr-9 text-toast-text"> {text}</span>
+      </span>
 
-      {link && (
-        <NavLink
-          to={`/${path}`}
-          className="focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2 underline underline-offset-2 decoration-1 text-toast-link-text decoration-toast-link-underline"
-          aria-label={`${ariaLabelText}`}
+      <span className="flex space-x-2  items-center">
+        {link && (
+          <NavLink
+            to={`/${path}`}
+            className="focusable-ring  underline underline-offset-2 decoration-1 text-toast-link-text decoration-toast-link-underline"
+            aria-label={`${ariaLabelText}`}
+            onClick={onClose}
+            ref={linkRef}
+          >
+            <span className="sr-only">{ariaLabelText}</span>
+            <span aria-hidden="true"> {link}</span>
+          </NavLink>
+        )}
+
+        <button
+          className="focusable-ring  text-toast-close-button-icon"
           onClick={onClose}
-          ref={linkRef}
+          aria-label="Close notification"
+          ref={closeButtonRef}
         >
-          <span className="sr-only">{ariaLabelText}</span>
-          <span aria-hidden="true"> {link}</span>
-        </NavLink>
-      )}
-
-      <button
-        className="focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2 text-toast-close-button-icon"
-        onClick={onClose}
-        aria-label="Close notification"
-        ref={closeButtonRef}
-      >
-        <CloseIcon width={"w-4"} />
-      </button>
+          <CloseIcon width={"w-4"} />
+        </button>
+      </span>
     </div>
   );
 }
