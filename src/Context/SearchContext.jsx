@@ -8,6 +8,7 @@ import {
 } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { useNotes } from "./NoteContext";
+import { useCallback } from "react";
 
 const SearchContext = createContext();
 
@@ -58,17 +59,20 @@ function SearchProvider({ children }) {
     });
   }, [notes, actualSearchQueryFromURL]);
 
-  const accessibleMessageForSearchInput = function () {
-    if (actualSearchQueryFromURL === "") return "";
-    else if (actualSearchQueryFromURL.length > 0 && filteredNotes.length > 0)
-      return `All notes matching ${actualSearchQueryFromURL} are displayed below`;
-    else if (
-      actualSearchQueryFromURL.length > 0 &&
-      filteredNotes.length === 0
-    ) {
-      return `No notes match your search key ${actualSearchQueryFromURL}. Try a different keyword or create a new note`;
-    }
-  };
+  const accessibleMessageForSearchInput = useCallback(
+    function () {
+      if (actualSearchQueryFromURL === "") return "";
+      else if (actualSearchQueryFromURL.length > 0 && filteredNotes.length > 0)
+        return `All notes matching ${actualSearchQueryFromURL} are displayed below`;
+      else if (
+        actualSearchQueryFromURL.length > 0 &&
+        filteredNotes.length === 0
+      ) {
+        return `No notes match your search key ${actualSearchQueryFromURL}. Try a different keyword or create a new note`;
+      }
+    },
+    [actualSearchQueryFromURL, filteredNotes.length]
+  );
 
   useEffect(
     function () {

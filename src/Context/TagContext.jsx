@@ -4,7 +4,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
 } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { useNotes } from "./NoteContext";
@@ -18,6 +17,7 @@ function TagProvider({ children }) {
   const isOnTagPage = location.pathname.startsWith("/tags");
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
   useEffect(
     function () {
       const savedTags = JSON.parse(localStorage.getItem(localStorageTagKey));
@@ -106,15 +106,6 @@ function TagProvider({ children }) {
 
     //updating the localstorage with the tags
     localStorage.setItem(localStorageTagKey, JSON.stringify(nextSelectedTags));
-
-    const isArchivedPage = location.pathname.startsWith("/archived-notes");
-    const currentNotes = isArchivedPage
-      ? notes.filter((note) => note.isArchived)
-      : notes.filter((note) => !note.isArchived);
-
-    const nextFilteredNotes = notes.filter((note) =>
-      nextSelectedTags.every((t) => note.tags.includes(t))
-    );
 
     //updating the tags for the mobile view
     setSearchParams((prev) => {

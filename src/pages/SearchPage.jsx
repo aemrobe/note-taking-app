@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import FilterStatusMessage from "../Components/FilterStatusMessage";
 import ListOfNotes from "../Components/ListOfNotes";
 
@@ -29,6 +29,30 @@ function SearchPage() {
     accessibleMessageForSearchInput,
     filteredNotes,
   } = useSearch();
+
+  const [liveAccessibleMessageForDesktop, setLiveAccessibleMessageForDesktop] =
+    useState("");
+
+  useEffect(
+    function () {
+      if (!isSmallerScreenSize) {
+        if (actualSearchQueryFromURL.length === 1) {
+          setTimeout(function () {
+            setLiveAccessibleMessageForDesktop(
+              accessibleMessageForSearchInput()
+            );
+          }, 50);
+        } else {
+          setLiveAccessibleMessageForDesktop(accessibleMessageForSearchInput());
+        }
+      }
+    },
+    [
+      actualSearchQueryFromURL.length,
+      isSmallerScreenSize,
+      accessibleMessageForSearchInput,
+    ]
+  );
 
   return (
     <div className="text-sm -tracking-50 leading-50 2xl:border-r 2xl:border-border-separator">
@@ -62,7 +86,11 @@ function SearchPage() {
 
         {/* Accessible message for screen reader */}
         <div className="sr-only" aria-live="polite" role="status">
-          <span>{accessibleMessageForSearchInput()}</span>
+          <span>
+            {isSmallerScreenSize
+              ? accessibleMessageForSearchInput()
+              : liveAccessibleMessageForDesktop}
+          </span>
         </div>
       </div>
 
