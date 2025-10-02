@@ -52,7 +52,7 @@ function ToastMessage({ toastMessageContent, onClose }) {
   );
 
   return (
-    <div className="border border-toast-border fixed right-4 md:right-8 2xl:right-[6.625rem] bottom-[4.75rem] md:bottom-[6.625rem] 2xl:bottom-[4.0625rem] md:w-[24.375rem] bg-toast-background text-xs -tracking-50 flex space-x-2  items-center md:justify-between p-2 rounded-lg z-50 ">
+    <div className="border border-toast-border fixed right-4 md:right-8 xl:right-[6.625rem] bottom-[4.75rem] md:bottom-[6.625rem] xl:bottom-[4.0625rem] md:w-[24.375rem] bg-toast-background text-xs -tracking-50 flex space-x-2  items-center md:justify-between p-2 rounded-lg z-50 ">
       <span className="flex space-x-2 items-center">
         <IconCheckMark width={"w-4"} color="text-toast-chekmark-icon" />
 

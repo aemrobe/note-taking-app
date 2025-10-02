@@ -42,7 +42,7 @@ function NotesProvider({ children }) {
   );
 
   const [isSmallerScreenSize, setIsSmallerScreenSize] = useState(
-    window.innerWidth < 1440
+    window.innerWidth < 1280
   );
 
   useEffect(
@@ -54,7 +54,7 @@ function NotesProvider({ children }) {
 
   useEffect(function () {
     const handleResize = function () {
-      setIsSmallerScreenSize(window.innerWidth < 1440);
+      setIsSmallerScreenSize(window.innerWidth < 1280);
     };
 
     window.addEventListener("resize", handleResize);

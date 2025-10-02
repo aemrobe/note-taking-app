@@ -74,7 +74,7 @@ function SettingsDetailsPage() {
   return (
     <form
       className="md:w-full
-     md:max-w-[43.75rem] md:mx-auto 2xl:mx-0 2xl:max-w-none pt-6 2xl:pt-8 2xl:ml-8 2xl:w-[33rem] "
+     md:max-w-[43.75rem] md:mx-auto xl:mx-0 xl:max-w-none pt-6 xl:pt-8 xl:ml-8 xl:w-[33rem] "
       onSubmit={handleApplyChanges}
     >
       {isSmallerScreenSize && (
@@ -91,12 +91,12 @@ function SettingsDetailsPage() {
       <h1
         ref={pageTitle}
         tabIndex={-1}
-        className="font-bold 2xl:font-semibold text-2xl 2xl:text-base -tracking-150 2xl:-tracking-100 mt-3 mb-2  2xl:mt-0 2xl:mb-1 text-text-primary focus:outline-none"
+        className="font-bold xl:font-semibold text-2xl xl:text-base -tracking-150 xl:-tracking-100 mt-3 mb-2  xl:mt-0 xl:mb-1 text-text-primary focus:outline-none"
       >
         {title}
       </h1>
 
-      <p className="text-setting-option-description-text text-sm leading-50 -tracking-50 mb-5 2xl:mb-7">
+      <p className="text-setting-option-description-text text-sm leading-50 -tracking-50 mb-5 xl:mb-7">
         {description}
       </p>
 

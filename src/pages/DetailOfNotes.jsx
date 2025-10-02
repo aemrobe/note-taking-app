@@ -479,7 +479,7 @@ function DetailOfNotes() {
     <form
       action={"#"}
       className="flex-auto flex flex-col md:w-full
-     md:max-w-[45rem] md:mx-auto 2xl:mx-0 2xl:max-w-none 2xl:flex-row 2xl:pr-8"
+     md:max-w-[45rem] md:mx-auto xl:mx-0 xl:max-w-none xl:flex-row xl:pr-8"
     >
       {/* Mobile Header Controller */}
       {isSmallerScreenSize && (
@@ -497,11 +497,11 @@ function DetailOfNotes() {
         />
       )}
 
-      {/* 2xl:border-r border-border-separator */}
-      <div className="2xl:pb-5 flex flex-col flex-auto 2xl:px-6">
+      {/* xl:border-r border-border-separator */}
+      <div className="xl:pb-5 flex flex-col flex-auto xl:px-6">
         {/* Note title information */}
         <div className={"text-xs border-b border-border-separator"}>
-          <div className={`pt-3 2xl:pt-5 ${errorNoteTitle ? "pb-3" : ""}`}>
+          <div className={`pt-3 xl:pt-5 ${errorNoteTitle ? "pb-3" : ""}`}>
             <h1 tabIndex="-1" id="note-title-heading" className="sr-only">
               Edit Note
             </h1>
@@ -604,7 +604,7 @@ function DetailOfNotes() {
       </div>
 
       {/* Desktop Archive and Delete buttons*/}
-      <div className="hidden 2xl:pl-4 2xl:pt-5 2xl:flex flex-col gap-y-3">
+      <div className="hidden xl:pl-4 xl:pt-5 xl:flex flex-col gap-y-3">
         {selectedNote?.isArchived ? (
           <DesktopNoteActionButton
             icon={<RestoreIcon width={"w-5"} />}

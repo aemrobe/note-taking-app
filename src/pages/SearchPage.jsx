@@ -55,8 +55,8 @@ function SearchPage() {
   );
 
   return (
-    <div className="text-sm -tracking-50 leading-50 2xl:border-r 2xl:border-border-separator">
-      <div className="pt-5 pb-4 2xl:p-0 bg-background-primary  md:w-full md:max-w-[43.75rem] md:mx-auto 2xl:mx-0 2xl:max-w-none">
+    <div className="text-sm -tracking-50 leading-50 xl:border-r xl:border-border-separator">
+      <div className="pt-5 pb-4 xl:p-0 bg-background-primary  md:w-full md:max-w-[43.75rem] md:mx-auto xl:mx-0 xl:max-w-none">
         {isSmallerScreenSize && (
           <h1
             ref={pageTitle}

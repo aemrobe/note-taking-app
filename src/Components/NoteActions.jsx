@@ -25,7 +25,7 @@ function NoteActions({
     <>
       <nav
         aria-label="Note Actions"
-        className={`flex items-center space-x-4 2xl:space-x-0 pt-5 pb-3 text-button-secondary-text border-b border-border-separator leading-[1.3] text-sm  2xl:border-t 2xl:border-b-0  2xl:pt-4 2xl:pb-0 2xl:gap-4`}
+        className={`flex items-center space-x-4 xl:space-x-0 pt-5 pb-3 text-button-secondary-text border-b border-border-separator leading-[1.3] text-sm  xl:border-t xl:border-b-0  xl:pt-4 xl:pb-0 xl:gap-4`}
       >
         {/* Go Back Button */}
         {onGoBack && <GoBackBtn onClick={onGoBack}>Go Back</GoBackBtn>}

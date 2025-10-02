@@ -23,7 +23,7 @@ function FilterTags({ children, paddingTop = "", paddingBottom = "" }) {
           });
           onTagClick(tag);
         }}
-        className={`w-full flex items-center py-3.5 2xl:py-2.5 2xl:px-3 ${paddingTop} ${paddingBottom} gap-2 focusable-ring ${
+        className={`w-full flex items-center py-3.5 xl:py-2.5 xl:px-3 ${paddingTop} ${paddingBottom} gap-2 focusable-ring ${
           !isSmallerScreenSize && isTheTagAdded
             ? "text-text-primary bg-desktop-navigation-link-background-active rounded-lg"
             : ""

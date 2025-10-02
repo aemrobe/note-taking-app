@@ -152,8 +152,8 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
 
   return (
     <div
-      className={`md:w-full md:max-w-[43.75rem] 2xl:max-w-none md:mx-auto 2xl:mx-0 2xl:pt-5 2xl:pr-4 2xl:pl-8  2xl:w-[18.125rem] ${
-        displayBorderSeparator ? "2xl:border-r 2xl:border-border-separator" : ""
+      className={`md:w-full md:max-w-[43.75rem] xl:max-w-none md:mx-auto xl:mx-0 xl:pt-5 xl:pr-4 xl:pl-8  xl:w-[18.125rem] ${
+        displayBorderSeparator ? "xl:border-r xl:border-border-separator" : ""
       } ${
         activeColorTheme === "dark" && type === "Archived Notes"
           ? "isArchivedOnly"
@@ -257,7 +257,7 @@ function Note({ note, parentPath }) {
         to={navigateToNote}
         state={fromState}
         className={`${
-          isNoteActive ? "2xl:bg-desktop-note-active 2xl:rounded-md" : ""
+          isNoteActive ? "xl:bg-desktop-note-active xl:rounded-md" : ""
         } focusable-ring w-full  px-2 pt-2 pb-3 flex flex-col space-y-3 items-start`}
       >
         <h2 className="font-semibold text-text-primary">{note.title}</h2>

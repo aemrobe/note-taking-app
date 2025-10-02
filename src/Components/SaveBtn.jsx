@@ -16,7 +16,7 @@ function SaveBtn({ onClick, isError, isSaveDisabled = false }) {
     >
       <button
         disabled={isSaveDisabled}
-        className="focusable-ring text-button-primary-text disabled:text-button-primary-text/50 2xl:bg-blue-500 2xl:text-white 2xl:disabled:text-white/50 2xl:rounded-lg 2xl:py-3 2xl:px-4 2xl:-tracking-50"
+        className="focusable-ring text-button-primary-text disabled:text-button-primary-text/50 xl:bg-blue-500 xl:text-white xl:disabled:text-white/50 xl:rounded-lg xl:py-3 xl:px-4 xl:-tracking-50"
         onClick={onClick}
       >
         Save Note

@@ -2,8 +2,8 @@ function CancelBtn({ onClick, marginLeft = "" }) {
   return (
     <button
       onClick={onClick}
-      className={`focusable-ring ${marginLeft} 2xl:rounded-lg 2xl:py-3 2xl:px-4 2xl:bg-desktop-cancel-button-bg
-        2xl:text-desktop-cancel-button-text 2xl:-tracking-50 `}
+      className={`focusable-ring ${marginLeft} xl:rounded-lg xl:py-3 xl:px-4 xl:bg-desktop-cancel-button-bg
+        xl:text-desktop-cancel-button-text xl:-tracking-50 `}
     >
       Cancel
     </button>

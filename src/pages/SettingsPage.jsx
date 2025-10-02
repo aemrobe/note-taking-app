@@ -26,7 +26,7 @@ function SettingsPage() {
   return (
     <div
       className="md:w-full
-     md:max-w-[43.75rem] md:mx-auto 2xl:mx-0 2xl:max-w-none 2xl:pt-5  2xl:pr-4 2xl:pl-8 2xl:border-r border-border-separator"
+     md:max-w-[43.75rem] md:mx-auto xl:mx-0 xl:max-w-none xl:pt-5  xl:pr-4 xl:pl-8 xl:border-r border-border-separator"
     >
       {isSmallerScreenSize && (
         <h1
@@ -83,9 +83,9 @@ function SettingItem({
     <li>
       <NavLink
         to={`${type}`}
-        className={`py-2 2xl:p-2 w-full flex space-x-2 items-center focusable-ring 2xl:w-[13.125rem] ${
-          isActive ? "2xl:bg-desktop-navigation-link-background-active" : ""
-        } 2xl:rounded-md`}
+        className={`py-2 xl:p-2 w-full flex space-x-2 items-center focusable-ring xl:w-[13.125rem] ${
+          isActive ? "xl:bg-desktop-navigation-link-background-active" : ""
+        } xl:rounded-md`}
         onClick={handleChangeSetting}
       >
         <span
@@ -103,7 +103,7 @@ function SettingItem({
           <span
             className={`hidden ${
               activeColorTheme === "light" && isActive ? "md:block" : ""
-            } ${!isSmallerScreenSize && isActive ? "2xl:block" : ""} ml-auto`}
+            } ${!isSmallerScreenSize && isActive ? "xl:block" : ""} ml-auto`}
           >
             <ArrowRightIcon width={"w-6"} />
           </span>

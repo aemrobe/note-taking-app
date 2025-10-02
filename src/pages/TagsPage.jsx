@@ -79,7 +79,7 @@ function TagsPage() {
   return (
     <div
       className="md:w-full
-     md:max-w-[43.75rem] md:mx-auto 2xl:mx-0 2xl:max-w-none focus:outline-none text-toolbar-action-text pt-6 2xl:pt-0 2xl:border-r 2xl:border-border-separator"
+     md:max-w-[43.75rem] md:mx-auto xl:mx-0 xl:max-w-none focus:outline-none text-toolbar-action-text pt-6 xl:pt-0 xl:border-r xl:border-border-separator"
     >
       {/* Go Back Button */}
       {uiMode === "filteredNotes" && isSmallerScreenSize && (
@@ -115,7 +115,7 @@ function TagsPage() {
         <FilterStatusMessage
           filterTexts={`"${tagLists}"`}
           lastText={"tag are shown here."}
-          marginBottom="mb-4 2xl:m-0"
+          marginBottom="mb-4 xl:m-0"
         >
           All notes with{" "}
         </FilterStatusMessage>

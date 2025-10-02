@@ -77,11 +77,11 @@ function NotesPageLayout() {
     pathMatch("/tags/");
 
   return (
-    <div className={`2xl:bg-background-primary  `}>
-      <div className="2xl:max-w-[90rem] 2xl:grid 2xl:grid-cols-[auto_1fr] 2xl:mx-auto">
+    <div className={`xl:bg-background-primary  `}>
+      <div className="xl:max-w-[90rem] xl:grid xl:grid-cols-[auto_1fr] xl:mx-auto">
         {/* Side Bar Content */}
         {!isSmallerScreenSize && (
-          <header className="2xl:px-4 2xl:pt-3 border-r border-border-separator">
+          <header className="xl:px-4 xl:pt-3 border-r border-border-separator">
             <Logo />
 
             {/* Page Navigation */}
@@ -120,9 +120,9 @@ function NotesPageLayout() {
           </header>
         )}
         {/* Main Content */}
-        <div className="min-h-screen flex flex-col 2xl:flex-auto ">
+        <div className="min-h-screen flex flex-col xl:flex-auto ">
           {isSmallerScreenSize && (
-            <header className="bg-logo-background 2xl:bg-background-primary">
+            <header className="bg-logo-background xl:bg-background-primary">
               <div className="container mx-auto ">
                 <Logo />
               </div>
@@ -136,10 +136,10 @@ function NotesPageLayout() {
               }`}
             >
               {!isSmallerScreenSize && (
-                <div className="border-b border-border-separator 2xl:flex 2xl:justify-between 2xl:items-center 2xl:py-[1.156rem] 2xl:px-8">
+                <div className="border-b border-border-separator xl:flex xl:justify-between xl:items-center xl:py-[1.156rem] xl:px-8">
                   <Heading
                     level={"h1"}
-                    classname={"pt-5 pb-4 px-4 2xl:p-0 text-text-primary"}
+                    classname={"pt-5 pb-4 px-4 xl:p-0 text-text-primary"}
                   >
                     {!isSearchOrTagsPage ? (
                       headingTitle
@@ -176,12 +176,12 @@ function NotesPageLayout() {
               )}
 
               <div
-                className={`relative flex-auto  flex flex-col 2xl:grid 2xl:grid-cols-[auto_1fr] px-4 ${
+                className={`relative flex-auto  flex flex-col xl:grid xl:grid-cols-[auto_1fr] px-4 ${
                   (isCreateNewNotePage && activeColorTheme === "dark") ||
                   (isDetailsNotePage && activeColorTheme === "dark")
                     ? "md:px-6"
                     : "md:px-8"
-                } mb-[3.75rem] md:mb-[4.799rem] 2xl:mb-0 2xl:p-0 bg-background-primary `}
+                } mb-[3.75rem] md:mb-[4.799rem] xl:mb-0 xl:p-0 bg-background-primary `}
               >
                 <Outlet />
               </div>

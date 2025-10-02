@@ -101,6 +101,7 @@ function CreateNewNotePage() {
         (value) => validateUniqueTitle(value, notes),
       ],
       setError: setErrorNoteTitle,
+      fieldId: "new-note-title-input",
     },
   ];
 
@@ -140,15 +141,30 @@ function CreateNewNotePage() {
 
     const formError = [];
 
+    let firstFormErrorInputId = null;
+
     for (const field of fields) {
       const error = validateField(field.validators, field.value);
 
       if (error) {
         field.setError(error);
         formError.push(error);
+        if (!firstFormErrorInputId) firstFormErrorInputId = field.fieldId;
       } else {
         field.setError(null);
       }
+    }
+
+    if (formError.length > 0) {
+      const firstFormErrorInput = document.getElementById(
+        firstFormErrorInputId
+      );
+
+      if (firstFormErrorInput) {
+        firstFormErrorInput.focus();
+      }
+
+      return;
     }
 
     if (formError.length === 0) {
@@ -183,8 +199,8 @@ function CreateNewNotePage() {
 
   return (
     <form
-      className="flex flex-col 2xl:pt-5 2xl:px-6 2xl:pb-5 md:w-full
-     md:max-w-[45rem] md:mx-auto 2xl:mx-0 2xl:max-w-none"
+      className="flex flex-col xl:pt-5 xl:px-6 xl:pb-5 md:w-full
+     md:max-w-[45rem] md:mx-auto xl:mx-0 xl:max-w-none"
     >
       <h1 ref={pageTitle} className="sr-only" tabIndex={-1}>
         Create New Note
@@ -212,8 +228,9 @@ function CreateNewNotePage() {
           value={title}
           minRows={1}
           maxRows={4}
+          id="new-note-title-input"
           className={`${
-            !errorNoteTitle ? "mt-2 mb-3 2xl:mt-0" : "mt-2 2xl:mt-0"
+            !errorNoteTitle ? "mt-2 mb-3 xl:mt-0" : "mt-2 xl:mt-0"
           } text-new-input-text-color 
         w-full
         resize-none overflow-y-auto placeholder:font-bold placeholder:text-new-note-title-placeholder-text
@@ -247,7 +264,7 @@ function CreateNewNotePage() {
               onChange={(e) => setTag(e.target.value)}
               id="input-tag"
               className="overflow-y-auto max-h-20 focus:outline-none  resize-none  text-new-input-text-color
-          placeholder:text-new-note-input-placeholder-color -tracking-50 text-sm leading-50 2xl:focus:border-2 2xl:py-1 2xl:focus:border-neutral500  rounded-lg"
+          placeholder:text-new-note-input-placeholder-color -tracking-50 text-sm leading-50 xl:focus:border-2 xl:py-1 xl:focus:border-neutral500  rounded-lg"
               placeholder="Add tags separated by commas (e.g. Work, Planning)"
             />
 
