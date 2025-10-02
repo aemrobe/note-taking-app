@@ -10,7 +10,7 @@ function useResponsiveRedirect(notesToDisplay) {
   const basePath = location.pathname.split("/")[1];
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { selectedTags, filteredNotes: filteredNoteByTag } = useTag();
+  const { selectedTags } = useTag();
 
   const navigateToFirstNote = useNoteNavigation();
 

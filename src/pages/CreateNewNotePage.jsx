@@ -2,9 +2,10 @@ import { useLocation, useNavigate } from "react-router";
 import NoteActions from "../Components/NoteActions";
 import LabeledIconText from "../Components/LabeledIconText";
 import TagIcon from "../Components/TagIcon";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import LastEditedIcon from "../Components/LastEditedIcon";
 import TextareaAutosize from "react-textarea-autosize";
+import { APP_NAME } from "../config/constants";
 
 import useDraftNotes from "../Hooks/useDraftNotes";
 import { formatDate } from "../config/constants";
@@ -21,22 +22,17 @@ function CreateNewNotePage() {
   const location = useLocation();
   const locationPathSegments = location.pathname.split("/");
   const defaultFallbackPath = `/${locationPathSegments[1]}`;
-  const prevPath = location.state?.from || defaultFallbackPath;
+  const [previousPath] = useState(function () {
+    return location.state?.from || defaultFallbackPath;
+  });
 
-  const noteType = prevPath.includes("/archived-notes") ? true : false;
+  const noteType = previousPath.includes("/archived-notes") ? true : false;
 
-  const { handleShowToastMessage } = useToast();
+  const { onShowToastMessage } = useToast();
   const navigate = useNavigate();
-  const {
-    notes,
-    setNotes,
-    isSmallerScreenSize,
-    lastFocusableElement,
-    setLastFocusableElement,
-  } = useNotes();
+  const { notes, setNotes, isSmallerScreenSize } = useNotes();
   const pageTitle = useRef(null);
 
-  console.log("lastFocusableElement", lastFocusableElement);
   useEffect(function () {
     pageTitle.current.focus();
   }, []);
@@ -47,8 +43,6 @@ function CreateNewNotePage() {
   //a condition that check if the save button should be disabled or not
   const isSaveDisabled = !!errorNoteTitle;
 
-  console.log("issavedisabled", isSaveDisabled);
-  console.log("isError", errorNoteTitle);
   //Fields
   const {
     getDraftNoteContent,
@@ -66,6 +60,26 @@ function CreateNewNotePage() {
     },
     [draftNotesContent]
   );
+
+  const pathMatch = useCallback(
+    function (path) {
+      const checkPath = location.pathname.startsWith(path);
+
+      return checkPath;
+    },
+    [location.pathname]
+  );
+
+  useEffect(() => {
+    if (!isSmallerScreenSize) return;
+    const previousTitle = document.title;
+    document.title = `${
+      pathMatch("/all-notes/new") || pathMatch("/archived-notes/new")
+        ? "Create New Note"
+        : `${previousTitle}`
+    } - ${APP_NAME}
+       `;
+  }, [location.state, pathMatch, isSmallerScreenSize]);
 
   const draft = getDraftNoteContent("newNote");
 
@@ -112,24 +126,13 @@ function CreateNewNotePage() {
       setDraftContent("newNote", title, tag, noteContent);
     }
 
-    setTimeout(() => {
-      const elementToFocus = lastFocusableElement;
-      elementToFocus.focus();
-      setLastFocusableElement(null);
-    }, 100);
-
-    navigate(prevPath, { state: { fromCreateNote: true } });
+    navigate(previousPath, { state: { fromCreateNote: true } });
   };
 
   const handleCancelButton = function (e) {
     e.preventDefault();
-    navigate(prevPath, { state: { fromCreateNote: true } });
+    navigate(previousPath, { state: { fromCreateNote: true } });
     clearDraftContent("newNote");
-    setTimeout(() => {
-      const elementToFocus = lastFocusableElement;
-      elementToFocus.focus();
-      setLastFocusableElement(null);
-    }, 100);
   };
 
   const handleSaveNotes = function (e) {
@@ -162,13 +165,14 @@ function CreateNewNotePage() {
 
       setNotes((prevNotes) => [newNote, ...prevNotes]);
 
-      handleShowToastMessage({ text: "Note created successfully!" });
+      onShowToastMessage({ text: "Note created successfully!" });
 
       clearDraftContent("newNote");
 
       const newPath =
-        prevPath.includes("/all-notes") || prevPath.includes("/archived-notes")
-          ? prevPath
+        previousPath.includes("/all-notes") ||
+        previousPath.includes("/archived-notes")
+          ? previousPath
           : "/all-notes";
 
       navigate(`${newPath}/${encodeURIComponent(title)}`, {

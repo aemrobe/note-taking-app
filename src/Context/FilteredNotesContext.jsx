@@ -3,8 +3,10 @@ import { createContext, useContext } from "react";
 const FilteredNotesContext = createContext(null);
 
 function FilteredNotesProvider({ children, notes }) {
+  const value = { notes };
+
   return (
-    <FilteredNotesContext.Provider value={{ notes }}>
+    <FilteredNotesContext.Provider value={value}>
       {children}
     </FilteredNotesContext.Provider>
   );

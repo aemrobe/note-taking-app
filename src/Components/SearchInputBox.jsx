@@ -13,6 +13,7 @@ function SearchInputBox({
     >
       <label htmlFor="search" className="text-search-icon">
         <SearchIcon width={"w-5"} />
+        <span className="sr-only"> Search notes input</span>
       </label>
 
       <input

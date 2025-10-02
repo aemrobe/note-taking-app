@@ -32,9 +32,9 @@ import SpinnerFullPage from "../Components/SpinnerFullPage";
 
 function DetailOfNotes() {
   const { noteTitle } = useParams();
-  const { handleShowToastMessage } = useToast();
+  const { onShowToastMessage } = useToast();
   const { notes, setNotes, isSmallerScreenSize } = useNotes();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const mainInfoTitleRef = useRef();
 
@@ -265,7 +265,7 @@ function DetailOfNotes() {
       });
 
       clearDraftContent(noteTitle);
-      handleShowToastMessage({ text: "Note saved successfully!" });
+      onShowToastMessage({ text: "Note saved successfully!" });
 
       const navigateOptions = {
         pathname: newFullPathToNavigate,
@@ -282,6 +282,10 @@ function DetailOfNotes() {
   };
 
   const handleArchiveNotes = function () {
+    setTimeout(() => {
+      mainInfoTitleRef.current?.focus(); // Return focus to the note input
+    }, 0);
+
     setNotes((prevNotes) => {
       const noteIndex = prevNotes.findIndex(
         (note) => note.title === selectedNote.title
@@ -297,7 +301,7 @@ function DetailOfNotes() {
       return updatedNotes;
     });
 
-    handleShowToastMessage({
+    onShowToastMessage({
       text: "Note archived.",
       link: "Archived Notes",
       ariaLabelText: "Go to Archived Notes",
@@ -341,7 +345,7 @@ function DetailOfNotes() {
       return updatedNotes;
     });
 
-    handleShowToastMessage({
+    onShowToastMessage({
       text: "Note restored to active notes.",
       link: "All Notes",
       ariaLabelText: "Go to All Notes",
@@ -375,7 +379,7 @@ function DetailOfNotes() {
       prevNotes.filter((note) => note.title !== selectedNote.title)
     );
 
-    handleShowToastMessage({
+    onShowToastMessage({
       text: "Note permanently deleted.",
     });
 
@@ -642,7 +646,6 @@ function DesktopNoteActionButton({
     <button
       className="border-2 focusable-ring border-desktop-note-action-button-border rounded-lg text-desktop-note-action-button text-sm -tracking-50 flex items-center gap-2 py-3 px-4 w-[15.125rem]"
       onClick={(e) => {
-        console.log("event from details", e);
         e.preventDefault();
         btn !== "Restore Note"
           ? openModal(

@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 
 export const useNoteNavigation = function () {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
 

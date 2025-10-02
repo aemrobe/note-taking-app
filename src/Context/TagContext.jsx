@@ -119,19 +119,15 @@ function TagProvider({ children }) {
     });
   };
 
-  return (
-    <TagContext.Provider
-      value={{
-        selectedTags,
-        tagLists,
-        handleTagClick,
-        filteredNotes,
-        isOnTagPage,
-      }}
-    >
-      {children}
-    </TagContext.Provider>
-  );
+  const value = {
+    selectedTags,
+    tagLists,
+    onTagClick: handleTagClick,
+    filteredNotes,
+    isOnTagPage,
+  };
+
+  return <TagContext.Provider value={value}>{children}</TagContext.Provider>;
 }
 
 function useTag() {

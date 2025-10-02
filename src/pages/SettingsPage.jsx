@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import FontIcon from "../Components/FontIcon";
 import SunIcon from "../Components/SunIcon";
 import { useSettings } from "../Context/SettingsContext";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink } from "react-router";
 import { APP_NAME } from "../config/constants";
 import ArrowRightIcon from "../Components/ArrowRightIcon";
 import { useNotes } from "../Context/NoteContext";

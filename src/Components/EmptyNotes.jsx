@@ -1,6 +1,13 @@
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 
 function EmptyNotes({ children, link = "" }) {
+  const location = useLocation();
+  const basePath = location.pathname.split("/")[1];
+
+  const createNewNoteLink = `${
+    basePath === "archived-notes" ? `/${basePath}/new` : "/all-notes/new"
+  }`;
+
   return (
     <p
       aria-live="polite"
@@ -10,7 +17,7 @@ function EmptyNotes({ children, link = "" }) {
       {children}{" "}
       {link && (
         <NavLink
-          to={"/create-new-note"}
+          to={createNewNoteLink}
           className="focusable-ring underline underline-offset-2 decoration-1 decoration-toast-link-underline"
         >
           {link}

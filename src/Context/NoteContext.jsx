@@ -64,19 +64,17 @@ function NotesProvider({ children }) {
     };
   }, []);
 
+  const value = {
+    notes,
+    isSmallerScreenSize,
+    previousPath,
+    setNotes,
+    lastFocusableElement,
+    setLastFocusableElement,
+  };
+
   return (
-    <NotesContext.Provider
-      value={{
-        notes,
-        isSmallerScreenSize,
-        previousPath,
-        setNotes,
-        lastFocusableElement,
-        setLastFocusableElement,
-      }}
-    >
-      {children}
-    </NotesContext.Provider>
+    <NotesContext.Provider value={value}>{children}</NotesContext.Provider>
   );
 }
 

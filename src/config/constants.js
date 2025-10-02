@@ -10,7 +10,7 @@ export const localStorageColorThemeKey = "colorTheme";
 export const localStorageFontThemeKey = "fontTheme";
 export const localStorageDetailsOfNotesDraft = "detailOfNotesDraftContent";
 
-export const TOAST_DURATION_MS = 8000; //8 sec
+export const TOAST_DURATION_MS = 3000; //3 sec
 export const APP_NAME = "Notes App";
 export const formatDate = function (date) {
   return new Date(date).toLocaleString("en-GB", {

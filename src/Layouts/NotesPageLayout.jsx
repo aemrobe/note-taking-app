@@ -81,7 +81,7 @@ function NotesPageLayout() {
       <div className="2xl:max-w-[90rem] 2xl:grid 2xl:grid-cols-[auto_1fr] 2xl:mx-auto">
         {/* Side Bar Content */}
         {!isSmallerScreenSize && (
-          <aside className="2xl:px-4 2xl:pt-3 border-r border-border-separator">
+          <header className="2xl:px-4 2xl:pt-3 border-r border-border-separator">
             <Logo />
 
             {/* Page Navigation */}
@@ -117,7 +117,7 @@ function NotesPageLayout() {
                 <ListOfTags />
               </ul>
             </div>
-          </aside>
+          </header>
         )}
         {/* Main Content */}
         <div className="min-h-screen flex flex-col 2xl:flex-auto ">
@@ -166,6 +166,7 @@ function NotesPageLayout() {
 
                     <NavLink
                       to={`/settings`}
+                      aria-label="Settings"
                       className={" focusable-ring text-desktop-setting-icon"}
                     >
                       <SettingIcon />

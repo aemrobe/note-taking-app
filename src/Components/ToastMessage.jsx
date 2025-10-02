@@ -10,39 +10,10 @@ function ToastMessage({ toastMessageContent, onClose }) {
   const linkRef = useRef();
   const closeButtonRef = useRef();
 
-  const focusFirstElement = () => {
-    if (linkRef.current) {
-      linkRef.current?.focus();
-    } else if (closeButtonRef.current) {
-      closeButtonRef.current?.focus();
-    }
-  };
-
   const handleKeyDown = useCallback(
     (e) => {
       if (e.key === "Escape") {
         onClose();
-      } else if (e.key === "Tab") {
-        const hasLink = linkRef.current !== null;
-
-        if (hasLink) {
-          const isFirstElementFocussed =
-            document.activeElement === linkRef.current;
-          const isLastElementFocussed =
-            document.activeElement === closeButtonRef.current;
-
-          if (e.shiftKey && isFirstElementFocussed) {
-            closeButtonRef.current?.focus();
-            e.preventDefault();
-          }
-
-          if (!e.shiftKey && isLastElementFocussed) {
-            linkRef.current?.focus();
-            e.preventDefault();
-          }
-        } else {
-          e.preventDefault();
-        }
       }
     },
     [onClose]
@@ -52,13 +23,8 @@ function ToastMessage({ toastMessageContent, onClose }) {
     function () {
       document.addEventListener("keydown", handleKeyDown);
 
-      const focusTimer = setTimeout(() => {
-        focusFirstElement();
-      }, 0);
-
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
-        clearTimeout(focusTimer);
       };
     },
     [handleKeyDown]
@@ -90,7 +56,10 @@ function ToastMessage({ toastMessageContent, onClose }) {
       <span className="flex space-x-2 items-center">
         <IconCheckMark width={"w-4"} color="text-toast-chekmark-icon" />
 
-        <span className="mr-9 text-toast-text"> {text}</span>
+        <span className="mr-9 text-toast-text" role="alert">
+          {" "}
+          {text}
+        </span>
       </span>
 
       <span className="flex space-x-2  items-center">

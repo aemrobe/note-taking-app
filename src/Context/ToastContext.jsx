@@ -26,22 +26,20 @@ function ToastProvider({ children }) {
   }, []);
 
   const value = {
-    handleShowToastMessage,
+    onShowToastMessage: handleShowToastMessage,
     showToastMessage,
   };
 
   return (
     <ToastContext.Provider value={value}>
-      <div aria-hidden={showToastMessage ? true : false}>{children}</div>
+      <div>{children}</div>
 
-      <div role="status" aria-live="polite" aria-atomic="true">
-        {showToastMessage && (
-          <ToastMessage
-            toastMessageContent={toastMessageContent}
-            onClose={handleCloseToastMessage}
-          />
-        )}
-      </div>
+      {showToastMessage && (
+        <ToastMessage
+          toastMessageContent={toastMessageContent}
+          onClose={handleCloseToastMessage}
+        />
+      )}
     </ToastContext.Provider>
   );
 }

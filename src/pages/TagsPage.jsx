@@ -88,8 +88,6 @@ function TagsPage() {
         </GoBackBtn>
       )}
 
-      <div tabIndex={-1} className="sr-only" aria-live="polite"></div>
-
       {uiMode === "tagSelection" && (
         <Heading
           level={"h1"}

@@ -11,7 +11,7 @@ function SettingsDetailsPage() {
   const { inputValue, ...settingsContext } = useSettings();
   const { isSmallerScreenSize } = useNotes();
 
-  const { handleShowToastMessage } = useToast();
+  const { onShowToastMessage } = useToast();
 
   const { settingType } = useParams();
 
@@ -68,7 +68,7 @@ function SettingsDetailsPage() {
   const handleApplyChanges = function (e) {
     e.preventDefault();
     currentSetting.setPreference(settingsContext, inputValue);
-    handleShowToastMessage({ text: "Settings updated successfully!" });
+    onShowToastMessage({ text: "Settings updated successfully!" });
   };
 
   return (

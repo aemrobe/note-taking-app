@@ -13,12 +13,13 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
   const { isSmallerScreenSize } = useNotes();
   const { activeColorTheme } = useSettings();
   const { showToastMessage } = useToast();
+  const { tagLists } = useTag();
   const { notes: allnotes } = useNotes();
+
   const [showEmptyNotes, setShowEmptyNotes] = useState(false);
   const [accessibleMessage, setAccessibleMessage] = useState(null);
   const location = useLocation();
 
-  const { tagLists } = useTag();
   const pathMatch = useCallback(
     function (path) {
       const checkPath = location.pathname.startsWith(path);
@@ -31,10 +32,8 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
   const searchPage = pathMatch("/search");
   const createNewNotePage =
     pathMatch("/all-notes/new") || pathMatch("/archived-notes/new");
-
   const displayBorderSeparator =
     pathMatch("/all-notes") || pathMatch("/archived-notes");
-
   const dontDisplayCreateNewNoteBtn =
     pathMatch("/all-notes/") ||
     pathMatch("/search/") ||
@@ -192,7 +191,7 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
             them anytime.
           </p>
         )}
-        {emptyNotes() ? (
+        {emptyNotes() && !createNewNotePage ? (
           <EmptyNotes link={linkInsideEmptyNotes}>{emptyNotes()}</EmptyNotes>
         ) : (
           ""

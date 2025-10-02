@@ -5,8 +5,8 @@ import { useNotes } from "../Context/NoteContext";
 import ArrowRightIcon from "./ArrowRightIcon";
 
 function FilterTags({ children, paddingTop = "", paddingBottom = "" }) {
-  const { handleTagClick, selectedTags } = useTag();
-  const { handleShowToastMessage } = useToast();
+  const { onTagClick, selectedTags } = useTag();
+  const { onShowToastMessage } = useToast();
   const { isSmallerScreenSize } = useNotes();
   const tag = children.trim();
 
@@ -16,12 +16,12 @@ function FilterTags({ children, paddingTop = "", paddingBottom = "" }) {
     <li>
       <button
         onClick={() => {
-          handleShowToastMessage({
+          onShowToastMessage({
             text: `Tag ${tag} ${
               selectedTags.includes(tag) ? "removed" : "added"
             } successfully!`,
           });
-          handleTagClick(tag);
+          onTagClick(tag);
         }}
         className={`w-full flex items-center py-3.5 2xl:py-2.5 2xl:px-3 ${paddingTop} ${paddingBottom} gap-2 focusable-ring ${
           !isSmallerScreenSize && isTheTagAdded

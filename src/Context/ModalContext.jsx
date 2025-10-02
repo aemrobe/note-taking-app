@@ -15,8 +15,7 @@ function ModalProvider({ children, appRef }) {
   const [isOpen, setIsOpen] = useState(false);
   const [lastFocusableElement, setLastFocusableElement] = useState(null);
 
-  const openModal = useCallback(function (modalPropsContent, event) {
-    console.log("e", event);
+  const openModal = useCallback(function (modalPropsContent) {
     setModalProps(modalPropsContent);
     setLastFocusableElement(document.activeElement);
     setIsOpen(true);
@@ -31,8 +30,6 @@ function ModalProvider({ children, appRef }) {
   const restoreFocus = useCallback(
     function () {
       const elementToFocus = lastFocusableElement;
-
-      console.log("focusable", elementToFocus);
 
       if (elementToFocus) {
         setTimeout(function () {
