@@ -13,10 +13,8 @@ function NoteActions({
   isArchived = "",
   onArchiveNote = "",
   onRestoreNote = "",
-  isSaveDisabled = false,
   onCancel,
   onSave,
-  isError,
 }) {
   const { openModal } = useModal();
   const { isSmallerScreenSize } = useNotes();
@@ -91,19 +89,11 @@ function NoteActions({
               onClick={onCancel}
               marginLeft={!onRestoreNote && onGoBack ? "ml-auto" : ""}
             />
-            <SaveBtn
-              onClick={onSave}
-              isSaveDisabled={isSaveDisabled}
-              isError={isError}
-            />{" "}
+            <SaveBtn onClick={onSave} />{" "}
           </>
         ) : (
           <>
-            <SaveBtn
-              onClick={onSave}
-              isSaveDisabled={isSaveDisabled}
-              isError={isError}
-            />
+            <SaveBtn onClick={onSave} />
 
             <CancelBtn
               onClick={onCancel}

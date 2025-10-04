@@ -253,11 +253,11 @@
 
   /* Breakpoint */
   --breakpoint-*: initial;
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
-  --breakpoint-2xl: 1440px;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 90rem;
 }
 
 :root {
@@ -503,6 +503,13 @@
   @apply focus:outline-none focus-visible:outline-none focus-visible:ring-2 ring-focus-ring ring-offset-2;
 }
 
+.stretched-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .save-btn-wrapper::before,
 .save-btn-wrapper::after {
   --scale: 0;
@@ -561,7 +568,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 48rem) {
   .light {
     --text-new-note-title-placeholder-text: 1.5rem;
   }
@@ -571,7 +578,13 @@
   }
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 80rem) {
+  .dark {
+    --color-filter-tag-text: var(--color-neutral-200);
+  }
+}
+
+@media (min-width: 90rem) {
   .save-btn-wrapper::before,
   .save-btn-wrapper::after {
     top: -0.5rem;

@@ -6,6 +6,7 @@ function LogoIcon() {
       height="28"
       fill="none"
       viewBox="0 0 95 28"
+      aria-hidden={"true"}
     >
       <g clipPath="url(#a)">
         <g

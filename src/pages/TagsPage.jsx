@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTag } from "../Context/TagContext";
 import ListOfNotes from "../Components/ListOfNotes";
 import GoBackBtn from "../Components/GoBackBtn";
@@ -10,10 +10,15 @@ import ListOfTags from "../Components/ListOfTags";
 import { useNotes } from "../Context/NoteContext";
 import Heading from "../Components/Heading";
 import HeadingPart from "../Components/HeadingPart";
+import CreateNewNote from "../Components/CreateNewNote";
+import { useLocation } from "react-router";
 
 function TagsPage() {
+  const location = useLocation();
   const { isSmallerScreenSize } = useNotes();
   const { filteredNotes, selectedTags, isOnTagPage, tagLists } = useTag();
+  const { activeColorTheme } = useSettings();
+  const { showToastMessage } = useToast();
 
   const [uiMode, setUiMode] = useState(() => {
     if (!isOnTagPage) return null;
@@ -25,16 +30,23 @@ function TagsPage() {
     }
   });
 
-  const { activeColorTheme } = useSettings();
+  const h1Ref = useRef();
+  const h2Ref = useRef();
+
+  const pathMatch = useCallback(
+    function (path) {
+      const checkPath = location.pathname.startsWith(path);
+
+      return checkPath;
+    },
+    [location.pathname]
+  );
 
   const handleGoBackBtn = function () {
     setUiMode("tagSelection");
   };
 
-  const { showToastMessage } = useToast();
-
-  const h1Ref = useRef();
-  const h2Ref = useRef();
+  const dontDisplayCreateNewNoteBtn = pathMatch("/tags/");
 
   //This effect helps to announce the h1 and h2 headings by considering the timing of the toast message
   useEffect(
@@ -134,6 +146,11 @@ function TagsPage() {
             <ListOfTags />
           </div>
         )}
+
+        {isSmallerScreenSize
+          ? !dontDisplayCreateNewNoteBtn &&
+            uiMode === "tagSelection" && <CreateNewNote parentPath={"/tags"} />
+          : ""}
       </ul>
     </div>
   );

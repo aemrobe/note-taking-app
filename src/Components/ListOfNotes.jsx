@@ -39,7 +39,6 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
     pathMatch("/search/") ||
     pathMatch("/archived-notes/") ||
     pathMatch("/tags/") ||
-    pathMatch("/create-new-note") ||
     pathMatch("/settings");
 
   const emptyNotes = useCallback(
@@ -252,41 +251,44 @@ function Note({ note, parentPath }) {
   }
 
   return (
-    <li>
+    <li
+      className={`${
+        isNoteActive ? "xl:bg-desktop-note-active xl:rounded-md" : ""
+      }  w-full  px-2 pt-2 pb-3 flex flex-col space-y-3 items-start relative`}
+    >
       <NavLink
         to={navigateToNote}
         state={fromState}
-        className={`${
-          isNoteActive ? "xl:bg-desktop-note-active xl:rounded-md" : ""
-        } focusable-ring w-full  px-2 pt-2 pb-3 flex flex-col space-y-3 items-start`}
+        className={"stretched-link focusable-ring "}
       >
         <h2 className="font-semibold text-text-primary">{note.title}</h2>
-        <ListOfTags tags={note.tags} />
-        <p className="text-xs text-text-secondary">
-          {formatDate(note.lastEdited)}
-        </p>
       </NavLink>
+
+      <ListOfTags tags={note.tags} />
+      <p className="text-xs text-text-secondary">
+        {formatDate(note.lastEdited)}
+      </p>
     </li>
   );
 }
 
 function ListOfTags({ tags }) {
   return (
-    <span className="space-x-1">
-      <span className="sr-only">Tags:</span>
+    <ul className="flex space-x-1 ">
+      <li className="sr-only">Tags:</li>
 
       {tags.map((tag) => (
         <Tag key={tag}>{tag}</Tag>
       ))}
-    </span>
+    </ul>
   );
 }
 
 function Tag({ children }) {
   return (
-    <span className="bg-background-tag rounded py-0.5 px-1.5 font-normal text-text-primary text-xs">
+    <li className="bg-background-tag rounded py-0.5 px-1.5 font-normal text-text-primary text-xs">
       {children}
-    </span>
+    </li>
   );
 }
 

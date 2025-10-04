@@ -18,74 +18,27 @@ function TagProvider({ children }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  useEffect(
-    function () {
-      const savedTags = JSON.parse(localStorage.getItem(localStorageTagKey));
+  const pathMatch = useCallback(
+    function (path) {
+      const checkPath = location.pathname.startsWith(path);
 
-      if (
-        isOnTagPage &&
-        savedTags?.length > 0 &&
-        searchParams.getAll("tag").length === 0
-      ) {
-        const newSearchParams = new URLSearchParams();
-
-        savedTags.forEach((tag) => newSearchParams.append("tag", tag));
-
-        setSearchParams(newSearchParams, { replace: true });
-      }
+      return checkPath;
     },
-    [searchParams, setSearchParams, isOnTagPage]
+    [location.pathname]
   );
-
-  // Array which contain all the selected tags
-  const selectedTags = useMemo(() => {
-    return searchParams.getAll("tag");
-  }, [searchParams]);
 
   const createTagSearchParams = useCallback((tags) => {
     const newSearchParams = new URLSearchParams();
 
     tags.forEach((tag) => newSearchParams.append("tag", tag));
 
-    return newSearchParams.toString();
+    return newSearchParams;
   }, []);
 
-  useEffect(
-    function () {
-      if (
-        !isSmallerScreenSize &&
-        selectedTags.length > 0 &&
-        !location.pathname.startsWith("/tags")
-      ) {
-        const tagSearchParams = createTagSearchParams(selectedTags);
-
-        navigate(`/tags?${tagSearchParams}`, { replace: true });
-      } else if (
-        !isSmallerScreenSize &&
-        selectedTags.length === 0 &&
-        location.pathname.startsWith("/tags")
-      ) {
-        navigate(previousPath, { replace: true });
-      }
-    },
-    [
-      location.pathname,
-      isSmallerScreenSize,
-      navigate,
-      selectedTags,
-      previousPath,
-      createTagSearchParams,
-    ]
-  );
-
-  useEffect(
-    function () {
-      if (!isSmallerScreenSize || location.pathname.startsWith("/tags")) {
-        localStorage.setItem(localStorageTagKey, JSON.stringify(selectedTags));
-      }
-    },
-    [location.pathname, isSmallerScreenSize, selectedTags]
-  );
+  // Array which contain all the selected tags
+  const selectedTags = useMemo(() => {
+    return searchParams.getAll("tag");
+  }, [searchParams]);
 
   const tagLists = selectedTags.join(", ");
   const filteredNotes =
@@ -118,6 +71,61 @@ function TagProvider({ children }) {
       return newSearchParams;
     });
   };
+
+  useEffect(
+    function () {
+      const savedTags = JSON.parse(localStorage.getItem(localStorageTagKey));
+
+      if (
+        isOnTagPage &&
+        savedTags?.length > 0 &&
+        searchParams.getAll("tag").length === 0
+      ) {
+        const newSearchParams = createTagSearchParams(savedTags);
+
+        setSearchParams(newSearchParams, { replace: true });
+      }
+    },
+    [searchParams, setSearchParams, isOnTagPage, createTagSearchParams]
+  );
+
+  useEffect(
+    function () {
+      if (
+        !isSmallerScreenSize &&
+        selectedTags.length > 0 &&
+        !pathMatch("/tags")
+      ) {
+        const tagSearchParams = createTagSearchParams(selectedTags).toString();
+
+        navigate(`/tags?${tagSearchParams}`, { replace: true });
+      } else if (
+        !isSmallerScreenSize &&
+        selectedTags.length === 0 &&
+        pathMatch("/tags")
+      ) {
+        navigate(previousPath, { replace: true });
+      }
+    },
+    [
+      location.pathname,
+      isSmallerScreenSize,
+      navigate,
+      selectedTags,
+      previousPath,
+      createTagSearchParams,
+      pathMatch,
+    ]
+  );
+
+  useEffect(
+    function () {
+      if (!isSmallerScreenSize || pathMatch("/tags")) {
+        localStorage.setItem(localStorageTagKey, JSON.stringify(selectedTags));
+      }
+    },
+    [location.pathname, isSmallerScreenSize, selectedTags, pathMatch]
+  );
 
   const value = {
     selectedTags,

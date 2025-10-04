@@ -7,7 +7,7 @@ import TagIcon from "./TagIcon";
 
 function MobileMenu({ currentSearchParams = "" }) {
   return (
-    <nav className=" w-full bg-background-primary z-20 border-t border-border-menubar shadow-[0_-2px_2px_var(--color-shadow-level-1)] text-icon-navigation-default fixed bottom-0 right-0 left-0">
+    <nav className="w-full bg-background-primary z-20 border-t border-border-menubar shadow-[0_-2px_2px_var(--color-shadow-level-1)] text-icon-navigation-default fixed bottom-0 right-0 left-0">
       <ul className="  py-3 px-4 md:px-8 container mx-auto md:w-full md:max-w-[48rem] flex justify-center md:justify-between">
         <MobileMenuLinks path={"/all-notes"} label={"All Notes"} text={"Home"}>
           <HomeIcon width={"w-6"} />

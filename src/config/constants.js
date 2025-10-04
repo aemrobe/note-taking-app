@@ -8,8 +8,10 @@ import SystemIcon from "../Components/SystemIcon";
 export const localStorageTagKey = "selectedTags";
 export const localStorageColorThemeKey = "colorTheme";
 export const localStorageFontThemeKey = "fontTheme";
+export const localStorageNotesKey = "notes";
 export const localStorageDetailsOfNotesDraft = "detailOfNotesDraftContent";
 
+export const XL_BREAKPOINT_REM = 80;
 export const TOAST_DURATION_MS = 3000; //3 sec
 export const APP_NAME = "Notes App";
 export const formatDate = function (date) {

@@ -206,6 +206,9 @@ function DetailOfNotes() {
 
   const handleSaveNotes = function (e) {
     e.preventDefault();
+
+    if (!hasChanges) return;
+
     skipNextDraftSaveRef.current = true;
     const formError = [];
 
@@ -492,8 +495,6 @@ function DetailOfNotes() {
           onCancel={handleCancelButton}
           onSave={handleSaveNotes}
           fontSize={"text-sm"}
-          isSaveDisabled={isSaveDisabled}
-          isError={errorNoteTitle}
         />
       )}
 
@@ -597,8 +598,6 @@ function DetailOfNotes() {
           <NoteActions
             onCancel={handleDesktopCancelButton}
             onSave={handleSaveNotes}
-            isSaveDisabled={isSaveDisabled}
-            isError={errorNoteTitle}
           />
         )}
       </div>

@@ -8,7 +8,7 @@ import DesktopNavigationLink from "../Components/DesktopNavigationLink";
 import ArchiveIcon from "../Components/ArchiveIcon";
 import ListOfTags from "../Components/ListOfTags";
 import { useSearch } from "../Context/SearchContext";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback } from "react";
 import { useTag } from "../Context/TagContext";
 import Heading from "../Components/Heading";
 import HeadingPart from "../Components/HeadingPart";
@@ -23,8 +23,6 @@ function NotesPageLayout() {
   const { searchInput, onSearchInputChange, actualSearchQueryFromURL } =
     useSearch();
   const [searchParams] = useSearchParams();
-  let headingTitle = "";
-  const previousPathRef = useRef();
 
   const pathMatch = useCallback(
     function (path) {
@@ -35,20 +33,25 @@ function NotesPageLayout() {
     [location.pathname]
   );
 
-  const isSearchOrTagsPage = pathMatch("/search") || pathMatch("/tags");
-
-  useEffect(
-    function () {
-      if (pathMatch("/all-notes") || pathMatch("/archived-notes")) {
-        previousPathRef.current = location.pathname;
-      }
-    },
-    [location.pathname, pathMatch]
-  );
-
   const query =
     searchParams.get("query")?.at(0)?.toUpperCase() +
     searchParams.get("query")?.slice(1);
+
+  const tagSearchParams = searchParams
+    .getAll("tag") // Get all values for the 'tag' parameter
+    .map((tag) => `tag=${encodeURIComponent(tag)}`)
+    .join("&"); // Format them as 'tag=value' and join them with &
+
+  const isSearchOrTagsPage = pathMatch("/search") || pathMatch("/tags");
+  const isCreateNewNotePage =
+    pathMatch("/all-notes/new") || pathMatch("/archived-notes/new");
+  const isDetailsNotePage =
+    pathMatch("/all-notes/") ||
+    pathMatch("/search/") ||
+    pathMatch("/archived-notes/") ||
+    pathMatch("/tags/");
+
+  let headingTitle = "";
 
   //writting the name for titles in the desktop view
   if (pathMatch("/all-notes")) {
@@ -63,28 +66,15 @@ function NotesPageLayout() {
     headingTitle = `Settings`;
   }
 
-  const tagSearchParams = searchParams
-    .getAll("tag") // Get all values for the 'tag' parameter
-    .map((tag) => `tag=${encodeURIComponent(tag)}`)
-    .join("&"); // Format them as 'tag=value' and join them with &
-
-  const isCreateNewNotePage =
-    pathMatch("/all-notes/new") || pathMatch("/archived-notes/new");
-  const isDetailsNotePage =
-    pathMatch("/all-notes/") ||
-    pathMatch("/search/") ||
-    pathMatch("/archived-notes/") ||
-    pathMatch("/tags/");
-
   return (
-    <div className={`xl:bg-background-primary  `}>
+    <div className={`xl:bg-background-primary`}>
       <div className="xl:max-w-[90rem] xl:grid xl:grid-cols-[auto_1fr] xl:mx-auto">
-        {/* Side Bar Content */}
+        {/* Header Content */}
         {!isSmallerScreenSize && (
           <header className="xl:px-4 xl:pt-3 border-r border-border-separator">
             <Logo />
 
-            {/* Page Navigation */}
+            {/*Main Page Navigation */}
             <nav>
               <ul className="flex flex-col space-y-1 border-b border-border-separator pb-2">
                 <li>

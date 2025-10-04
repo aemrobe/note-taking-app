@@ -210,8 +210,6 @@ function CreateNewNotePage() {
         <div className="mb-1">
           <NoteActions
             onGoBack={handleGoBackBtn}
-            isSaveDisabled={isSaveDisabled}
-            isError={errorNoteTitle}
             onCancel={handleCancelButton}
             onSave={handleSaveNotes}
           />
@@ -291,12 +289,7 @@ function CreateNewNotePage() {
       </div>
 
       {!isSmallerScreenSize && (
-        <NoteActions
-          onCancel={handleCancelButton}
-          onSave={handleSaveNotes}
-          isSaveDisabled={isSaveDisabled}
-          isError={errorNoteTitle}
-        />
+        <NoteActions onCancel={handleCancelButton} onSave={handleSaveNotes} />
       )}
     </form>
   );
