@@ -1,14 +1,14 @@
 import { NavLink, useLocation } from "react-router";
-import ArchiveIcon from "./ArchiveIcon";
-import HomeIcon from "./HomeIcon";
-import SearchIcon from "./SearchIcon";
-import SettingIcon from "./SettingIcon";
-import TagIcon from "./TagIcon";
+import ArchiveIcon from "../icons/ArchiveIcon";
+import HomeIcon from "../icons/HomeIcon";
+import SearchIcon from "../icons/SearchIcon";
+import SettingIcon from "../icons/SettingIcon";
+import TagIcon from "../icons/TagIcon";
 
 function MobileMenu({ currentSearchParams = "" }) {
   return (
     <nav className="w-full bg-background-primary z-20 border-t border-border-menubar shadow-[0_-2px_2px_var(--color-shadow-level-1)] text-icon-navigation-default fixed bottom-0 right-0 left-0">
-      <ul className="  py-3 px-4 md:px-8 container mx-auto md:w-full md:max-w-[48rem] flex justify-center md:justify-between">
+      <ul className="py-3 px-4 md:px-8 container mx-auto md:w-full md:max-w-[48rem] flex justify-center md:justify-between">
         <MobileMenuLinks path={"/all-notes"} label={"All Notes"} text={"Home"}>
           <HomeIcon width={"w-6"} />
         </MobileMenuLinks>

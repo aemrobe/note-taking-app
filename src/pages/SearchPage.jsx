@@ -1,26 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import FilterStatusMessage from "../Components/FilterStatusMessage";
+import FilterStatusMessage from "../Components/ui/FilterStatusMessage";
 import ListOfNotes from "../Components/ListOfNotes";
 
 import { APP_NAME } from "../config/constants";
 import { useSearch } from "../Context/SearchContext";
-import SearchInputBox from "../Components/SearchInputBox";
+import SearchInputBox from "../Components/forms/SearchInputBox";
 import { useNotes } from "../Context/NoteContext";
 
 function SearchPage() {
   const pageTitle = useRef(null);
   const { isSmallerScreenSize } = useNotes();
-
-  useEffect(
-    function () {
-      pageTitle.current?.focus();
-    },
-    [pageTitle]
-  );
-
-  useEffect(() => {
-    document.title = `Search Notes -  ${APP_NAME}`;
-  }, []);
 
   const {
     actualSearchQueryFromURL,
@@ -32,6 +21,17 @@ function SearchPage() {
 
   const [liveAccessibleMessageForDesktop, setLiveAccessibleMessageForDesktop] =
     useState("");
+
+  useEffect(
+    function () {
+      pageTitle.current?.focus();
+    },
+    [pageTitle]
+  );
+
+  useEffect(() => {
+    document.title = `Search Notes -  ${APP_NAME}`;
+  }, []);
 
   useEffect(
     function () {

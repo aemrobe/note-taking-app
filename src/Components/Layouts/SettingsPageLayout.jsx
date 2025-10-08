@@ -1,8 +1,8 @@
 import { Outlet, useNavigate } from "react-router";
-import { useNotes } from "../Context/NoteContext";
+import { useNotes } from "../../Context/NoteContext";
 
-import SettingsPage from "../pages/SettingsPage";
-import { useSettings } from "../Context/SettingsContext";
+import SettingsPage from "../../pages/SettingsPage";
+import { useSettings } from "../../Context/SettingsContext";
 import { useEffect } from "react";
 
 function SettingsPageLayout() {

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router";
-import PlusIcon from "./PlusIcon";
+import PlusIcon from "./icons/PlusIcon";
 
 import { useNotes } from "../Context/NoteContext";
 

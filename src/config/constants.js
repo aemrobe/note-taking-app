@@ -1,18 +1,22 @@
-import FontMonoSpaceIcon from "../Components/FontMonoSpaceIcon";
-import FontSansSerifIcon from "../Components/FontSansSerifIcon";
-import FontSerifIcon from "../Components/FontSerifIcon";
-import MoonIcon from "../Components/MoonIcon";
-import SunIcon from "../Components/SunIcon";
-import SystemIcon from "../Components/SystemIcon";
+import FontMonoSpaceIcon from "../Components/icons/FontMonoSpaceIcon";
+import FontSansSerifIcon from "../Components/icons/FontSansSerifIcon";
+import FontSerifIcon from "../Components/icons/FontSerifIcon";
+import MoonIcon from "../Components/icons/MoonIcon";
+import SunIcon from "../Components/icons/SunIcon";
+import SystemIcon from "../Components/icons/SystemIcon";
 
 export const localStorageTagKey = "selectedTags";
 export const localStorageColorThemeKey = "colorTheme";
 export const localStorageFontThemeKey = "fontTheme";
 export const localStorageNotesKey = "notes";
 export const localStorageDetailsOfNotesDraft = "detailOfNotesDraftContent";
+export const localStorageCreateNewNoteDraft = "CreateNewNoteDraft";
+export const localStorageSavedActiveSettingKey = "active-setting";
 
 export const XL_BREAKPOINT_REM = 80;
-export const TOAST_DURATION_MS = 3000; //3 sec
+export const TOAST_DURATION_MS = 4000; //4 sec
+export const TOAST_ANIMATION_DURATION = 500; //0.5 sec
+export const SEARCH_DEBOUNCE_DELAY_MS = 500;
 export const APP_NAME = "Notes App";
 export const formatDate = function (date) {
   return new Date(date).toLocaleString("en-GB", {

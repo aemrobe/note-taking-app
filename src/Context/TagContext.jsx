@@ -45,7 +45,7 @@ function TagProvider({ children }) {
     selectedTags.length === 0
       ? notes
       : notes.filter((note) =>
-          selectedTags.every((tag) => note.tags.includes(tag))
+          selectedTags.some((tag) => note.tags.includes(tag))
         );
 
   const handleTagClick = function (tag) {

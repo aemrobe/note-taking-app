@@ -1,6 +1,6 @@
 import { useSettings } from "../Context/SettingsContext";
 
-import ArrowLeftIcon from "../Components/ArrowLeftIcon";
+import ArrowLeftIcon from "../Components/icons/ArrowLeftIcon";
 import { NavLink, useParams } from "react-router";
 import { APP_NAME, SETTING_TYPES_MAP } from "../config/constants";
 import { useToast } from "../Context/ToastContext";
@@ -10,12 +10,20 @@ import { useNotes } from "../Context/NoteContext";
 function SettingsDetailsPage() {
   const { inputValue, ...settingsContext } = useSettings();
   const { isSmallerScreenSize } = useNotes();
-
   const { onShowToastMessage } = useToast();
 
   const { settingType } = useParams();
-
   const pageTitle = useRef(null);
+
+  const currentSetting = SETTING_TYPES_MAP[settingType];
+
+  const { title, description, options } = currentSetting;
+
+  const handleApplyChanges = function (e) {
+    e.preventDefault();
+    currentSetting.setPreference(settingsContext, inputValue);
+    onShowToastMessage({ text: "Settings updated successfully!" });
+  };
 
   useEffect(function () {
     pageTitle.current.focus();
@@ -31,45 +39,6 @@ function SettingsDetailsPage() {
       document.title = `Settings - ${APP_NAME}`;
     };
   }, [settingType]);
-
-  const currentSetting = SETTING_TYPES_MAP[settingType];
-
-  const { title, description, options } = currentSetting;
-
-  const valuesForResetRef = useRef({
-    isSmallerScreenSize,
-    settingType,
-    settingsContext,
-  });
-
-  useEffect(function () {
-    valuesForResetRef.current.isSmallerScreenSize = isSmallerScreenSize;
-    valuesForResetRef.current.settingType = settingType;
-    valuesForResetRef.current.settingsContext = settingsContext;
-  });
-
-  useEffect(() => {
-    return () => {
-      const lastestValues = valuesForResetRef.current;
-
-      const { isSmallerScreenSize, settingType, settingsContext } =
-        lastestValues;
-
-      if (!isSmallerScreenSize) {
-        if (settingType === "color-theme") {
-          settingsContext.setInputValue(settingsContext.colorThemePreference);
-        } else {
-          settingsContext.setInputValue(settingsContext.fontThemePreference);
-        }
-      }
-    };
-  }, []);
-
-  const handleApplyChanges = function (e) {
-    e.preventDefault();
-    currentSetting.setPreference(settingsContext, inputValue);
-    onShowToastMessage({ text: "Settings updated successfully!" });
-  };
 
   return (
     <form

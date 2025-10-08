@@ -4,39 +4,51 @@ import {
   useParams,
   useSearchParams,
 } from "react-router";
-import TagIcon from "../Components/TagIcon";
+import TagIcon from "../Components/icons/TagIcon";
 import { useNotes } from "../Context/NoteContext";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   formatDate,
   localStorageDetailsOfNotesDraft,
 } from "../config/constants";
-import StatusIcon from "../Components/StatusIcon";
-import LastEditedIcon from "../Components/LastEditedIcon";
+import StatusIcon from "../Components/icons/StatusIcon";
+import LastEditedIcon from "../Components/icons/LastEditedIcon";
 import { useToast } from "../Context/ToastContext";
 import NoteActions from "../Components/NoteActions";
-import LabeledIconText from "../Components/LabeledIconText";
+import LabeledIconText from "../Components/ui/LabeledIconText";
 import TextareaAutosize from "react-textarea-autosize";
-import Error from "../Components/Error";
+import Error from "../Components/ui/Error";
 import useDraftNotes from "../Hooks/useDraftNotes";
 import {
   validateRequired,
   validateUniqueTitle,
   validateField,
 } from "../utils/validators";
-import ArchiveIcon from "../Components/ArchiveIcon";
-import DeleteIcon from "../Components/DeleteIcon";
-import RestoreIcon from "../Components/RestoreIcon";
+import ArchiveIcon from "../Components/icons/ArchiveIcon";
+import DeleteIcon from "../Components/icons/DeleteIcon";
+import RestoreIcon from "../Components/icons/RestoreIcon";
 import { useModal } from "../Context/ModalContext";
-import SpinnerFullPage from "../Components/SpinnerFullPage";
+import SpinnerFullPage from "../Components/ui/SpinnerFullPage";
 
 function DetailOfNotes() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { noteTitle } = useParams();
-  const { onShowToastMessage } = useToast();
+  const { onShowToastMessage, showToastMessage } = useToast();
   const { notes, setNotes, isSmallerScreenSize } = useNotes();
-  const [searchParams] = useSearchParams();
 
+  const [searchParams] = useSearchParams();
   const mainInfoTitleRef = useRef();
+  const initialNoteTitleFromParamsRef = useRef(noteTitle);
+
+  const pathMatch = useCallback(
+    function (path) {
+      const checkPath = location.pathname.startsWith(path);
+
+      return checkPath;
+    },
+    [location.pathname]
+  );
 
   const {
     getDraftNoteContent,
@@ -45,31 +57,15 @@ function DetailOfNotes() {
     clearDraftContent,
   } = useDraftNotes(localStorageDetailsOfNotesDraft);
 
-  useEffect(
-    function () {
-      localStorage.setItem(
-        localStorageDetailsOfNotesDraft,
-        JSON.stringify(draftNotesContent)
-      );
-    },
-    [draftNotesContent]
-  );
-
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const locationPathSegments = location.pathname.split("/");
   const defaultFallbackPath = `/${locationPathSegments[1]}`;
-  const prevPath = location.state?.from === "/tags" || defaultFallbackPath;
+  const prevPath = location.state?.from || defaultFallbackPath;
+
   const basePath = `${locationPathSegments[1]}`;
-  const searchAndTagspage =
-    location.pathname.startsWith("/search") ||
-    location.pathname.startsWith("/tags");
+  const searchAndTagspage = pathMatch("/search") || pathMatch("/tags");
   const currentSearchString = searchParams.toString();
 
   const selectedNote = notes?.find((note) => note.title === noteTitle);
-  const initialNoteTitleFromParamsRef = useRef(noteTitle);
-  const [pendingNavigationPath, setPendingNavigationPath] = useState(null);
 
   const draft = getDraftNoteContent(noteTitle);
 
@@ -86,7 +82,13 @@ function DetailOfNotes() {
   const [textContent, setTextContent] = useState(function () {
     return draft !== undefined ? draft.content : selectedNote?.content || "";
   });
+
+  //Other states
   const [hasChanges, setHasChanges] = useState(false);
+  const [errorNoteTitle, setErrorNoteTitle] = useState(null);
+  const [pendingNavigationPath, setPendingNavigationPath] = useState(null);
+
+  // ### Ref values ###
   const previousNoteRef = useRef(selectedNote);
   const skipNextDraftSaveRef = useRef(false);
 
@@ -94,6 +96,16 @@ function DetailOfNotes() {
   const newFullPathToNavigate = `/${basePath}/${encodeURIComponent(
     newNoteTitle
   )}`;
+
+  useEffect(
+    function () {
+      localStorage.setItem(
+        localStorageDetailsOfNotesDraft,
+        JSON.stringify(draftNotesContent)
+      );
+    },
+    [draftNotesContent]
+  );
 
   useEffect(() => {
     if (!selectedNote) return;
@@ -139,14 +151,6 @@ function DetailOfNotes() {
     },
     [selectedNote, selectedNoteTitle, tags, textContent]
   );
-
-  const { showToastMessage } = useToast();
-
-  // Errors
-  const [errorNoteTitle, setErrorNoteTitle] = useState(null);
-
-  //a condition that check if the save button should be disabled or not
-  const isSaveDisabled = !!errorNoteTitle || !hasChanges;
 
   useEffect(() => {
     initialNoteTitleFromParamsRef.current = noteTitle;
@@ -228,7 +232,7 @@ function DetailOfNotes() {
       (note) => note.title === originalNoteTitleInContext
     );
 
-    const newTagsArray = tags
+    const newTags = tags
       .split(",")
       .map((tag) => tag.trim())
       .filter((tag) => tag !== "");
@@ -237,7 +241,7 @@ function DetailOfNotes() {
     if (formError.length === 0) {
       if (
         textContent === noteToUpdate.content &&
-        newTagsArray.join(", ") === noteToUpdate.tags.join(", ") &&
+        newTags.join(", ") === noteToUpdate.tags.join(", ") &&
         newNoteTitle === noteToUpdate.title
       ) {
         return;
@@ -250,11 +254,6 @@ function DetailOfNotes() {
           (note) => note.title === originalNoteTitleInContext
         );
         const updatedNotes = [...prevNotes];
-
-        const newTags = tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter((tag) => tag !== " ");
 
         updatedNotes[noteIndex] = {
           ...updatedNotes[noteIndex],
@@ -285,10 +284,6 @@ function DetailOfNotes() {
   };
 
   const handleArchiveNotes = function () {
-    setTimeout(() => {
-      mainInfoTitleRef.current?.focus(); // Return focus to the note input
-    }, 0);
-
     setNotes((prevNotes) => {
       const noteIndex = prevNotes.findIndex(
         (note) => note.title === selectedNote.title
@@ -484,7 +479,7 @@ function DetailOfNotes() {
       className="flex-auto flex flex-col md:w-full
      md:max-w-[45rem] md:mx-auto xl:mx-0 xl:max-w-none xl:flex-row xl:pr-8"
     >
-      {/* Mobile Header Controller */}
+      {/* Mobile Note Actions Controller */}
       {isSmallerScreenSize && (
         <NoteActions
           onGoBack={handleGoBackBtn}
@@ -498,7 +493,6 @@ function DetailOfNotes() {
         />
       )}
 
-      {/* xl:border-r border-border-separator */}
       <div className="xl:pb-5 flex flex-col flex-auto xl:px-6">
         {/* Note title information */}
         <div className={"text-xs border-b border-border-separator"}>

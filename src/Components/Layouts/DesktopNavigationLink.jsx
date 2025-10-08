@@ -1,5 +1,5 @@
 import { NavLink } from "react-router";
-import ArrowRightIcon from "./ArrowRightIcon";
+import ArrowRightIcon from "../icons/ArrowRightIcon";
 
 function DesktopNavigationLink({ children, title, path }) {
   return (

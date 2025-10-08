@@ -1,4 +1,4 @@
-import ArrowLeftIcon from "./ArrowLeftIcon";
+import ArrowLeftIcon from "../icons/ArrowLeftIcon";
 
 function GoBackBtn({ onClick, children, ariaLabel = "" }) {
   const ariaProps = {};

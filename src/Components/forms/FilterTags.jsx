@@ -1,8 +1,8 @@
-import { useTag } from "../Context/TagContext";
-import TagIcon from "./TagIcon";
-import { useToast } from "../Context/ToastContext";
-import { useNotes } from "../Context/NoteContext";
-import ArrowRightIcon from "./ArrowRightIcon";
+import { useTag } from "../../Context/TagContext";
+import TagIcon from "../icons/TagIcon";
+import { useToast } from "../../Context/ToastContext";
+import { useNotes } from "../../Context/NoteContext";
+import ArrowRightIcon from "../icons/ArrowRightIcon";
 
 function FilterTags({ children, paddingTop = "", paddingBottom = "" }) {
   const { onTagClick, selectedTags } = useTag();

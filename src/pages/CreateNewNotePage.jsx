@@ -1,11 +1,11 @@
 import { useLocation, useNavigate } from "react-router";
 import NoteActions from "../Components/NoteActions";
-import LabeledIconText from "../Components/LabeledIconText";
-import TagIcon from "../Components/TagIcon";
+import LabeledIconText from "../Components/ui/LabeledIconText";
+import TagIcon from "../Components/icons/TagIcon";
 import { useCallback, useEffect, useRef, useState } from "react";
-import LastEditedIcon from "../Components/LastEditedIcon";
+import LastEditedIcon from "../Components/icons/LastEditedIcon";
 import TextareaAutosize from "react-textarea-autosize";
-import { APP_NAME } from "../config/constants";
+import { APP_NAME, localStorageCreateNewNoteDraft } from "../config/constants";
 
 import useDraftNotes from "../Hooks/useDraftNotes";
 import { formatDate } from "../config/constants";
@@ -15,7 +15,7 @@ import {
   validateUniqueTitle,
   validateField,
 } from "../utils/validators";
-import Error from "../Components/Error";
+import Error from "../Components/ui/Error";
 import { useToast } from "../Context/ToastContext";
 
 function CreateNewNotePage() {
@@ -33,15 +33,8 @@ function CreateNewNotePage() {
   const { notes, setNotes, isSmallerScreenSize } = useNotes();
   const pageTitle = useRef(null);
 
-  useEffect(function () {
-    pageTitle.current.focus();
-  }, []);
-
   // Errors
   const [errorNoteTitle, setErrorNoteTitle] = useState(null);
-
-  //a condition that check if the save button should be disabled or not
-  const isSaveDisabled = !!errorNoteTitle;
 
   //Fields
   const {
@@ -49,17 +42,7 @@ function CreateNewNotePage() {
     draftNotesContent,
     setDraftContent,
     clearDraftContent,
-  } = useDraftNotes("CreateNewNoteDraft");
-
-  useEffect(
-    function () {
-      localStorage.setItem(
-        "CreateNewNoteDraft",
-        JSON.stringify(draftNotesContent)
-      );
-    },
-    [draftNotesContent]
-  );
+  } = useDraftNotes(localStorageCreateNewNoteDraft);
 
   const pathMatch = useCallback(
     function (path) {
@@ -69,17 +52,6 @@ function CreateNewNotePage() {
     },
     [location.pathname]
   );
-
-  useEffect(() => {
-    if (!isSmallerScreenSize) return;
-    const previousTitle = document.title;
-    document.title = `${
-      pathMatch("/all-notes/new") || pathMatch("/archived-notes/new")
-        ? "Create New Note"
-        : `${previousTitle}`
-    } - ${APP_NAME}
-       `;
-  }, [location.state, pathMatch, isSmallerScreenSize]);
 
   const draft = getDraftNoteContent("newNote");
 
@@ -136,6 +108,14 @@ function CreateNewNotePage() {
     clearDraftContent("newNote");
   };
 
+  const handleDesktopCancelButton = function (e) {
+    e.preventDefault();
+    clearDraftContent("newNote");
+    setTitle("");
+    setTag("");
+    setNoteContent("");
+  };
+
   const handleSaveNotes = function (e) {
     e.preventDefault();
 
@@ -173,7 +153,7 @@ function CreateNewNotePage() {
         tags: tag
           .split(",")
           .map((tag) => tag.trim())
-          .filter((tag) => tag !== " "),
+          .filter((tag) => tag !== ""),
         content: noteContent,
         lastEdited: new Date().toISOString(),
         isArchived: noteType,
@@ -196,6 +176,30 @@ function CreateNewNotePage() {
       });
     }
   };
+
+  useEffect(function () {
+    pageTitle.current.focus();
+  }, []);
+
+  useEffect(
+    function () {
+      localStorage.setItem(
+        localStorageCreateNewNoteDraft,
+        JSON.stringify(draftNotesContent)
+      );
+    },
+    [draftNotesContent]
+  );
+
+  useEffect(() => {
+    if (!isSmallerScreenSize) return;
+    const previousTitle = document.title;
+    document.title = `${
+      pathMatch("/all-notes/new") || pathMatch("/archived-notes/new")
+        ? "Create New Note"
+        : `${previousTitle}`
+    } - ${APP_NAME}`;
+  }, [location.state, pathMatch, isSmallerScreenSize]);
 
   return (
     <form
@@ -289,7 +293,10 @@ function CreateNewNotePage() {
       </div>
 
       {!isSmallerScreenSize && (
-        <NoteActions onCancel={handleCancelButton} onSave={handleSaveNotes} />
+        <NoteActions
+          onCancel={handleDesktopCancelButton}
+          onSave={handleSaveNotes}
+        />
       )}
     </form>
   );

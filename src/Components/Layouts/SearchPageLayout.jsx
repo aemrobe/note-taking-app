@@ -1,10 +1,10 @@
 import { Outlet } from "react-router";
-import { useNotes } from "../Context/NoteContext";
-import SearchPage from "../pages/SearchPage";
-import { useSearch } from "../Context/SearchContext";
-import useResponsiveRedirect from "../Hooks/useResponsiveRedirect";
+import { useNotes } from "../../Context/NoteContext";
+import SearchPage from "../../pages/SearchPage";
+import { useSearch } from "../../Context/SearchContext";
+import useResponsiveRedirect from "../../Hooks/useResponsiveRedirect";
 import { useEffect, useState } from "react";
-import { useNoteNavigation } from "../Hooks/useNoteNavigation";
+import { useNoteNavigation } from "../../Hooks/useNoteNavigation";
 
 function SearchPageLayout() {
   const { isSmallerScreenSize } = useNotes();
@@ -29,23 +29,13 @@ function SearchPageLayout() {
 
   useEffect(
     function () {
-      const hasDetailView = location.pathname.split("/").length > 2;
-
       if (
         !isSmallerScreenSize &&
-        hasDetailView &&
+        isDetailView &&
         lastSearchQuery !== actualSearchQueryFromURL &&
         !location.pathname.includes("/new")
       ) {
-        if (filteredNotes.length > 0) {
-          const firstNoteInList = filteredNotes[0].title;
-          const currentNoteTitle = location.pathname.split("/").pop();
-          if (firstNoteInList !== currentNoteTitle) {
-            navigateToFirstNote(`/${basePath}`, filteredNotes);
-          }
-        } else {
-          navigateToFirstNote(`/${basePath}`, filteredNotes);
-        }
+        navigateToFirstNote(`/${basePath}`, filteredNotes);
       }
     },
     [
@@ -55,6 +45,7 @@ function SearchPageLayout() {
       filteredNotes,
       basePath,
       actualSearchQueryFromURL,
+      isDetailView,
     ]
   );
 

@@ -1,15 +1,16 @@
 import { NavLink, useLocation, useParams, useSearchParams } from "react-router";
 import { formatDate, TOAST_DURATION_MS } from "../config/constants";
-import EmptyNotes from "./EmptyNotes";
+import EmptyNotes from "./ui/EmptyNotes";
 import { useSettings } from "../Context/SettingsContext";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNotes } from "../Context/NoteContext";
 import { useToast } from "../Context/ToastContext";
-import FilterStatusMessage from "./FilterStatusMessage";
+import FilterStatusMessage from "./ui/FilterStatusMessage";
 import { useTag } from "../Context/TagContext";
 import CreateNewNote from "./CreateNewNote";
 
 function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
+  const location = useLocation();
   const { isSmallerScreenSize } = useNotes();
   const { activeColorTheme } = useSettings();
   const { showToastMessage } = useToast();
@@ -18,7 +19,6 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
 
   const [showEmptyNotes, setShowEmptyNotes] = useState(false);
   const [accessibleMessage, setAccessibleMessage] = useState(null);
-  const location = useLocation();
 
   const pathMatch = useCallback(
     function (path) {
@@ -28,18 +28,6 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
     },
     [location.pathname]
   );
-
-  const searchPage = pathMatch("/search");
-  const createNewNotePage =
-    pathMatch("/all-notes/new") || pathMatch("/archived-notes/new");
-  const displayBorderSeparator =
-    pathMatch("/all-notes") || pathMatch("/archived-notes");
-  const dontDisplayCreateNewNoteBtn =
-    pathMatch("/all-notes/") ||
-    pathMatch("/search/") ||
-    pathMatch("/archived-notes/") ||
-    pathMatch("/tags/") ||
-    pathMatch("/settings");
 
   const emptyNotes = useCallback(
     (forAriaLive = false) => {
@@ -101,6 +89,38 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
     [allnotes.length, notes.length, type]
   );
 
+  const searchPage = pathMatch("/search");
+  const createNewNotePage =
+    pathMatch("/all-notes/new") || pathMatch("/archived-notes/new");
+  const displayBorderSeparator =
+    pathMatch("/all-notes") || pathMatch("/archived-notes");
+  const dontDisplayCreateNewNoteBtn =
+    pathMatch("/all-notes/") ||
+    pathMatch("/search/") ||
+    pathMatch("/archived-notes/") ||
+    pathMatch("/tags/") ||
+    pathMatch("/settings");
+
+  const linkInsideEmptyNotes =
+    (type === "search" || type === "Archived Notes") &&
+    allnotes.length !== 0 &&
+    "create a new note.";
+
+  const pageTitle = useRef(null);
+
+  useEffect(
+    function () {
+      if (showToastMessage) {
+        return;
+      }
+
+      if (pageTitle.current) {
+        pageTitle.current?.focus();
+      }
+    },
+    [showToastMessage]
+  );
+
   useEffect(
     function () {
       if (allnotes.length === 0 || notes.length === 0) {
@@ -128,27 +148,6 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
       showToastMessage,
     ]
   );
-
-  const linkInsideEmptyNotes =
-    (type === "search" || type === "Archived Notes") &&
-    allnotes.length !== 0 &&
-    "create a new note.";
-
-  const pageTitle = useRef(null);
-
-  useEffect(
-    function () {
-      if (showToastMessage) {
-        return;
-      }
-
-      if (pageTitle.current) {
-        pageTitle.current?.focus();
-      }
-    },
-    [showToastMessage]
-  );
-
   return (
     <div
       className={`md:w-full md:max-w-[43.75rem] xl:max-w-none md:mx-auto xl:mx-0 xl:pt-5 xl:pr-4 xl:pl-8  xl:w-[18.125rem] ${
@@ -215,26 +214,25 @@ function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
         ))}
       </ul>
 
-      {isSmallerScreenSize
-        ? !dontDisplayCreateNewNoteBtn && (
-            <CreateNewNote parentPath={parentPath} />
-          )
-        : ""}
+      {isSmallerScreenSize && !dontDisplayCreateNewNoteBtn ? (
+        <CreateNewNote parentPath={parentPath} />
+      ) : (
+        ""
+      )}
     </div>
   );
 }
 
 function Note({ note, parentPath }) {
-  const { noteTitle } = useParams();
-  const isNoteActive = note.title === noteTitle;
-
   const location = useLocation();
+  const { noteTitle } = useParams();
+  const [searchParams] = useSearchParams();
+  const currentQuery = searchParams.toString();
+
+  const isNoteActive = note.title === noteTitle;
   const searchAndTagspage =
     location.pathname.startsWith("/search") ||
     location.pathname.startsWith("/tags");
-
-  const [searchParams] = useSearchParams();
-  const currentQuery = searchParams.toString();
 
   const navigateToNote = {
     pathname: `${encodeURIComponent(note.title)}`,
@@ -275,11 +273,13 @@ function Note({ note, parentPath }) {
 function ListOfTags({ tags }) {
   return (
     <ul className="flex space-x-1 ">
-      <li className="sr-only">Tags:</li>
+      <li className="sr-only">:</li>
 
-      {tags.map((tag) => (
-        <Tag key={tag}>{tag}</Tag>
-      ))}
+      {tags.length !== 0 ? (
+        tags.map((tag, index) => <Tag key={index}>{tag}</Tag>)
+      ) : (
+        <Tag> No Tags</Tag>
+      )}
     </ul>
   );
 }

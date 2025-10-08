@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTag } from "../Context/TagContext";
 import ListOfNotes from "../Components/ListOfNotes";
-import GoBackBtn from "../Components/GoBackBtn";
-import FilterStatusMessage from "../Components/FilterStatusMessage";
+import GoBackBtn from "../Components/ui/GoBackBtn";
+import FilterStatusMessage from "../Components/ui/FilterStatusMessage";
 import { useSettings } from "../Context/SettingsContext";
 import { APP_NAME, TOAST_DURATION_MS } from "../config/constants";
 import { useToast } from "../Context/ToastContext";
 import ListOfTags from "../Components/ListOfTags";
 import { useNotes } from "../Context/NoteContext";
-import Heading from "../Components/Heading";
-import HeadingPart from "../Components/HeadingPart";
+import Heading from "../Components/ui/Heading";
+import HeadingPart from "../Components/ui/HeadingPart";
 import CreateNewNote from "../Components/CreateNewNote";
 import { useLocation } from "react-router";
 

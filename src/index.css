@@ -562,6 +562,38 @@
   animation: rotate 1.5s infinite linear;
 }
 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.5s forwards;
+}
+
+.fade-out {
+  animation: fade-out 0.5s forwards;
+}
+
 @keyframes rotate {
   to {
     transform: rotate(1turn);

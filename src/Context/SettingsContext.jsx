@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import {
   localStorageColorThemeKey,
   localStorageFontThemeKey,
+  localStorageSavedActiveSettingKey,
 } from "../config/constants";
 import { useLocation } from "react-router";
 
@@ -11,13 +12,9 @@ function SettingsProvider({ children }) {
   const location = useLocation();
   const allNotesPage = location.pathname.includes("/all-notes");
   const [uiPage, setUiPage] = useState("settingsPage");
+
   const [colorThemePreference, setColorThemePreference] = useState(function () {
     return localStorage.getItem(localStorageColorThemeKey) || "system";
-  });
-  const [currentActiveSetting, setCurrentActiveSetting] = useState(function () {
-    const savedActiveSetting = localStorage.getItem("active-setting");
-
-    return savedActiveSetting ? JSON.parse(savedActiveSetting) : "color-theme";
   });
 
   const [activeColorTheme, setActiveColorTheme] = useState(function () {
@@ -31,6 +28,52 @@ function SettingsProvider({ children }) {
       ? "dark"
       : "light";
   });
+
+  const [currentActiveSetting, setCurrentActiveSetting] = useState(function () {
+    const savedActiveSetting = localStorage.getItem(
+      localStorageSavedActiveSettingKey
+    );
+
+    return savedActiveSetting ? JSON.parse(savedActiveSetting) : "color-theme";
+  });
+
+  const [fontThemePreference, setFontThemePreference] = useState(function () {
+    return localStorage.getItem(localStorageFontThemeKey) || "sans-serif";
+  });
+
+  const [activeFontTheme, setActiveFontTheme] = useState(fontThemePreference);
+
+  const [inputValue, setInputValue] = useState(function () {
+    if (currentActiveSetting === "color-theme") {
+      return colorThemePreference;
+    } else {
+      return fontThemePreference;
+    }
+  });
+
+  const handleGettingIntoSettings = function (settingType) {
+    if (settingType === "color-theme") {
+      setInputValue(colorThemePreference);
+    } else {
+      setInputValue(fontThemePreference);
+    }
+  };
+
+  useEffect(
+    function () {
+      setActiveFontTheme(fontThemePreference);
+    },
+    [fontThemePreference]
+  );
+
+  useEffect(
+    function () {
+      document.documentElement.className = `${activeColorTheme} ${activeFontTheme} ${"font-selectedFont"} ${
+        activeColorTheme === "dark" && !allNotesPage ? "allNotesPage" : ""
+      }`;
+    },
+    [activeColorTheme, allNotesPage, activeFontTheme]
+  );
 
   useEffect(
     function () {
@@ -57,46 +100,6 @@ function SettingsProvider({ children }) {
     },
     [colorThemePreference]
   );
-
-  const [fontThemePreference, setFontThemePreference] = useState(function () {
-    return localStorage.getItem(localStorageFontThemeKey) || "sans-serif";
-  });
-
-  const [activeFontTheme, setActiveFontTheme] = useState(fontThemePreference);
-
-  useEffect(
-    function () {
-      setActiveFontTheme(fontThemePreference);
-    },
-    [fontThemePreference]
-  );
-
-  useEffect(
-    function () {
-      document.documentElement.className = `${activeColorTheme} ${activeFontTheme} ${"font-selectedFont"} ${
-        activeColorTheme === "dark" && !allNotesPage ? "allNotesPage" : ""
-      }`;
-    },
-    [activeColorTheme, allNotesPage, activeFontTheme]
-  );
-
-  const [inputValue, setInputValue] = useState(function () {
-    if (currentActiveSetting === "color-theme") {
-      return colorThemePreference;
-    } else if (currentActiveSetting === "font-theme") {
-      return fontThemePreference;
-    } else {
-      return "";
-    }
-  });
-
-  const handleGettingIntoSettings = function (settingType) {
-    if (settingType === "color-theme") {
-      setInputValue(colorThemePreference);
-    } else {
-      setInputValue(fontThemePreference);
-    }
-  };
 
   const value = {
     uiPage,

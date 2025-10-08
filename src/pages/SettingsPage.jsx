@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react";
-import FontIcon from "../Components/FontIcon";
-import SunIcon from "../Components/SunIcon";
+import FontIcon from "../Components/icons/FontIcon";
+import SunIcon from "../Components/icons/SunIcon";
 import { useSettings } from "../Context/SettingsContext";
 import { NavLink } from "react-router";
-import { APP_NAME } from "../config/constants";
-import ArrowRightIcon from "../Components/ArrowRightIcon";
+import {
+  APP_NAME,
+  localStorageSavedActiveSettingKey,
+} from "../config/constants";
+import ArrowRightIcon from "../Components/icons/ArrowRightIcon";
 import { useNotes } from "../Context/NoteContext";
 
 function SettingsPage() {
@@ -76,7 +79,10 @@ function SettingItem({
   const handleChangeSetting = function () {
     onGettingIntoSettings(type);
     onSetCurrentActiveSetting(type);
-    localStorage.setItem("active-setting", JSON.stringify(type));
+    localStorage.setItem(
+      localStorageSavedActiveSettingKey,
+      JSON.stringify(type)
+    );
   };
 
   return (

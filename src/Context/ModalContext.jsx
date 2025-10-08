@@ -5,8 +5,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import ActionModal from "../Components/ActionModal";
-import Portal from "../Components/Portal";
+import ActionModal from "../Components/modals/ActionModal";
+import Portal from "../Components/modals/Portal";
 
 const ModalContext = createContext();
 
@@ -34,7 +34,7 @@ function ModalProvider({ children, appRef }) {
       if (elementToFocus) {
         setTimeout(function () {
           elementToFocus.focus();
-        }, 100);
+        }, 20);
       }
     },
     [lastFocusableElement]

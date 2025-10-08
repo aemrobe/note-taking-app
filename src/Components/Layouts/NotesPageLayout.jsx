@@ -1,19 +1,19 @@
 import { NavLink, Outlet, useLocation, useSearchParams } from "react-router";
-import { useNotes } from "../Context/NoteContext";
-import Logo from "../Components/Logo";
-import MobileMenu from "../Components/MobileMenu";
-import { useSettings } from "../Context/SettingsContext";
-import HomeIcon from "../Components/HomeIcon";
-import DesktopNavigationLink from "../Components/DesktopNavigationLink";
-import ArchiveIcon from "../Components/ArchiveIcon";
-import ListOfTags from "../Components/ListOfTags";
-import { useSearch } from "../Context/SearchContext";
+import { useNotes } from "../../Context/NoteContext";
+import Logo from "../ui/Logo";
+import MobileMenu from "./MobileMenu";
+import { useSettings } from "../../Context/SettingsContext";
+import HomeIcon from "../icons/HomeIcon";
+import DesktopNavigationLink from "./DesktopNavigationLink";
+import ArchiveIcon from "../icons/ArchiveIcon";
+import ListOfTags from "../ListOfTags";
+import { useSearch } from "../../Context/SearchContext";
 import { useCallback } from "react";
-import { useTag } from "../Context/TagContext";
-import Heading from "../Components/Heading";
-import HeadingPart from "../Components/HeadingPart";
-import SearchInputBox from "../Components/SearchInputBox";
-import SettingIcon from "../Components/SettingIcon";
+import { useTag } from "../../Context/TagContext";
+import Heading from "../ui/Heading";
+import HeadingPart from "../ui/HeadingPart";
+import SearchInputBox from "../forms/SearchInputBox";
+import SettingIcon from "../icons/SettingIcon";
 
 function NotesPageLayout() {
   const { isSmallerScreenSize } = useNotes();
@@ -53,7 +53,7 @@ function NotesPageLayout() {
 
   let headingTitle = "";
 
-  //writting the name for titles in the desktop view
+  //writting the page titles on a desktop Screen
   if (pathMatch("/all-notes")) {
     headingTitle = "All Notes";
   } else if (pathMatch("/archived-notes")) {

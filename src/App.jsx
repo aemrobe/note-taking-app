@@ -4,7 +4,7 @@ import AllNotes from "./pages/AllNotes";
 import ArchivedNotes from "./pages/ArchivedNotes";
 import { NotesProvider } from "./Context/NoteContext";
 
-import NotesPageLayout from "./Layouts/NotesPageLayout";
+import NotesPageLayout from "./Components/Layouts/NotesPageLayout";
 import DetailOfNotes from "./pages/DetailOfNotes";
 import TagsPage from "./pages/TagsPage";
 import { TagProvider } from "./Context/TagContext";
@@ -17,12 +17,12 @@ import { SettingsProvider } from "./Context/SettingsContext";
 import SettingsDetailsPage from "./pages/SettingsDetailsPage";
 import CreateNewNotePage from "./pages/CreateNewNotePage";
 import { useRef } from "react";
-import AllNotesLayout from "./Layouts/AllNotesLayout";
-import ArchivedNotesLayout from "./Layouts/ArchivedNotesLayout";
-import SearchPageLayout from "./Layouts/SearchPageLayout";
+import AllNotesLayout from "./Components/Layouts/AllNotesLayout";
+import ArchivedNotesLayout from "./Components/Layouts/ArchivedNotesLayout";
+import SearchPageLayout from "./Components/Layouts/SearchPageLayout";
 import { SearchProvider } from "./Context/SearchContext";
-import TagPageLayout from "./Layouts/TagPageLayout";
-import SettingsPageLayout from "./Layouts/SettingsPageLayout";
+import TagPageLayout from "./Components/Layouts/TagPageLayout";
+import SettingsPageLayout from "./Components/Layouts/SettingsPageLayout";
 
 function App() {
   const appRef = useRef(null);

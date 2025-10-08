@@ -1,8 +1,8 @@
 import { Outlet, useLocation } from "react-router";
-import { useNotes } from "../Context/NoteContext";
-import useResponsiveRedirect from "../Hooks/useResponsiveRedirect";
-import AllNotes from "../pages/AllNotes";
-import { FilteredNotesProvider } from "../Context/FilteredNotesContext";
+import { useNotes } from "../../Context/NoteContext";
+import useResponsiveRedirect from "../../Hooks/useResponsiveRedirect";
+import AllNotes from "../../pages/AllNotes";
+import { FilteredNotesProvider } from "../../Context/FilteredNotesContext";
 import { useMemo } from "react";
 
 function AllNotesLayout() {

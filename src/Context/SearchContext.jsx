@@ -9,10 +9,9 @@ import {
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { useNotes } from "./NoteContext";
 import { useCallback } from "react";
+import { SEARCH_DEBOUNCE_DELAY_MS } from "../config/constants";
 
 const SearchContext = createContext();
-
-const SEARCH_DEBOUNCE_DELAY_MS = 500;
 
 function SearchProvider({ children }) {
   const { notes, isSmallerScreenSize, previousPath } = useNotes();
@@ -114,7 +113,7 @@ function SearchProvider({ children }) {
           if (trimmedInput) {
             newSearchParams.set("query", trimmedInput);
           } else {
-            // This is the key change: remove the 'query' parameter
+            // This is the key change: remove the 'query' parameter when the search input is empty
             newSearchParams.delete("query");
           }
 

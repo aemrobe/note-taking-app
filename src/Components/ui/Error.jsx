@@ -1,4 +1,4 @@
-import InfoIcon from "./InfoIcon";
+import InfoIcon from "../icons/InfoIcon";
 
 function Error({ error, marginTop, id = "" }) {
   return (

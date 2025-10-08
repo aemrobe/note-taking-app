@@ -1,11 +1,11 @@
 import { useModal } from "../Context/ModalContext";
 import { useNotes } from "../Context/NoteContext";
-import ArchiveIcon from "./ArchiveIcon";
-import CancelBtn from "./CancelBtn";
-import DeleteIcon from "./DeleteIcon";
-import GoBackBtn from "./GoBackBtn";
-import RestoreIcon from "./RestoreIcon";
-import SaveBtn from "./SaveBtn";
+import ArchiveIcon from "./icons/ArchiveIcon";
+import CancelBtn from "./ui/CancelBtn";
+import DeleteIcon from "./icons/DeleteIcon";
+import GoBackBtn from "./ui/GoBackBtn";
+import RestoreIcon from "./icons/RestoreIcon";
+import SaveBtn from "./ui/SaveBtn";
 
 function NoteActions({
   onGoBack = "",

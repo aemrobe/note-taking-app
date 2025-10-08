@@ -1,5 +1,5 @@
 import { useNotes } from "../Context/NoteContext";
-import FilterTags from "./FilterTags";
+import FilterTags from "./forms/FilterTags";
 
 function ListOfTags() {
   const { isSmallerScreenSize } = useNotes();
