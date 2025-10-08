@@ -204,7 +204,7 @@ function CreateNewNotePage() {
   return (
     <form
       className="flex flex-col xl:pt-5 xl:px-6 xl:pb-5 md:w-full
-     md:max-w-[45rem] md:mx-auto xl:mx-0 xl:max-w-none"
+     md:max-w-[45rem] xl:max-w-[36.75rem] md:mx-auto xl:mx-0"
     >
       <h1 ref={pageTitle} className="sr-only" tabIndex={-1}>
         Create New Note
@@ -250,7 +250,7 @@ function CreateNewNotePage() {
           />
         )}
       </div>
-      <div className="flex flex-col flex-auto text-new-note-text-fontSize md:text-sm leading-new-note-text-lineHeight">
+      <div className="flex flex-col  text-new-note-text-fontSize md:text-sm leading-new-note-text-lineHeight">
         <div className="flex">
           <div className="w-full grid grid-cols-[auto_1fr] items-center pb-3 gap-y-1 md:gap-y-2 gap-x-2  border-b border-border-separator">
             <LabelElementWithText forValue={"input-tag"}>
@@ -283,13 +283,16 @@ function CreateNewNotePage() {
           </div>
         </div>
 
-        <textarea
+        <TextareaAutosize
           name="note-content"
-          value={noteContent}
-          onChange={(e) => setNoteContent(e.target.value)}
+          aria-label="Note Content"
+          placeholder="Start typing your note here…"
           className="flex-auto overflow-y-auto  my-3 resize-none focus:outline-none w-full  placeholder:text-new-note-content-placholder-color  -tracking-50  text-new-input-text-color text-sm leading-50"
-          placeholder="Start typing your note here..."
-        ></textarea>
+          value={noteContent}
+          minRows={31}
+          maxRows={60}
+          onChange={(e) => setNoteContent(e.target.value)}
+        />
       </div>
 
       {!isSmallerScreenSize && (

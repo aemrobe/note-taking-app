@@ -252,14 +252,16 @@ function Note({ note, parentPath }) {
     <li
       className={`${
         isNoteActive ? "xl:bg-desktop-note-active xl:rounded-md" : ""
-      }  w-full  px-2 pt-2 pb-3 flex flex-col space-y-3 items-start relative`}
+      } w-full  px-2 pt-2 pb-3 flex flex-col flex-wrap space-y-3 items-start relative`}
     >
       <NavLink
         to={navigateToNote}
         state={fromState}
-        className={"stretched-link focusable-ring "}
+        className={"stretched-link focusable-ring w-full"}
       >
-        <h2 className="font-semibold text-text-primary">{note.title}</h2>
+        <h2 className="font-semibold text-text-primary break-words">
+          {note.title}
+        </h2>
       </NavLink>
 
       <ListOfTags tags={note.tags} />

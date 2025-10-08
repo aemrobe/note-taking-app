@@ -495,7 +495,7 @@ function DetailOfNotes() {
 
       <div className="xl:pb-5 flex flex-col flex-auto xl:px-6">
         {/* Note title information */}
-        <div className={"text-xs border-b border-border-separator"}>
+        <div className={"text-xs  border-b border-border-separator"}>
           <div className={`pt-3 xl:pt-5 ${errorNoteTitle ? "pb-3" : ""}`}>
             <h1 tabIndex="-1" id="note-title-heading" className="sr-only">
               Edit Note
@@ -578,14 +578,16 @@ function DetailOfNotes() {
         </div>
 
         {/* Note Text Content */}
-        <textarea
-          value={textContent}
-          aria-label="Note Content"
-          onChange={(e) => setTextContent(e.target.value)}
+        <TextareaAutosize
           name="Note text"
+          aria-label="Note Content"
           placeholder="Start typing your note here…"
-          className="focus:outline-none flex-auto overflow-y-auto resize-none w-full pt-3   text-sm leading-50 -tracking-50 text-note-content-text pb-3 "
-        ></textarea>
+          className=" focus:outline-none overflow-y-auto resize-none w-full pt-3   text-sm leading-50 -tracking-50 text-note-content-text pb-3 "
+          value={textContent}
+          minRows={30}
+          maxRows={60}
+          onChange={(e) => setTextContent(e.target.value)}
+        />
 
         {/* Desktop Save Note and Cancel Button */}
         {!isSmallerScreenSize && (
@@ -597,7 +599,7 @@ function DetailOfNotes() {
       </div>
 
       {/* Desktop Archive and Delete buttons*/}
-      <div className="hidden xl:pl-4 xl:pt-5 xl:flex flex-col gap-y-3">
+      <div className=" hidden xl:pl-4 xl:pt-5 xl:flex flex-col gap-y-3">
         {selectedNote?.isArchived ? (
           <DesktopNoteActionButton
             icon={<RestoreIcon width={"w-5"} />}
