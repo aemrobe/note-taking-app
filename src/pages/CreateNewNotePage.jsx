@@ -204,7 +204,7 @@ function CreateNewNotePage() {
   return (
     <form
       className="flex flex-col xl:pt-5 xl:px-6 xl:pb-5 md:w-full
-     md:max-w-[45rem] xl:max-w-[36.75rem] md:mx-auto xl:mx-0"
+     md:max-w-[45rem] xl:max-w-[36.75rem] md:mx-auto xl:mx-0 xl:border-r xl:border-border-separator"
     >
       <h1 ref={pageTitle} className="sr-only" tabIndex={-1}>
         Create New Note

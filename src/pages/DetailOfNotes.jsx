@@ -493,7 +493,7 @@ function DetailOfNotes() {
         />
       )}
 
-      <div className="xl:pb-5 flex flex-col flex-auto xl:px-6">
+      <div className="xl:pb-5 flex flex-col flex-auto xl:px-6 xl:border-r xl:border-border-separator">
         {/* Note title information */}
         <div className={"text-xs  border-b border-border-separator"}>
           <div className={`pt-3 xl:pt-5 ${errorNoteTitle ? "pb-3" : ""}`}>
