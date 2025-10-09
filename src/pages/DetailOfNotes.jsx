@@ -580,7 +580,7 @@ function DetailOfNotes() {
           placeholder="Start typing your note here…"
           className=" focus:outline-none overflow-y-auto resize-none w-full pt-3   text-sm leading-50 -tracking-50 text-note-content-text pb-3 "
           value={textContent}
-          minRows={30}
+          minRows={33}
           maxRows={40}
           onChange={(e) => setTextContent(e.target.value)}
         />

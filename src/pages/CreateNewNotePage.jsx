@@ -288,7 +288,7 @@ function CreateNewNotePage() {
           placeholder="Start typing your note here…"
           className="flex-auto overflow-y-auto  my-3 resize-none focus:outline-none w-full  placeholder:text-new-note-content-placholder-color  -tracking-50  text-new-input-text-color text-sm leading-50"
           value={noteContent}
-          minRows={31}
+          minRows={38}
           maxRows={40}
           onChange={(e) => setNoteContent(e.target.value)}
         />
