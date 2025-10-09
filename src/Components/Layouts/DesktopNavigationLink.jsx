@@ -1,9 +1,10 @@
 import { NavLink } from "react-router";
 import ArrowRightIcon from "../icons/ArrowRightIcon";
 
-function DesktopNavigationLink({ children, title, path }) {
+function DesktopNavigationLink({ children, title, path, label }) {
   return (
     <NavLink
+      aria-label={label}
       className={({ isActive }) =>
         `focusable-ring py-2.5 pl-3 flex items-center space-x-2 rounded-lg ${
           isActive ? "bg-desktop-navigation-link-background-active" : ""

@@ -133,7 +133,7 @@ function TagsPage() {
         </FilterStatusMessage>
       )}
 
-      <ul className="divide-y divide-border-separator text-filter-tag-text">
+      <ul className=" text-filter-tag-text">
         {uiMode === "filteredNotes" ? (
           <ListOfNotes
             notes={filteredNotes}
@@ -142,7 +142,10 @@ function TagsPage() {
             type={"tags"}
           />
         ) : (
-          <div aria-hidden={uiMode === "filteredNotes" ? true : false}>
+          <div
+            className={"divide-y divide-border-separator"}
+            aria-hidden={uiMode === "filteredNotes" ? true : false}
+          >
             <ListOfTags />
           </div>
         )}

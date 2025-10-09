@@ -81,6 +81,7 @@ function NotesPageLayout() {
                   <DesktopNavigationLink
                     title={"All Notes"}
                     path={"/all-notes"}
+                    label={"View all notes"}
                   >
                     <HomeIcon width={"w-5"} />
                   </DesktopNavigationLink>
@@ -90,6 +91,7 @@ function NotesPageLayout() {
                   <DesktopNavigationLink
                     title={"Archived Notes"}
                     path={"/archived-notes"}
+                    label={"view archived notes"}
                   >
                     <ArchiveIcon width={"w-5"} />
                   </DesktopNavigationLink>
