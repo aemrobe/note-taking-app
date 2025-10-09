@@ -81,7 +81,7 @@ function NotesPageLayout() {
                   <DesktopNavigationLink
                     title={"All Notes"}
                     path={"/all-notes"}
-                    label={"View all notes"}
+                    label={"Navigate to all notes page"}
                   >
                     <HomeIcon width={"w-5"} />
                   </DesktopNavigationLink>
@@ -91,7 +91,7 @@ function NotesPageLayout() {
                   <DesktopNavigationLink
                     title={"Archived Notes"}
                     path={"/archived-notes"}
-                    label={"view archived notes"}
+                    label={"Navigate to archived notes page"}
                   >
                     <ArchiveIcon width={"w-5"} />
                   </DesktopNavigationLink>
@@ -158,7 +158,7 @@ function NotesPageLayout() {
 
                     <NavLink
                       to={`/settings`}
-                      aria-label="Settings"
+                      aria-label="Navigate to Settings page"
                       className={" focusable-ring text-desktop-setting-icon"}
                     >
                       <SettingIcon />

@@ -29,6 +29,9 @@ function FilterTags({ children, paddingTop = "", paddingBottom = "" }) {
             : ""
         }`}
         aria-pressed={isTheTagAdded ? true : false}
+        aria-label={`Toggle ${children} tag, ${
+          isTheTagAdded ? "selected" : "not selected"
+        }`}
       >
         <span
           className={`${
