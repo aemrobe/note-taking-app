@@ -21,6 +21,7 @@ function SettingsDetailsPage() {
 
   const handleApplyChanges = function (e) {
     e.preventDefault();
+    if (currentSetting.getPreference(settingsContext) === inputValue) return;
     currentSetting.setPreference(settingsContext, inputValue);
     onShowToastMessage({ text: "Settings updated successfully!" });
   };

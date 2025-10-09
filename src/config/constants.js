@@ -16,7 +16,7 @@ export const localStorageSavedActiveSettingKey = "active-setting";
 export const XL_BREAKPOINT_REM = 80;
 export const TOAST_DURATION_MS = 4000; //4 sec
 export const TOAST_ANIMATION_DURATION = 500; //0.5 sec
-export const SEARCH_DEBOUNCE_DELAY_MS = 500;
+export const SEARCH_DEBOUNCE_DELAY_MS = 500; //0.5 sec
 export const APP_NAME = "Notes App";
 
 export const COLOR_THEME_OPTIONS = [
