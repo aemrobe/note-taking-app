@@ -28,6 +28,7 @@ function FilterTags({ children, paddingTop = "", paddingBottom = "" }) {
             ? "text-text-primary bg-desktop-navigation-link-background-active rounded-lg"
             : ""
         }`}
+        aria-pressed={isTheTagAdded ? true : false}
       >
         <span
           className={`${

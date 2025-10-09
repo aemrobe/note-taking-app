@@ -9,7 +9,11 @@ function MobileMenu({ currentSearchParams = "" }) {
   return (
     <nav className="w-full bg-background-primary z-20 border-t border-border-menubar shadow-[0_-2px_2px_var(--color-shadow-level-1)] text-icon-navigation-default fixed bottom-0 right-0 left-0">
       <ul className="py-3 px-4 md:px-8 container mx-auto md:w-full md:max-w-[48rem] flex justify-center md:justify-between">
-        <MobileMenuLinks path={"/all-notes"} label={"All Notes"} text={"Home"}>
+        <MobileMenuLinks
+          path={"/all-notes"}
+          label={"View All Notes"}
+          text={"Home"}
+        >
           <HomeIcon width={"w-6"} />
         </MobileMenuLinks>
 
@@ -23,7 +27,7 @@ function MobileMenu({ currentSearchParams = "" }) {
 
         <MobileMenuLinks
           path="/archived-notes"
-          label={"Archived Notes"}
+          label={"View Archived Notes"}
           text={"Archived"}
         >
           <ArchiveIcon width={"w-6"} />
@@ -32,13 +36,17 @@ function MobileMenu({ currentSearchParams = "" }) {
         <MobileMenuLinks
           path="/tags"
           params={currentSearchParams}
-          label={"Tags"}
+          label={"Visit Tags page"}
           text={"Tags"}
         >
           <TagIcon width={"w-6"} />
         </MobileMenuLinks>
 
-        <MobileMenuLinks path="/settings" label={"Settings"} text={"Settings"}>
+        <MobileMenuLinks
+          path="/settings"
+          label={"Visit Settings page"}
+          text={"Settings"}
+        >
           <SettingIcon />
         </MobileMenuLinks>
       </ul>
