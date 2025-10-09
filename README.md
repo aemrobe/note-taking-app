@@ -45,7 +45,7 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
+- Solution URL: [Solution Url](https://www.frontendmentor.io/solutions/note-taking-app-gFr3UDn7dW)
 - Live Site URL: [Live Site Url](https://note-taking-app-two-rust.vercel.app)
 
 ## My process
