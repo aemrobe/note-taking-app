@@ -8,12 +8,14 @@ import TextareaAutosize from "react-textarea-autosize";
 import { APP_NAME, localStorageCreateNewNoteDraft } from "../config/constants";
 
 import useDraftNotes from "../Hooks/useDraftNotes";
-import { formatDate } from "../config/constants";
+
 import { useNotes } from "../Context/NoteContext";
 import {
   validateRequired,
   validateUniqueTitle,
   validateField,
+  formatDate,
+  normalizeTags,
 } from "../utils/validators";
 import Error from "../Components/ui/Error";
 import { useToast } from "../Context/ToastContext";
@@ -150,10 +152,7 @@ function CreateNewNotePage() {
     if (formError.length === 0) {
       const newNote = {
         title: title,
-        tags: tag
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter((tag) => tag !== ""),
+        tags: normalizeTags(tag),
         content: noteContent,
         lastEdited: new Date().toISOString(),
         isArchived: noteType,
@@ -290,7 +289,7 @@ function CreateNewNotePage() {
           className="flex-auto overflow-y-auto  my-3 resize-none focus:outline-none w-full  placeholder:text-new-note-content-placholder-color  -tracking-50  text-new-input-text-color text-sm leading-50"
           value={noteContent}
           minRows={31}
-          maxRows={60}
+          maxRows={40}
           onChange={(e) => setNoteContent(e.target.value)}
         />
       </div>

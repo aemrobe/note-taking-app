@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useParams, useSearchParams } from "react-router";
-import { formatDate, TOAST_DURATION_MS } from "../config/constants";
+import { TOAST_DURATION_MS } from "../config/constants";
 import EmptyNotes from "./ui/EmptyNotes";
 import { useSettings } from "../Context/SettingsContext";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -8,6 +8,7 @@ import { useToast } from "../Context/ToastContext";
 import FilterStatusMessage from "./ui/FilterStatusMessage";
 import { useTag } from "../Context/TagContext";
 import CreateNewNote from "./CreateNewNote";
+import { formatDate } from "../utils/validators";
 
 function ListOfNotes({ type, notes, parentPath, uiMode = "tagSelection" }) {
   const location = useLocation();
@@ -274,7 +275,7 @@ function Note({ note, parentPath }) {
 
 function ListOfTags({ tags }) {
   return (
-    <ul className="flex space-x-1 ">
+    <ul className="flex flex-wrap gap-1">
       <li className="sr-only">:</li>
 
       {tags.length !== 0 ? (

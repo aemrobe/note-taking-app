@@ -18,13 +18,6 @@ export const TOAST_DURATION_MS = 4000; //4 sec
 export const TOAST_ANIMATION_DURATION = 500; //0.5 sec
 export const SEARCH_DEBOUNCE_DELAY_MS = 500;
 export const APP_NAME = "Notes App";
-export const formatDate = function (date) {
-  return new Date(date).toLocaleString("en-GB", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-};
 
 export const COLOR_THEME_OPTIONS = [
   {

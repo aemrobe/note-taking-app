@@ -7,10 +7,7 @@ import {
 import TagIcon from "../Components/icons/TagIcon";
 import { useNotes } from "../Context/NoteContext";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  formatDate,
-  localStorageDetailsOfNotesDraft,
-} from "../config/constants";
+import { localStorageDetailsOfNotesDraft } from "../config/constants";
 import StatusIcon from "../Components/icons/StatusIcon";
 import LastEditedIcon from "../Components/icons/LastEditedIcon";
 import { useToast } from "../Context/ToastContext";
@@ -23,6 +20,8 @@ import {
   validateRequired,
   validateUniqueTitle,
   validateField,
+  normalizeTags,
+  formatDate,
 } from "../utils/validators";
 import ArchiveIcon from "../Components/icons/ArchiveIcon";
 import DeleteIcon from "../Components/icons/DeleteIcon";
@@ -232,10 +231,7 @@ function DetailOfNotes() {
       (note) => note.title === originalNoteTitleInContext
     );
 
-    const newTags = tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== "");
+    const newTags = normalizeTags(tags);
 
     // When there is no Form Error
     if (formError.length === 0) {
@@ -585,7 +581,7 @@ function DetailOfNotes() {
           className=" focus:outline-none overflow-y-auto resize-none w-full pt-3   text-sm leading-50 -tracking-50 text-note-content-text pb-3 "
           value={textContent}
           minRows={30}
-          maxRows={60}
+          maxRows={40}
           onChange={(e) => setTextContent(e.target.value)}
         />
 
